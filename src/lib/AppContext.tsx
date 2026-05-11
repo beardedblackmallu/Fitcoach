@@ -49,6 +49,10 @@ interface AppCtx {
   addPlan: (plan: Plan) => void;
   assignClientsToPlan: (planId: string, clientIds: string[]) => void;
 
+  // Client → plan name overrides (set when a plan is assigned)
+  clientPlanOverrides: Record<string, string>;
+  getEffectivePlanName: (clientId: string, seedPlanName: string) => string;
+
   // New plan modal
   newPlanOpen: boolean;
   newPlanPrefill: NewPlanPrefill;
@@ -77,6 +81,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [composerPrefill, setComposerPrefill] = useState<ComposerPrefill>(null);
   const [plans, setPlans] = useState<Plan[]>(seedPlans);
+  const [clientPlanOverrides, setClientPlanOverrides] = useState<Record<string, string>>({});
   const [newPlanOpen, setNewPlanOpen] = useState(false);
   const [newPlanPrefill, setNewPlanPrefill] = useState<NewPlanPrefill>(null);
   const [clientPicker, setClientPicker] = useState<ClientPicker>(null);
@@ -128,12 +133,26 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const assignClientsToPlan = useCallback((planId: string, clientIds: string[]) => {
-    setPlans((prev) =>
-      prev.map((p) =>
+    setPlans((prev) => {
+      const next = prev.map((p) =>
         p.id === planId ? { ...p, clientIds: Array.from(new Set([...p.clientIds, ...clientIds])) } : p
-      )
-    );
+      );
+      const plan = next.find((p) => p.id === planId);
+      if (plan) {
+        setClientPlanOverrides((prevOv) => {
+          const out = { ...prevOv };
+          clientIds.forEach((cid) => { out[cid] = plan.name; });
+          return out;
+        });
+      }
+      return next;
+    });
   }, []);
+
+  const getEffectivePlanName = useCallback(
+    (clientId: string, seedPlanName: string) => clientPlanOverrides[clientId] ?? seedPlanName,
+    [clientPlanOverrides]
+  );
 
   const openNewPlanModal = useCallback((prefill: NewPlanPrefill = null) => {
     setNewPlanPrefill(prefill);
@@ -161,6 +180,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         sidebarOpen, setSidebarOpen,
         composerPrefill, setComposerPrefill, consumeComposerPrefill,
         plans, addPlan, assignClientsToPlan,
+        clientPlanOverrides, getEffectivePlanName,
         newPlanOpen, newPlanPrefill, openNewPlanModal, closeNewPlanModal,
         clientPicker, openClientPicker, closeClientPicker,
         assignPlanPicker, openAssignPlanPicker, closeAssignPlanPicker,

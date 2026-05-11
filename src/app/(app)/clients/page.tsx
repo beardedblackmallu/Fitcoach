@@ -23,7 +23,7 @@ const statusStyles: Record<ClientStatus, string> = {
 
 export default function ClientsPage() {
   const router = useRouter();
-  const { showToast } = useApp();
+  const { showToast, getEffectivePlanName } = useApp();
   const [query, setQuery] = useState("");
   const filtered = clients.filter((c) =>
     c.name.toLowerCase().includes(query.toLowerCase())
@@ -96,7 +96,7 @@ export default function ClientsPage() {
                       </div>
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-stone-700">{c.plan}</td>
+                  <td className="px-4 py-3 text-stone-700">{getEffectivePlanName(c.id, c.plan)}</td>
                   <td className="px-4 py-3 text-stone-600 hidden md:table-cell">{c.startDate}</td>
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-2">

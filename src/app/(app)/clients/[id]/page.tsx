@@ -37,7 +37,7 @@ const tabs = ["Overview", "Workouts", "Nutrition", "Progress", "Chat"] as const;
 export default function ClientDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { openVoiceModal, openCallModal, showToast } = useApp();
+  const { openVoiceModal, openCallModal, showToast, getEffectivePlanName } = useApp();
   const [tab, setTab] = useState<(typeof tabs)[number]>("Overview");
 
   const client = getClient(params.id);
@@ -55,7 +55,7 @@ export default function ClientDetailPage() {
             <div className="flex items-baseline gap-3 flex-wrap">
               <h1 className="text-2xl font-semibold text-stone-900">{client.name}</h1>
               <span className="text-xs px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 ring-1 ring-teal-200 font-medium">
-                Week {client.weekOfPlan} of {client.plan}
+                Week {client.weekOfPlan} of {getEffectivePlanName(client.id, client.plan)}
               </span>
             </div>
             <p className="text-sm text-stone-600 mt-1.5 flex items-center gap-1.5">
