@@ -76,12 +76,17 @@ export default function DashboardPage() {
 
       {/* Action needed */}
       {activeEscalations.length > 0 && (
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-3">
+        <div className="mb-8 rounded-2xl border border-[#F59E0B] bg-[#FFFBEB] p-4 sm:p-5">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+              <span>🟡</span> Needs your attention
+            </span>
+          </div>
+          <div className="flex items-center justify-between mb-3 mt-2 flex-wrap gap-2">
             <h2 className="text-base font-semibold text-stone-900 flex items-center gap-2">
               <AlertTriangle className="h-4 w-4 text-amber-600" />
               Action needed
-              <span className="text-xs font-medium text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-amber-700 bg-white/80 ring-1 ring-amber-200 px-2 py-0.5 rounded-full">
                 {activeEscalations.length}
               </span>
             </h2>
@@ -100,9 +105,8 @@ export default function DashboardPage() {
               return (
                 <div
                   key={esc.id}
-                  className="bg-white rounded-xl border-2 border-amber-200 p-4 relative overflow-hidden"
+                  className="bg-white rounded-xl border border-stone-200 border-l-4 border-l-[#F59E0B] p-4 shadow-sm hover:shadow transition-shadow"
                 >
-                  <div className="absolute top-0 left-0 right-0 h-1 bg-amber-400" />
                   <div className="flex items-start gap-3">
                     <Avatar initials={c.initials} color={c.avatarColor} size="md" />
                     <div className="flex-1 min-w-0">
@@ -129,7 +133,7 @@ export default function DashboardPage() {
                         </button>
                         <button
                           onClick={() => openCallModal(c.id, c.name, c.phone)}
-                          className="text-xs font-medium px-3 py-1.5 rounded-md border border-stone-300 hover:bg-stone-50 text-stone-700 inline-flex items-center gap-1.5"
+                          className="text-xs font-medium px-3 py-1.5 rounded-md border border-stone-300 hover:bg-white text-stone-700 inline-flex items-center gap-1.5"
                         >
                           <Phone className="h-3.5 w-3.5" />
                           Tap to call

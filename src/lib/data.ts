@@ -46,7 +46,7 @@ export const clients: Client[] = [
     joinedWeeksAgo: 8,
     workoutCompliance: 84,
     nutritionCompliance: 71,
-    online: true,
+    lastSeen: "2h ago",
     weightHistory: [
       { week: "W1", kg: 78.0 },
       { week: "W2", kg: 77.4 },
@@ -105,7 +105,7 @@ export const clients: Client[] = [
     joinedWeeksAgo: 11,
     workoutCompliance: 92,
     nutritionCompliance: 88,
-    online: true,
+    lastSeen: "18 min ago",
     weightHistory: [
       { week: "W1", kg: 68.0 },
       { week: "W4", kg: 66.5 },
@@ -453,11 +453,11 @@ export const escalations: Escalation[] = [
     category: "Medical",
     reasonBadge: "Medical concern detected",
     quotedMessage: "my left knee has been hurting since yesterday's workout, should I skip leg day?",
-    whyEscalated: "Bot detected medical keywords (pain, hurt, injury) and deferred to you. The bot doesn't provide medical advice.",
+    whyEscalated: "The bot detected medical keywords (pain, hurt, injury) in the client's message. Medical concerns require professional judgment, so the bot deferred to you instead of guessing.",
     time: "23 min ago",
     suggestedReplies: [
       "Hi Anita, sorry to hear about the knee. Let's skip leg day for now. Can you describe the pain — sharp, dull, when does it hurt most?",
-      "Anita, knee discomfort is something I want to check properly. Can we hop on a 5-min call?",
+      "Anita, knee discomfort is something I want to check properly. Can we hop on a quick 5-min call?",
     ],
   },
   {
@@ -567,3 +567,92 @@ export const notifications: Notification[] = [
   { id: "n4", type: "payment", text: "Payment received from Neha Singh — ₹2,000", time: "3h ago", href: "/payments" },
   { id: "n5", type: "warning", text: "Rohan Kapoor missed morning check-in", time: "2h ago", href: "/conversations?c=rohan" },
 ];
+
+// Plans
+export type PlanType = "template" | "custom";
+
+export interface Plan {
+  id: string;
+  name: string;
+  durationWeeks: number;
+  cycleLengthWeeks: number;
+  cycles: number;
+  clientIds: string[];
+  lastEdited: string;
+  description?: string;
+  type: PlanType;
+}
+
+export const plans: Plan[] = [
+  {
+    id: "p-12wt",
+    name: "12-Week Transformation",
+    durationWeeks: 12,
+    cycleLengthWeeks: 4,
+    cycles: 3,
+    clientIds: ["priya", "pooja", "anita", "arjun", "vikram"],
+    lastEdited: "2 days ago",
+    description: "Progressive overload with weekly nutrition adjustments. Built for clients ready to commit.",
+    type: "template",
+  },
+  {
+    id: "p-strength8",
+    name: "Strength Foundations 8-week",
+    durationWeeks: 8,
+    cycleLengthWeeks: 4,
+    cycles: 2,
+    clientIds: ["rohan", "aditya"],
+    lastEdited: "5 days ago",
+    description: "Big-3 focused. Squat, bench, deadlift progressions for new lifters.",
+    type: "template",
+  },
+  {
+    id: "p-fatloss12",
+    name: "Fat Loss + Toning 12-week",
+    durationWeeks: 12,
+    cycleLengthWeeks: 4,
+    cycles: 3,
+    clientIds: ["pooja"],
+    lastEdited: "1 week ago",
+    description: "Calorie deficit with metabolic resistance training. Suited to busy professionals.",
+    type: "template",
+  },
+  {
+    id: "p-hyper16",
+    name: "Beginner Hypertrophy 16-week",
+    durationWeeks: 16,
+    cycleLengthWeeks: 4,
+    cycles: 4,
+    clientIds: ["karan"],
+    lastEdited: "2 weeks ago",
+    description: "Volume-focused split for new lifters who want size first, strength second.",
+    type: "template",
+  },
+  {
+    id: "p-postnatal8",
+    name: "Postnatal Recovery 8-week",
+    durationWeeks: 8,
+    cycleLengthWeeks: 4,
+    cycles: 2,
+    clientIds: ["neha"],
+    lastEdited: "3 days ago",
+    description: "Core re-engagement, pelvic floor, gentle progression back to full strength training.",
+    type: "template",
+  },
+  {
+    id: "p-athlete12",
+    name: "Athlete Performance 12-week",
+    durationWeeks: 12,
+    cycleLengthWeeks: 4,
+    cycles: 3,
+    clientIds: ["arjun", "sneha"],
+    lastEdited: "yesterday",
+    description: "Speed, power, and sport-specific conditioning blocks.",
+    type: "template",
+  },
+];
+
+export function getPlan(id: string) {
+  return plans.find((p) => p.id === id);
+}
+

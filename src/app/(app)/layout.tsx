@@ -3,6 +3,9 @@ import { Header } from "@/components/Header";
 import { Toasts } from "@/components/Toasts";
 import { VoiceRecorderModal } from "@/components/VoiceRecorderModal";
 import { TapToCallModal } from "@/components/TapToCallModal";
+import { NewPlanModal } from "@/components/NewPlanModal";
+import { ClientPickerModal } from "@/components/ClientPickerModal";
+import { AssignPlanModal } from "@/components/AssignPlanModal";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -15,6 +18,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Toasts />
       <VoiceRecorderModal />
       <TapToCallModal />
+      <NewPlanModal />
+      <ClientPickerModal />
+      <AssignPlanModal />
     </div>
   );
 }

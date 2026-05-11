@@ -1,11 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { MoreHorizontal, Plus, Search, Upload } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import {
+  Edit3,
+  MoreHorizontal,
+  PauseCircle,
+  Plus,
+  Search,
+  Send,
+  Upload,
+} from "lucide-react";
 import { Avatar } from "@/components/Avatar";
-import { clients, ClientStatus } from "@/lib/data";
+import { clients, Client, ClientStatus } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
 
 const statusStyles: Record<ClientStatus, string> = {
@@ -117,15 +124,7 @@ export default function ClientsPage() {
                     </span>
                   </td>
                   <td className="px-4 py-3">
-                    <button
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        showToast(`Quick actions for ${c.name}`);
-                      }}
-                      className="p-1.5 rounded-md hover:bg-stone-200 text-stone-500"
-                    >
-                      <MoreHorizontal className="h-4 w-4" />
-                    </button>
+                    <RowMenu client={c} />
                   </td>
                 </tr>
               ))}
@@ -139,6 +138,73 @@ export default function ClientsPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function RowMenu({ client }: { client: Client }) {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const { openAssignPlanPicker, showToast } = useApp();
+
+  useEffect(() => {
+    function onDoc(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    return () => document.removeEventListener("mousedown", onDoc);
+  }, []);
+
+  return (
+    <div className="relative" ref={ref}>
+      <button
+        onClick={(e) => {
+          e.stopPropagation();
+          setOpen((o) => !o);
+        }}
+        className="p-1.5 rounded-md hover:bg-stone-200 text-stone-500"
+        aria-label="Row actions"
+      >
+        <MoreHorizontal className="h-4 w-4" />
+      </button>
+      {open && (
+        <div
+          className="absolute right-0 top-full mt-1 z-20 w-44 bg-white border border-stone-200 rounded-lg shadow-lg py-1 scale-in origin-top-right"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <button
+            onClick={() => {
+              setOpen(false);
+              openAssignPlanPicker(client.id);
+            }}
+            className="w-full text-left text-sm px-3 py-1.5 hover:bg-stone-50 flex items-center gap-2"
+          >
+            <Send className="h-3.5 w-3.5 text-teal-600" />
+            Assign plan
+          </button>
+          <button
+            onClick={() => {
+              setOpen(false);
+              router.push(`/clients/${client.id}`);
+            }}
+            className="w-full text-left text-sm px-3 py-1.5 hover:bg-stone-50 flex items-center gap-2"
+          >
+            <Edit3 className="h-3.5 w-3.5 text-stone-500" />
+            View profile
+          </button>
+          <button
+            onClick={() => {
+              setOpen(false);
+              showToast(`${client.name} paused — bot won't send check-ins`, "success");
+            }}
+            className="w-full text-left text-sm px-3 py-1.5 hover:bg-stone-50 flex items-center gap-2"
+          >
+            <PauseCircle className="h-3.5 w-3.5 text-stone-500" />
+            Pause client
+          </button>
+        </div>
+      )}
     </div>
   );
 }

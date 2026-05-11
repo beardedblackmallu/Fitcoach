@@ -1,10 +1,12 @@
 "use client";
 
-import { Copy, Phone, X } from "lucide-react";
+import { Copy, MessageCircle, Phone, X } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useApp } from "@/lib/AppContext";
 
 export function TapToCallModal() {
   const { callTarget, closeCallModal, showToast, addCallLog } = useApp();
+  const router = useRouter();
   if (!callTarget) return null;
 
   const copyAndLog = async () => {
@@ -15,7 +17,12 @@ export function TapToCallModal() {
     }
     showToast("Number copied", "success");
     addCallLog(callTarget.clientId, "Sandeep", callTarget.clientName);
-    setTimeout(() => closeCallModal(), 600);
+  };
+
+  const openConversation = () => {
+    const id = callTarget.clientId;
+    closeCallModal();
+    router.push(`/conversations?c=${id}`);
   };
 
   return (
@@ -30,7 +37,7 @@ export function TapToCallModal() {
           <X className="h-4 w-4" />
         </button>
 
-        <div className="flex items-center gap-3 mb-5">
+        <div className="flex items-center gap-3 mb-4">
           <div className="h-10 w-10 rounded-full bg-teal-100 grid place-items-center">
             <Phone className="h-5 w-5 text-teal-700" />
           </div>
@@ -40,34 +47,44 @@ export function TapToCallModal() {
           </div>
         </div>
 
-        <a
-          href={`tel:${callTarget.phone.replace(/\s/g, "")}`}
-          className="block text-center font-mono text-2xl tracking-wide text-stone-900 py-4 bg-stone-50 rounded-xl border border-stone-200 hover:bg-stone-100 transition-colors"
-        >
-          {callTarget.phone}
-        </a>
+        <div className="flex items-stretch gap-2">
+          <a
+            href={`tel:${callTarget.phone.replace(/\s/g, "")}`}
+            className="flex-1 text-center font-mono text-xl tracking-wide text-stone-900 py-3 px-2 bg-stone-50 rounded-xl border border-stone-200 hover:bg-stone-100 transition-colors"
+          >
+            {callTarget.phone}
+          </a>
+          <button
+            onClick={copyAndLog}
+            className="px-3 rounded-xl border border-stone-200 hover:bg-stone-50 text-stone-700 inline-flex items-center justify-center gap-1.5 text-xs font-medium"
+          >
+            <Copy className="h-4 w-4" />
+            Copy
+          </button>
+        </div>
 
-        <button
-          onClick={copyAndLog}
-          className="mt-3 w-full h-11 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm flex items-center justify-center gap-2"
-        >
-          <Copy className="h-4 w-4" />
-          Copy number
-        </button>
+        <div className="mt-4 bg-stone-50 border border-stone-200 rounded-lg p-3 text-xs text-stone-600 leading-relaxed">
+          <p>
+            📞 Call from your personal phone — clients receive your real number, not the FitCoach
+            platform number. After the call, the conversation continues here.
+          </p>
+        </div>
 
-        <p className="mt-3 text-xs text-stone-500 leading-relaxed text-center">
-          Call from your personal phone — clients receive your real number, not the platform number.
-        </p>
-        <p className="mt-2 text-xs text-stone-400 text-center">
-          On mobile, tapping the number opens your phone dialer.
-        </p>
-
-        <button
-          onClick={closeCallModal}
-          className="mt-4 w-full text-sm text-stone-600 hover:text-stone-800 py-2"
-        >
-          Close
-        </button>
+        <div className="mt-5 flex items-center gap-2">
+          <button
+            onClick={openConversation}
+            className="flex-1 h-10 rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 font-medium text-sm inline-flex items-center justify-center gap-1.5"
+          >
+            <MessageCircle className="h-4 w-4" />
+            Open conversation
+          </button>
+          <button
+            onClick={closeCallModal}
+            className="px-4 h-10 rounded-lg text-stone-600 hover:bg-stone-100 font-medium text-sm"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );

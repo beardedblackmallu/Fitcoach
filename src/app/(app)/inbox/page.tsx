@@ -93,10 +93,11 @@ export default function InboxPage() {
         </div>
       ) : (
         <div className="space-y-4">
-          {visible.map((esc) => (
+          {visible.map((esc, i) => (
             <EscalationCard
               key={esc.id}
               escalation={esc}
+              defaultExpanded={i === 0}
               onResolve={() => {
                 resolveEscalation(esc.id);
                 showToast("Marked resolved", "success");
@@ -114,21 +115,30 @@ export default function InboxPage() {
 
 function EscalationCard({
   escalation,
+  defaultExpanded = false,
   onResolve,
   onOpenChat,
   onCall,
   onVoice,
 }: {
   escalation: (typeof escalations)[number];
+  defaultExpanded?: boolean;
   onResolve: () => void;
   onOpenChat: () => void;
   onCall: (clientName: string, phone: string) => void;
   onVoice: (clientName: string) => void;
 }) {
   const c = getClient(escalation.clientId)!;
-  const [whyOpen, setWhyOpen] = useState(false);
-  const [suggestedOpen, setSuggestedOpen] = useState(false);
-  const { showToast } = useApp();
+  const [whyOpen, setWhyOpen] = useState(defaultExpanded);
+  const [suggestedOpen, setSuggestedOpen] = useState(defaultExpanded);
+  const router = useRouter();
+  const { showToast, setComposerPrefill } = useApp();
+
+  const useReply = (text: string) => {
+    setComposerPrefill({ clientId: escalation.clientId, text });
+    showToast(`Reply ready in ${c.name.split(" ")[0]}'s composer`, "success");
+    router.push(`/conversations?c=${escalation.clientId}`);
+  };
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
@@ -216,16 +226,18 @@ function EscalationCard({
         {suggestedOpen && (
           <div className="mt-2 space-y-2">
             {escalation.suggestedReplies.map((r, i) => (
-              <button
+              <div
                 key={i}
-                onClick={() => {
-                  showToast("Reply copied — paste into conversation", "success");
-                  navigator.clipboard?.writeText(r).catch(() => {});
-                }}
-                className="block w-full text-left text-sm bg-gradient-to-br from-teal-50 to-stone-50 border border-teal-100 hover:border-teal-300 rounded-lg p-3 text-stone-700 leading-relaxed"
+                className="bg-gradient-to-br from-teal-50 to-stone-50 border border-teal-100 rounded-lg p-3 flex items-start gap-3"
               >
-                {r}
-              </button>
+                <p className="flex-1 text-sm text-stone-700 leading-relaxed">{r}</p>
+                <button
+                  onClick={() => useReply(r)}
+                  className="shrink-0 text-xs font-medium px-2.5 py-1.5 rounded-md bg-teal-600 hover:bg-teal-700 text-white"
+                >
+                  Use this
+                </button>
+              </div>
             ))}
           </div>
         )}

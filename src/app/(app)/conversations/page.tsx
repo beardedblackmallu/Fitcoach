@@ -29,7 +29,7 @@ import Link from "next/link";
 function ConversationsInner() {
   const params = useSearchParams();
   const router = useRouter();
-  const { openVoiceModal, openCallModal, callLogs, showToast } = useApp();
+  const { openVoiceModal, openCallModal, callLogs, showToast, consumeComposerPrefill } = useApp();
 
   const initialId = params.get("c") ?? "priya";
   const [activeId, setActiveId] = useState(initialId);
@@ -48,6 +48,13 @@ function ConversationsInner() {
       setShowOnMobile("thread");
     }
   }, [params]);
+
+  // Pull in prefill from Inbox "Use this" if present
+  useEffect(() => {
+    const prefill = consumeComposerPrefill(activeId);
+    if (prefill) setDraft(prefill);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [activeId]);
 
   useEffect(() => {
     if (threadRef.current) {
@@ -177,7 +184,7 @@ function ConversationsInner() {
           <div className="flex-1 min-w-0">
             <div className="font-semibold text-stone-900 truncate">{activeClient.name}</div>
             <div className="text-xs text-stone-500">
-              {activeClient.online ? <span className="text-emerald-600">● online</span> : `last seen ${activeClient.lastSeen ?? "recently"}`}
+              last active {activeClient.lastSeen ?? "recently"}
             </div>
           </div>
           <div className="flex items-center gap-1">
@@ -335,7 +342,7 @@ function MessageBubble({ m }: { m: Message }) {
     <div className={`flex flex-col ${align}`}>
       {(isBot || isTrainer) && (
         <div className={`text-[10px] font-medium mb-0.5 px-1 ${isTrainer ? "text-teal-700" : "text-stone-500"}`}>
-          {isBot ? "🤖 Auto" : `✓ ${m.fromName ?? "From Sandeep"}`}
+          {isBot ? "🤖 Bot" : `✓ ${m.fromName ?? "From Sandeep"}`}
         </div>
       )}
       <div
@@ -376,7 +383,10 @@ function MessageBubble({ m }: { m: Message }) {
           </div>
         )}
       </div>
-      <div className={`text-[10px] mt-1 px-1 ${isTrainer ? "text-stone-400" : "text-stone-400"}`}>{m.time}</div>
+      <div className={`text-[10px] mt-1 px-1 text-stone-400 ${isTrainer ? "flex items-center gap-1.5" : ""}`}>
+        <span>{m.time}</span>
+        {isTrainer && <span className="italic">(via FitCoach)</span>}
+      </div>
     </div>
   );
 }
