@@ -23,7 +23,7 @@ const statusStyles: Record<ClientStatus, string> = {
 
 export default function ClientsPage() {
   const router = useRouter();
-  const { showToast, getEffectivePlanName } = useApp();
+  const { showToast, getEffectivePlanName, openAddClient } = useApp();
   const [query, setQuery] = useState("");
   const filtered = clients.filter((c) =>
     c.name.toLowerCase().includes(query.toLowerCase())
@@ -45,7 +45,7 @@ export default function ClientsPage() {
             Bulk import
           </button>
           <button
-            onClick={() => showToast("Add client form opening...", "success")}
+            onClick={openAddClient}
             className="h-9 px-3 text-sm rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium inline-flex items-center gap-1.5"
           >
             <Plus className="h-4 w-4" />

@@ -11,6 +11,7 @@ type ComposerPrefill = { clientId: string; text: string } | null;
 type ClientPicker = { plan: Plan } | null;
 type AssignPlanPicker = { clientId: string } | null;
 type NewPlanPrefill = { customForClientId?: string } | null;
+type ExerciseVideoTarget = { name: string; url: string } | null;
 
 interface AppCtx {
   // Toast
@@ -68,6 +69,16 @@ interface AppCtx {
   assignPlanPicker: AssignPlanPicker;
   openAssignPlanPicker: (clientId: string) => void;
   closeAssignPlanPicker: () => void;
+
+  // Add client modal
+  addClientOpen: boolean;
+  openAddClient: () => void;
+  closeAddClient: () => void;
+
+  // Exercise video modal
+  exerciseVideoTarget: ExerciseVideoTarget;
+  openExerciseVideo: (name: string, url: string) => void;
+  closeExerciseVideo: () => void;
 }
 
 const AppContext = createContext<AppCtx | null>(null);
@@ -86,6 +97,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [newPlanPrefill, setNewPlanPrefill] = useState<NewPlanPrefill>(null);
   const [clientPicker, setClientPicker] = useState<ClientPicker>(null);
   const [assignPlanPicker, setAssignPlanPicker] = useState<AssignPlanPicker>(null);
+  const [addClientOpen, setAddClientOpen] = useState(false);
+  const [exerciseVideoTarget, setExerciseVideoTarget] = useState<ExerciseVideoTarget>(null);
 
   const showToast = useCallback((text: string, tone: "default" | "success" = "default") => {
     const id = Date.now() + Math.random();
@@ -169,6 +182,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const openAssignPlanPicker = useCallback((clientId: string) => setAssignPlanPicker({ clientId }), []);
   const closeAssignPlanPicker = useCallback(() => setAssignPlanPicker(null), []);
 
+  const openAddClient = useCallback(() => setAddClientOpen(true), []);
+  const closeAddClient = useCallback(() => setAddClientOpen(false), []);
+
+  const openExerciseVideo = useCallback((name: string, url: string) => setExerciseVideoTarget({ name, url }), []);
+  const closeExerciseVideo = useCallback(() => setExerciseVideoTarget(null), []);
+
   return (
     <AppContext.Provider
       value={{
@@ -184,6 +203,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         newPlanOpen, newPlanPrefill, openNewPlanModal, closeNewPlanModal,
         clientPicker, openClientPicker, closeClientPicker,
         assignPlanPicker, openAssignPlanPicker, closeAssignPlanPicker,
+        addClientOpen, openAddClient, closeAddClient,
+        exerciseVideoTarget, openExerciseVideo, closeExerciseVideo,
       }}
     >
       {children}

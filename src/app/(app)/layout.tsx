@@ -6,6 +6,8 @@ import { TapToCallModal } from "@/components/TapToCallModal";
 import { NewPlanModal } from "@/components/NewPlanModal";
 import { ClientPickerModal } from "@/components/ClientPickerModal";
 import { AssignPlanModal } from "@/components/AssignPlanModal";
+import { AddClientModal } from "@/components/AddClientModal";
+import { ExerciseVideoModal } from "@/components/ExerciseVideoModal";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -21,6 +23,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <NewPlanModal />
       <ClientPickerModal />
       <AssignPlanModal />
+      <AddClientModal />
+      <ExerciseVideoModal />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import {
   ArrowLeft,
+  Apple,
   Copy,
   Dumbbell,
   Edit3,
@@ -12,6 +13,7 @@ import {
   Send,
   StickyNote,
   Trash2,
+  Video,
   X,
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
@@ -22,8 +24,12 @@ import {
   ExerciseEntry,
   exerciseLibrary,
   initialWeekPlan,
+  defaultNutritionPlan,
+  getExerciseVideo,
+  NutritionPlan,
 } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
+import { NutritionTab } from "@/components/NutritionTab";
 
 const days: DayKey[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const dayLabels: Record<DayKey, string> = {
@@ -36,18 +42,23 @@ const emptyWeek: Record<DayKey, ExerciseEntry[]> = {
   Mon: [], Tue: [], Wed: [], Thu: [], Fri: [], Sat: [], Sun: [],
 };
 
+type TopTab = "workouts" | "nutrition";
+
 export default function PlanEditPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { showToast, plans, openClientPicker } = useApp();
+  const { showToast, plans, openClientPicker, openExerciseVideo } = useApp();
 
   const plan = useMemo(() => plans.find((p) => p.id === params.id), [plans, params.id]);
 
   const [planName, setPlanName] = useState(plan?.name ?? "Untitled plan");
+  const [topTab, setTopTab] = useState<TopTab>("workouts");
   const [activeWeek, setActiveWeek] = useState(1);
-  const [activeCycle] = useState(1);
   const [week, setWeek] = useState<Record<DayKey, ExerciseEntry[]>>(
     plan && plan.clientIds.length > 0 ? initialWeekPlan : emptyWeek
+  );
+  const [nutritionPlan, setNutritionPlan] = useState<NutritionPlan>(() =>
+    JSON.parse(JSON.stringify(defaultNutritionPlan))
   );
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryCat, setLibraryCat] = useState<(typeof categories)[number]>("All");
@@ -77,7 +88,7 @@ export default function PlanEditPage() {
     const id = `${day}-${Date.now()}`;
     setWeek((p) => ({
       ...p,
-      [day]: [...p[day].filter((x) => !x.rest), { id, name, detail: "3×10" }],
+      [day]: [...p[day].filter((x) => !x.rest), { id, name, detail: "3×10", videoUrl: getExerciseVideo(name) }],
     }));
     showToast(`${name} added to ${dayLabels[day]}`, "success");
   };
@@ -86,6 +97,13 @@ export default function PlanEditPage() {
     setWeek((p) => ({
       ...p,
       [day]: [{ id: `${day}-rest-${Date.now()}`, name: "Rest day", detail: "Recovery", rest: true }],
+    }));
+  };
+
+  const updateExercise = (day: DayKey, id: string, patch: Partial<ExerciseEntry>) => {
+    setWeek((p) => ({
+      ...p,
+      [day]: p[day].map((x) => (x.id === id ? { ...x, ...patch } : x)),
     }));
   };
 
@@ -118,7 +136,6 @@ export default function PlanEditPage() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-[1400px] mx-auto">
-      {/* Back link */}
       <button
         onClick={() => router.push("/plans")}
         className="text-xs text-stone-500 hover:text-stone-800 inline-flex items-center gap-1 mb-3"
@@ -151,194 +168,203 @@ export default function PlanEditPage() {
             className="h-9 px-3 text-sm rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium inline-flex items-center gap-1.5"
           >
             <Send className="h-4 w-4" />
-            Assign to client
+            Send plan to client
           </button>
         </div>
       </div>
 
-      {/* Cycle navigation */}
-      <div className="flex items-center gap-2 mb-3 flex-wrap">
+      {/* Top tabs: Workouts / Nutrition */}
+      <div className="flex items-center gap-1 border-b border-stone-200 mb-5">
         <button
-          className="text-sm font-medium px-3 py-1.5 rounded-lg bg-teal-600 text-white"
+          onClick={() => setTopTab("workouts")}
+          className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-colors inline-flex items-center gap-1.5 ${
+            topTab === "workouts"
+              ? "border-teal-600 text-teal-700"
+              : "border-transparent text-stone-500 hover:text-stone-800"
+          }`}
         >
-          Cycle 1 (Weeks 1-{weeksPerCycle})
+          <Dumbbell className="h-4 w-4" /> Workouts
         </button>
-        {Array.from({ length: Math.max(0, cycleCount - 1) }).map((_, i) => (
-          <button
-            key={i}
-            title="Plan when Cycle 1 ends — uses logs to inform next cycle"
-            disabled
-            className="text-sm font-medium px-3 py-1.5 rounded-lg text-stone-400 bg-stone-50 inline-flex items-center gap-1.5 cursor-not-allowed"
-          >
-            <Lock className="h-3.5 w-3.5" />
-            Cycle {i + 2}
-          </button>
-        ))}
+        <button
+          onClick={() => setTopTab("nutrition")}
+          className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-colors inline-flex items-center gap-1.5 ${
+            topTab === "nutrition"
+              ? "border-teal-600 text-teal-700"
+              : "border-transparent text-stone-500 hover:text-stone-800"
+          }`}
+        >
+          <Apple className="h-4 w-4" /> Nutrition
+        </button>
       </div>
 
-      {/* Week tabs */}
-      <div className="flex items-center gap-1 border-b border-stone-200 mb-4 overflow-x-auto">
-        {Array.from({ length: weeksPerCycle }).map((_, i) => {
-          const w = i + 1;
-          return (
-            <button
-              key={w}
-              onClick={() => setActiveWeek(w)}
-              className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
-                activeWeek === w
-                  ? "border-teal-600 text-teal-700"
-                  : "border-transparent text-stone-500 hover:text-stone-800"
-              }`}
-            >
-              Week {w}
+      {topTab === "nutrition" ? (
+        <NutritionTab plan={nutritionPlan} setPlan={(updater) => setNutritionPlan(updater)} />
+      ) : (
+        <>
+          {/* Cycle navigation */}
+          <div className="flex items-center gap-2 mb-3 flex-wrap">
+            <button className="text-sm font-medium px-3 py-1.5 rounded-lg bg-teal-600 text-white">
+              Cycle 1 (Weeks 1-{weeksPerCycle})
             </button>
-          );
-        })}
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4">
-        {/* Library */}
-        <aside className="bg-white border border-stone-200 rounded-xl p-3 h-fit lg:sticky lg:top-20">
-          <div className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2 px-1">
-            Exercise library
-          </div>
-          <div className="relative mb-2">
-            <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
-            <input
-              value={librarySearch}
-              onChange={(e) => setLibrarySearch(e.target.value)}
-              placeholder="Search exercises..."
-              className="w-full h-8 pl-8 pr-2 rounded-md bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 outline-none text-xs"
-            />
-          </div>
-          <div className="flex flex-wrap gap-1 mb-3">
-            {categories.map((cat) => (
+            {Array.from({ length: Math.max(0, cycleCount - 1) }).map((_, i) => (
               <button
-                key={cat}
-                onClick={() => setLibraryCat(cat)}
-                className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
-                  libraryCat === cat
-                    ? "bg-teal-100 text-teal-700"
-                    : "bg-stone-100 text-stone-600 hover:bg-stone-200"
-                }`}
+                key={i}
+                title="Plan when Cycle 1 ends — uses logs to inform next cycle"
+                disabled
+                className="text-sm font-medium px-3 py-1.5 rounded-lg text-stone-400 bg-stone-50 inline-flex items-center gap-1.5 cursor-not-allowed"
               >
-                {cat}
+                <Lock className="h-3.5 w-3.5" />
+                Cycle {i + 2}
               </button>
             ))}
           </div>
-          <div className="space-y-1 max-h-[60vh] overflow-y-auto pr-1">
-            {filteredLibrary.map((ex) => (
-              <ExerciseLibraryItem
-                key={ex.name}
-                name={ex.name}
-                category={ex.category}
-                onAdd={(day) => addExerciseToDay(day, ex.name)}
-              />
-            ))}
-            {filteredLibrary.length === 0 && (
-              <div className="text-xs text-stone-400 text-center py-6">No matches</div>
-            )}
-          </div>
-        </aside>
 
-        {/* 7-day grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
-          {days.map((day) => (
-            <div key={day} className="bg-white border border-stone-200 rounded-xl flex flex-col">
-              <div className="px-3 py-2 border-b border-stone-200 flex items-center justify-between">
-                <div>
-                  <div className="text-xs font-semibold text-stone-500 uppercase tracking-wide">{day}</div>
-                  <div className="text-[10px] text-stone-400">{dayLabels[day]}</div>
-                </div>
-                <div className="flex items-center gap-0.5">
-                  <button
-                    onClick={() => addRestDay(day)}
-                    className="p-1 rounded-md hover:bg-stone-100 text-stone-400 hover:text-stone-700 text-[10px]"
-                    title="Mark as rest day"
-                  >
-                    Rest
-                  </button>
-                  <button
-                    onClick={() => addExerciseToDay(day, "New exercise")}
-                    className="p-1 rounded-md hover:bg-stone-100 text-stone-500"
-                    aria-label="Add exercise"
-                  >
-                    <Plus className="h-3.5 w-3.5" />
-                  </button>
-                </div>
-              </div>
-              <div className="p-2 space-y-1.5 min-h-[140px] flex-1">
-                {week[day].length === 0 && (
-                  <div className="text-[11px] text-stone-400 text-center py-6">
-                    Empty
-                    <button
-                      onClick={() => addExerciseToDay(day, "New exercise")}
-                      className="block mx-auto text-teal-700 hover:underline text-[11px] mt-1"
-                    >
-                      + Add exercise
-                    </button>
-                  </div>
-                )}
-                {week[day].length > 0 && week[day][0]?.rest ? (
-                  <div className="rounded-lg bg-stone-50 border border-stone-100 p-3 text-center">
-                    <div className="text-sm italic text-stone-600 font-medium">Rest day</div>
-                    <div className="text-[11px] text-stone-400 mt-0.5">Recovery</div>
-                    <button
-                      onClick={() => addExerciseToDay(day, "New exercise")}
-                      className="text-[11px] text-teal-700 hover:underline mt-2 inline-block"
-                    >
-                      + Add exercise
-                    </button>
-                  </div>
-                ) : (
-                  week[day].map((ex) => (
-                    <div
-                      key={ex.id}
-                      className="group rounded-lg border border-stone-200 bg-white hover:border-teal-300 hover:shadow-sm p-2 transition-all"
-                    >
-                      <div className="flex items-start gap-1">
-                        <GripVertical className="h-3 w-3 text-stone-300 mt-1 shrink-0" />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-semibold text-stone-800 truncate">{ex.name}</div>
-                          <div className="text-[11px] text-stone-500 mt-0.5">{ex.detail}</div>
-                          {ex.notes && (
-                            <div className="text-[10px] text-amber-700 mt-1 italic line-clamp-2">📝 {ex.notes}</div>
-                          )}
-                        </div>
-                        <div className="opacity-0 group-hover:opacity-100 flex flex-col gap-0.5">
-                          <button
-                            onClick={() => openNote(day, ex)}
-                            className={`p-0.5 rounded hover:bg-stone-100 ${ex.notes ? "text-amber-600" : "text-stone-400"}`}
-                            title="Form cues"
-                          >
-                            <StickyNote className="h-3 w-3" />
-                          </button>
-                          <button
-                            onClick={() => removeExercise(day, ex.id)}
-                            className="p-0.5 rounded hover:bg-red-50 text-stone-400 hover:text-red-500"
-                            title="Remove"
-                          >
-                            <Trash2 className="h-3 w-3" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-              <div className="px-2 pb-2 flex items-center gap-1">
+          {/* Week tabs */}
+          <div className="flex items-center gap-1 border-b border-stone-200 mb-4 overflow-x-auto">
+            {Array.from({ length: weeksPerCycle }).map((_, i) => {
+              const w = i + 1;
+              return (
                 <button
-                  onClick={() => showToast(`${day} duplicated to ${days[(days.indexOf(day) + 1) % 7]}`)}
-                  className="text-[10px] text-stone-500 hover:text-stone-800 inline-flex items-center gap-1 px-1.5 py-1 rounded hover:bg-stone-100"
+                  key={w}
+                  onClick={() => setActiveWeek(w)}
+                  className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
+                    activeWeek === w
+                      ? "border-teal-600 text-teal-700"
+                      : "border-transparent text-stone-500 hover:text-stone-800"
+                  }`}
                 >
-                  <Copy className="h-3 w-3" />
-                  Duplicate
+                  Week {w}
                 </button>
+              );
+            })}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4">
+            {/* Library */}
+            <aside className="bg-white border border-stone-200 rounded-xl p-3 h-fit lg:sticky lg:top-20">
+              <div className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2 px-1">
+                Exercise library
               </div>
+              <div className="relative mb-2">
+                <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-stone-400" />
+                <input
+                  value={librarySearch}
+                  onChange={(e) => setLibrarySearch(e.target.value)}
+                  placeholder="Search exercises..."
+                  className="w-full h-8 pl-8 pr-2 rounded-md bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 outline-none text-xs"
+                />
+              </div>
+              <div className="flex flex-wrap gap-1 mb-3">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setLibraryCat(cat)}
+                    className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
+                      libraryCat === cat
+                        ? "bg-teal-100 text-teal-700"
+                        : "bg-stone-100 text-stone-600 hover:bg-stone-200"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+              <div className="space-y-1 max-h-[60vh] overflow-y-auto pr-1">
+                {filteredLibrary.map((ex) => (
+                  <ExerciseLibraryItem
+                    key={ex.name}
+                    name={ex.name}
+                    category={ex.category}
+                    videoUrl={getExerciseVideo(ex.name)}
+                    onAdd={(day) => addExerciseToDay(day, ex.name)}
+                    onWatch={() => openExerciseVideo(ex.name, getExerciseVideo(ex.name))}
+                  />
+                ))}
+                {filteredLibrary.length === 0 && (
+                  <div className="text-xs text-stone-400 text-center py-6">No matches</div>
+                )}
+              </div>
+            </aside>
+
+            {/* 7-day grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3">
+              {days.map((day) => (
+                <div key={day} className="bg-white border border-stone-200 rounded-xl flex flex-col">
+                  <div className="px-3 py-2 border-b border-stone-200 flex items-center justify-between">
+                    <div>
+                      <div className="text-xs font-semibold text-stone-500 uppercase tracking-wide">{day}</div>
+                      <div className="text-[10px] text-stone-400">{dayLabels[day]}</div>
+                    </div>
+                    <div className="flex items-center gap-0.5">
+                      <button
+                        onClick={() => addRestDay(day)}
+                        className="p-1 rounded-md hover:bg-stone-100 text-stone-400 hover:text-stone-700 text-[10px]"
+                        title="Mark as rest day"
+                      >
+                        Rest
+                      </button>
+                      <button
+                        onClick={() => addExerciseToDay(day, "New exercise")}
+                        className="p-1 rounded-md hover:bg-stone-100 text-stone-500"
+                        aria-label="Add exercise"
+                      >
+                        <Plus className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-2 space-y-1.5 min-h-[140px] flex-1">
+                    {week[day].length === 0 && (
+                      <div className="text-[11px] text-stone-400 text-center py-6">
+                        Empty
+                        <button
+                          onClick={() => addExerciseToDay(day, "New exercise")}
+                          className="block mx-auto text-teal-700 hover:underline text-[11px] mt-1"
+                        >
+                          + Add exercise
+                        </button>
+                      </div>
+                    )}
+                    {week[day].length > 0 && week[day][0]?.rest ? (
+                      <div className="rounded-lg bg-stone-50 border border-stone-100 p-3 text-center">
+                        <div className="text-sm italic text-stone-600 font-medium">Rest day</div>
+                        <div className="text-[11px] text-stone-400 mt-0.5">Recovery</div>
+                        <button
+                          onClick={() => addExerciseToDay(day, "New exercise")}
+                          className="text-[11px] text-teal-700 hover:underline mt-2 inline-block"
+                        >
+                          + Add exercise
+                        </button>
+                      </div>
+                    ) : (
+                      week[day].map((ex) => (
+                        <ExerciseCardInGrid
+                          key={ex.id}
+                          ex={ex}
+                          onWatch={() =>
+                            openExerciseVideo(ex.name, ex.videoUrl ?? getExerciseVideo(ex.name))
+                          }
+                          onUpdateUrl={(url) => updateExercise(day, ex.id, { videoUrl: url })}
+                          onOpenNote={() => openNote(day, ex)}
+                          onRemove={() => removeExercise(day, ex.id)}
+                        />
+                      ))
+                    )}
+                  </div>
+                  <div className="px-2 pb-2 flex items-center gap-1">
+                    <button
+                      onClick={() => showToast(`${day} duplicated to ${days[(days.indexOf(day) + 1) % 7]}`)}
+                      className="text-[10px] text-stone-500 hover:text-stone-800 inline-flex items-center gap-1 px-1.5 py-1 rounded hover:bg-stone-100"
+                    >
+                      <Copy className="h-3 w-3" />
+                      Duplicate
+                    </button>
+                  </div>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
 
       {/* Notes modal */}
       {editingNote && (
@@ -385,28 +411,116 @@ export default function PlanEditPage() {
   );
 }
 
+function ExerciseCardInGrid({
+  ex, onWatch, onUpdateUrl, onOpenNote, onRemove,
+}: {
+  ex: ExerciseEntry;
+  onWatch: () => void;
+  onUpdateUrl: (url: string) => void;
+  onOpenNote: () => void;
+  onRemove: () => void;
+}) {
+  const [showUrl, setShowUrl] = useState(false);
+  const url = ex.videoUrl ?? getExerciseVideo(ex.name);
+
+  return (
+    <div className="group rounded-lg border border-stone-200 bg-white hover:border-teal-300 hover:shadow-sm p-2 transition-all">
+      <div className="flex items-start gap-1">
+        <GripVertical className="h-3 w-3 text-stone-300 mt-1 shrink-0" />
+        <div className="flex-1 min-w-0">
+          <div className="text-xs font-semibold text-stone-800 truncate">{ex.name}</div>
+          <div className="text-[11px] text-stone-500 mt-0.5">{ex.detail}</div>
+          {ex.notes && (
+            <div className="text-[10px] text-amber-700 mt-1 italic line-clamp-2">📝 {ex.notes}</div>
+          )}
+          <div className="mt-1.5 flex items-center gap-1">
+            <button
+              onClick={onWatch}
+              className="text-[10px] font-medium text-red-600 hover:text-red-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-red-50"
+              title="Watch form video"
+            >
+              <Video className="h-3 w-3" />
+              Watch form
+            </button>
+            <button
+              onClick={() => setShowUrl((s) => !s)}
+              className="text-[10px] text-stone-400 hover:text-stone-600"
+              title="Edit video URL"
+            >
+              {showUrl ? "−" : "✎"}
+            </button>
+          </div>
+          {showUrl && (
+            <input
+              value={url}
+              onChange={(e) => onUpdateUrl(e.target.value)}
+              placeholder="Form video URL"
+              className="mt-1 w-full h-6 px-1.5 rounded border border-stone-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-100 outline-none text-[10px] bg-stone-50"
+            />
+          )}
+        </div>
+        <div className="opacity-0 group-hover:opacity-100 flex flex-col gap-0.5">
+          <button
+            onClick={onOpenNote}
+            className={`p-0.5 rounded hover:bg-stone-100 ${ex.notes ? "text-amber-600" : "text-stone-400"}`}
+            title="Form cues"
+          >
+            <StickyNote className="h-3 w-3" />
+          </button>
+          <button
+            onClick={onRemove}
+            className="p-0.5 rounded hover:bg-red-50 text-stone-400 hover:text-red-500"
+            title="Remove"
+          >
+            <Trash2 className="h-3 w-3" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function ExerciseLibraryItem({
   name,
   category,
+  videoUrl,
   onAdd,
+  onWatch,
 }: {
   name: string;
   category: string;
+  videoUrl: string;
   onAdd: (day: DayKey) => void;
+  onWatch: () => void;
 }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-full text-left px-2 py-1.5 rounded-md hover:bg-stone-100 flex items-center justify-between gap-2 group"
-      >
-        <div className="min-w-0">
+      <div className="flex items-center gap-1 px-2 py-1.5 rounded-md hover:bg-stone-100 group">
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="flex-1 text-left min-w-0"
+        >
           <div className="text-xs font-medium text-stone-800 truncate">{name}</div>
           <div className="text-[10px] text-stone-400">{category}</div>
-        </div>
-        <Plus className="h-3.5 w-3.5 text-stone-400 group-hover:text-teal-600 shrink-0" />
-      </button>
+        </button>
+        <button
+          onClick={onWatch}
+          className="p-1 rounded text-stone-400 hover:text-red-600 hover:bg-red-50"
+          title={`Watch form video for ${name}`}
+        >
+          <Video className="h-3 w-3" />
+        </button>
+        <button
+          onClick={() => setOpen((o) => !o)}
+          className="p-1 rounded text-stone-400 group-hover:text-teal-600 hover:bg-teal-50"
+          title="Add to day"
+        >
+          <Plus className="h-3 w-3" />
+        </button>
+        {/* Hidden so we can suppress unused warning */}
+        <span className="hidden">{videoUrl}</span>
+      </div>
       {open && (
         <div className="absolute right-0 top-full mt-1 z-10 bg-white border border-stone-200 rounded-lg shadow-lg p-1.5 w-32 scale-in origin-top-right">
           <div className="text-[10px] uppercase tracking-wide text-stone-400 px-2 pb-1">Add to</div>

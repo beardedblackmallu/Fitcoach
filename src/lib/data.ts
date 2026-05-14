@@ -24,6 +24,18 @@ export interface Client {
   nutritionCompliance: number;
   online?: boolean;
   lastSeen?: string;
+  // Intake / health profile
+  email?: string;
+  age?: number;
+  gender?: "Male" | "Female" | "Prefer not to say";
+  heightCm?: number;
+  dietPreference?: "Vegetarian" | "Non-vegetarian" | "Eggetarian" | "Vegan";
+  workoutPreference?: "Gym" | "Home" | "Hybrid";
+  wheyUse?: "Yes" | "No" | "Not sure";
+  allergies?: string;
+  injuries?: string;
+  medicalConditions?: string;
+  intakeNotes?: string;
 }
 
 export const clients: Client[] = [
@@ -47,6 +59,17 @@ export const clients: Client[] = [
     workoutCompliance: 84,
     nutritionCompliance: 71,
     lastSeen: "2h ago",
+    email: "priya.s@gmail.com",
+    age: 32,
+    gender: "Female",
+    heightCm: 165,
+    dietPreference: "Eggetarian",
+    workoutPreference: "Gym",
+    wheyUse: "Yes",
+    allergies: "None",
+    injuries: "Lower back strain (2 years back). Right shoulder discomfort occasionally.",
+    medicalConditions: "None",
+    intakeNotes: "Prefers morning workouts. Travels for work occasionally — needs hotel gym backup plans.",
     weightHistory: [
       { week: "W1", kg: 78.0 },
       { week: "W2", kg: 77.4 },
@@ -507,6 +530,7 @@ export interface ExerciseEntry {
   detail: string; // "4×8 @ 80kg"
   notes?: string;
   rest?: boolean;
+  videoUrl?: string;
 }
 
 export type DayKey = "Mon" | "Tue" | "Wed" | "Thu" | "Fri" | "Sat" | "Sun";
@@ -655,4 +679,125 @@ export const plans: Plan[] = [
 export function getPlan(id: string) {
   return plans.find((p) => p.id === id);
 }
+
+// Exercise YouTube form-video links
+export const exerciseVideos: Record<string, string> = {
+  "Squat": "https://youtu.be/vOsvDTv19PA",
+  "Bench Press": "https://youtu.be/0ewIJJKaTsY",
+  "Deadlift": "https://youtu.be/qohkNmgWUuo",
+  "Overhead Press": "https://youtu.be/mnd-lFF73oM",
+  "Pull-ups": "https://youtu.be/XaXrn0hFGw4",
+  "Lat Pulldown": "https://youtu.be/n1T9aOiuDQs",
+  "Barbell Row": "https://youtu.be/EvcAxHUEX0Q",
+  "Front Squat": "https://youtu.be/vOsvDTv19PA",
+  "Incline Bench": "https://youtu.be/0ewIJJKaTsY",
+  "Romanian Deadlift": "https://youtu.be/qohkNmgWUuo",
+  "Bicep Curls": "https://youtu.be/SUnCUmbRJeQ",
+  "Tricep Pushdowns": "https://youtu.be/sYr_FHRLQfI",
+  "Plank": "https://youtu.be/SUnCUmbRJeQ",
+  "Cable Crunches": "https://youtu.be/SUnCUmbRJeQ",
+  "Treadmill Cardio": "https://youtu.be/SUnCUmbRJeQ",
+  "Leg Press": "https://youtu.be/zWv-G9thuII",
+};
+
+export function getExerciseVideo(name: string): string {
+  return exerciseVideos[name] ?? "https://youtu.be/SUnCUmbRJeQ";
+}
+
+export function youtubeIdFromUrl(url: string): string | null {
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^?&/\s]+)/);
+  return m ? m[1] : null;
+}
+
+// Nutrition plan
+export interface FoodItem {
+  id: string;
+  name: string;
+  quantity: string;
+  calories: number;
+  carbs: number;
+  fats: number;
+  protein: number;
+  fiber: number;
+}
+
+export interface MealVariant {
+  id: string;
+  label: string;
+  foods: FoodItem[];
+}
+
+export interface Meal {
+  id: string;
+  name: string;
+  variants: MealVariant[];
+  notes?: string;
+}
+
+export interface NutritionPlan {
+  calories: number;
+  protein: number;
+  carbs: number;
+  fats: number;
+  meals: Meal[];
+  coachNotes: string;
+  hungerSubs: string[];
+}
+
+const blankMeal = (id: string, name: string): Meal => ({
+  id,
+  name,
+  variants: [
+    { id: `${id}-primary`, label: "Primary option", foods: [] },
+  ],
+});
+
+export const defaultNutritionPlan: NutritionPlan = {
+  calories: 2100,
+  protein: 130,
+  carbs: 250,
+  fats: 60,
+  meals: [
+    blankMeal("pre", "Pre-workout"),
+    blankMeal("post", "Post-workout"),
+    {
+      id: "m1",
+      name: "Meal 1 — Breakfast",
+      variants: [
+        {
+          id: "m1-primary",
+          label: "Primary option",
+          foods: [
+            { id: "m1-p-1", name: "Idly", quantity: "2 pieces", calories: 156, carbs: 30, fats: 2, protein: 5, fiber: 2 },
+            { id: "m1-p-2", name: "Chutney", quantity: "2 tbsp", calories: 61, carbs: 2, fats: 6, protein: 1, fiber: 2 },
+            { id: "m1-p-3", name: "Whole eggs", quantity: "2", calories: 173, carbs: 2, fats: 13, protein: 14, fiber: 0 },
+            { id: "m1-p-4", name: "Egg whites", quantity: "2", calories: 34, carbs: 1, fats: 0, protein: 7, fiber: 0 },
+            { id: "m1-p-5", name: "Fish oil capsule", quantity: "2000mg", calories: 20, carbs: 0, fats: 2, protein: 0, fiber: 0 },
+          ],
+        },
+        {
+          id: "m1-alt-1",
+          label: "Alternative 1 (OR)",
+          foods: [
+            { id: "m1-a-1", name: "Oats", quantity: "50g", calories: 224, carbs: 37, fats: 5, protein: 8, fiber: 7 },
+            { id: "m1-a-2", name: "Peanut butter", quantity: "1 tbsp", calories: 95, carbs: 4, fats: 8, protein: 4, fiber: 1 },
+            { id: "m1-a-3", name: "Whey protein", quantity: "1 scoop", calories: 134, carbs: 5, fats: 2, protein: 25, fiber: 0 },
+          ],
+        },
+      ],
+    },
+    blankMeal("m2", "Meal 2 — Lunch"),
+    blankMeal("snacks", "Snacks"),
+    blankMeal("m3", "Meal 3 — Dinner"),
+  ],
+  coachNotes:
+    "Use only 1-1.5 tsp of oil/ghee per meal. Avoid coconut milk, peanuts, sugar in gravies. Eat 2 servings of vegetables and 1 serving of fruit daily. For hunger between meals: 1 protein bar OR handful of nuts OR a fruit OR buttermilk/sugar-free drink.",
+  hungerSubs: [
+    "1 protein bar",
+    "Handful of nuts (max 15 peanuts / 10 almonds / 1 walnut)",
+    "1 fruit (apple, pear, kiwi, orange)",
+    "Buttermilk or sugar-free drink",
+  ],
+};
+
 

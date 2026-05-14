@@ -16,6 +16,8 @@ import {
   ImageIcon,
   Sparkles,
   Calendar,
+  AlertTriangle,
+  HeartPulse,
 } from "lucide-react";
 import { useState } from "react";
 import {
@@ -29,7 +31,7 @@ import {
 } from "recharts";
 import Link from "next/link";
 import { Avatar } from "@/components/Avatar";
-import { getClient } from "@/lib/data";
+import { getClient, Client } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
 
 const tabs = ["Overview", "Workouts", "Nutrition", "Progress", "Chat"] as const;
@@ -284,6 +286,8 @@ export default function ClientDetailPage() {
             </dl>
           </div>
 
+          <HealthProfile client={client} />
+
           <div className="bg-white border border-stone-200 rounded-xl p-4">
             <div className="text-xs text-stone-500 uppercase tracking-wider font-medium mb-3">Recent escalations</div>
             <ul className="space-y-2 text-sm">
@@ -303,6 +307,58 @@ export default function ClientDetailPage() {
           </div>
         </aside>
       </div>
+    </div>
+  );
+}
+
+function HealthProfile({ client }: { client: Client }) {
+  const hasInjuries = Boolean(client.injuries && client.injuries.trim().length > 0 && client.injuries.toLowerCase() !== "none");
+  const hasMedical = Boolean(client.medicalConditions && client.medicalConditions.trim().length > 0 && client.medicalConditions.toLowerCase() !== "none");
+  const showWarning = hasInjuries || hasMedical;
+
+  const rows: { label: string; value?: string; warn?: boolean }[] = [
+    { label: "Allergies", value: client.allergies },
+    { label: "Injuries", value: client.injuries, warn: hasInjuries },
+    { label: "Medical conditions", value: client.medicalConditions, warn: hasMedical },
+    { label: "Notes", value: client.intakeNotes },
+  ];
+
+  const filled = rows.filter((r) => r.value && r.value.trim().length > 0);
+
+  return (
+    <div className="bg-white border border-stone-200 rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="text-xs text-stone-500 uppercase tracking-wider font-medium inline-flex items-center gap-1.5">
+          <HeartPulse className="h-3.5 w-3.5 text-rose-500" />
+          Health profile
+        </div>
+      </div>
+
+      {showWarning && (
+        <div className="mb-3 -mx-1 px-2 py-1.5 rounded-md bg-amber-50 border border-amber-200 inline-flex items-center gap-1.5 text-[11px] text-amber-800 font-medium">
+          <AlertTriangle className="h-3.5 w-3.5" />
+          Review before planning
+        </div>
+      )}
+
+      {filled.length === 0 ? (
+        <p className="text-xs text-stone-400 italic">No health info captured at intake.</p>
+      ) : (
+        <dl className="space-y-2.5">
+          {rows.map((r) =>
+            r.value && r.value.trim().length > 0 ? (
+              <div key={r.label}>
+                <dt className="text-[10px] uppercase tracking-wider text-stone-500 font-semibold mb-0.5">
+                  {r.label}
+                </dt>
+                <dd className={`text-[13px] leading-snug ${r.warn ? "text-stone-900" : "text-stone-700"}`}>
+                  {r.value}
+                </dd>
+              </div>
+            ) : null
+          )}
+        </dl>
+      )}
     </div>
   );
 }
