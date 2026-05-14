@@ -429,9 +429,6 @@ function PreviewStep({
                         <div className="text-[11px] font-medium text-stone-800">{ex.name}</div>
                         <div className="text-[10px] text-stone-500">{ex.detail}</div>
                       </div>
-                      <span className="text-[10px] text-teal-700 font-medium inline-flex items-center gap-1">
-                        <Video className="h-2.5 w-2.5" /> form video
-                      </span>
                     </div>
                   ))}
                 </div>

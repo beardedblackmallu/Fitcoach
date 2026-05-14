@@ -25,7 +25,6 @@ import {
   exerciseLibrary,
   initialWeekPlan,
   defaultNutritionPlan,
-  getExerciseVideo,
   NutritionPlan,
 } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
@@ -88,7 +87,7 @@ export default function PlanEditPage() {
     const id = `${day}-${Date.now()}`;
     setWeek((p) => ({
       ...p,
-      [day]: [...p[day].filter((x) => !x.rest), { id, name, detail: "3×10", videoUrl: getExerciseVideo(name) }],
+      [day]: [...p[day].filter((x) => !x.rest), { id, name, detail: "3×10" }],
     }));
     showToast(`${name} added to ${dayLabels[day]}`, "success");
   };
@@ -275,9 +274,7 @@ export default function PlanEditPage() {
                     key={ex.name}
                     name={ex.name}
                     category={ex.category}
-                    videoUrl={getExerciseVideo(ex.name)}
                     onAdd={(day) => addExerciseToDay(day, ex.name)}
-                    onWatch={() => openExerciseVideo(ex.name, getExerciseVideo(ex.name))}
                   />
                 ))}
                 {filteredLibrary.length === 0 && (
@@ -340,9 +337,9 @@ export default function PlanEditPage() {
                         <ExerciseCardInGrid
                           key={ex.id}
                           ex={ex}
-                          onWatch={() =>
-                            openExerciseVideo(ex.name, ex.videoUrl ?? getExerciseVideo(ex.name))
-                          }
+                          onWatch={() => {
+                            if (ex.videoUrl) openExerciseVideo(ex.name, ex.videoUrl);
+                          }}
                           onUpdateUrl={(url) => updateExercise(day, ex.id, { videoUrl: url })}
                           onOpenNote={() => openNote(day, ex)}
                           onRemove={() => removeExercise(day, ex.id)}
@@ -420,8 +417,8 @@ function ExerciseCardInGrid({
   onOpenNote: () => void;
   onRemove: () => void;
 }) {
+  const hasUrl = Boolean(ex.videoUrl && ex.videoUrl.trim().length > 0);
   const [showUrl, setShowUrl] = useState(false);
-  const url = ex.videoUrl ?? getExerciseVideo(ex.name);
 
   return (
     <div className="group rounded-lg border border-stone-200 bg-white hover:border-teal-300 hover:shadow-sm p-2 transition-all">
@@ -433,32 +430,52 @@ function ExerciseCardInGrid({
           {ex.notes && (
             <div className="text-[10px] text-amber-700 mt-1 italic line-clamp-2">📝 {ex.notes}</div>
           )}
+
           <div className="mt-1.5 flex items-center gap-1">
-            <button
-              onClick={onWatch}
-              className="text-[10px] font-medium text-red-600 hover:text-red-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-red-50"
-              title="Watch form video"
-            >
-              <Video className="h-3 w-3" />
-              Watch form
-            </button>
-            <button
-              onClick={() => setShowUrl((s) => !s)}
-              className="text-[10px] text-stone-400 hover:text-stone-600"
-              title="Edit video URL"
-            >
-              {showUrl ? "−" : "✎"}
-            </button>
+            {hasUrl ? (
+              <>
+                <button
+                  onClick={onWatch}
+                  className="text-[10px] font-medium text-red-600 hover:text-red-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-red-50"
+                  title="Watch form video"
+                >
+                  <Video className="h-3 w-3" />
+                  Watch form
+                </button>
+                <button
+                  onClick={() => setShowUrl((s) => !s)}
+                  className="text-[10px] text-stone-400 hover:text-stone-600"
+                  title="Edit video URL"
+                >
+                  {showUrl ? "−" : "✎"}
+                </button>
+              </>
+            ) : (
+              <button
+                onClick={() => setShowUrl(true)}
+                className="text-[10px] font-medium text-stone-500 hover:text-teal-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-teal-50 border border-dashed border-stone-300"
+                title="Paste a YouTube URL"
+              >
+                <Plus className="h-3 w-3" />
+                Add form video
+              </button>
+            )}
           </div>
+
           {showUrl && (
             <input
-              value={url}
+              autoFocus={!hasUrl}
+              value={ex.videoUrl ?? ""}
               onChange={(e) => onUpdateUrl(e.target.value)}
-              placeholder="Form video URL"
+              onBlur={() => {
+                if (!ex.videoUrl || ex.videoUrl.trim() === "") setShowUrl(false);
+              }}
+              placeholder="Paste YouTube link (https://youtu.be/…)"
               className="mt-1 w-full h-6 px-1.5 rounded border border-stone-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-100 outline-none text-[10px] bg-stone-50"
             />
           )}
         </div>
+
         <div className="opacity-0 group-hover:opacity-100 flex flex-col gap-0.5">
           <button
             onClick={onOpenNote}
@@ -483,44 +500,25 @@ function ExerciseCardInGrid({
 function ExerciseLibraryItem({
   name,
   category,
-  videoUrl,
   onAdd,
-  onWatch,
 }: {
   name: string;
   category: string;
-  videoUrl: string;
   onAdd: (day: DayKey) => void;
-  onWatch: () => void;
 }) {
   const [open, setOpen] = useState(false);
   return (
     <div className="relative">
-      <div className="flex items-center gap-1 px-2 py-1.5 rounded-md hover:bg-stone-100 group">
-        <button
-          onClick={() => setOpen((o) => !o)}
-          className="flex-1 text-left min-w-0"
-        >
+      <button
+        onClick={() => setOpen((o) => !o)}
+        className="w-full text-left px-2 py-1.5 rounded-md hover:bg-stone-100 flex items-center justify-between gap-2 group"
+      >
+        <div className="min-w-0">
           <div className="text-xs font-medium text-stone-800 truncate">{name}</div>
           <div className="text-[10px] text-stone-400">{category}</div>
-        </button>
-        <button
-          onClick={onWatch}
-          className="p-1 rounded text-stone-400 hover:text-red-600 hover:bg-red-50"
-          title={`Watch form video for ${name}`}
-        >
-          <Video className="h-3 w-3" />
-        </button>
-        <button
-          onClick={() => setOpen((o) => !o)}
-          className="p-1 rounded text-stone-400 group-hover:text-teal-600 hover:bg-teal-50"
-          title="Add to day"
-        >
-          <Plus className="h-3 w-3" />
-        </button>
-        {/* Hidden so we can suppress unused warning */}
-        <span className="hidden">{videoUrl}</span>
-      </div>
+        </div>
+        <Plus className="h-3.5 w-3.5 text-stone-400 group-hover:text-teal-600 shrink-0" />
+      </button>
       {open && (
         <div className="absolute right-0 top-full mt-1 z-10 bg-white border border-stone-200 rounded-lg shadow-lg p-1.5 w-32 scale-in origin-top-right">
           <div className="text-[10px] uppercase tracking-wide text-stone-400 px-2 pb-1">Add to</div>

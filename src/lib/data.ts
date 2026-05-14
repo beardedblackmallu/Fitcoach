@@ -680,30 +680,6 @@ export function getPlan(id: string) {
   return plans.find((p) => p.id === id);
 }
 
-// Exercise YouTube form-video links
-export const exerciseVideos: Record<string, string> = {
-  "Squat": "https://youtu.be/vOsvDTv19PA",
-  "Bench Press": "https://youtu.be/0ewIJJKaTsY",
-  "Deadlift": "https://youtu.be/qohkNmgWUuo",
-  "Overhead Press": "https://youtu.be/mnd-lFF73oM",
-  "Pull-ups": "https://youtu.be/XaXrn0hFGw4",
-  "Lat Pulldown": "https://youtu.be/n1T9aOiuDQs",
-  "Barbell Row": "https://youtu.be/EvcAxHUEX0Q",
-  "Front Squat": "https://youtu.be/vOsvDTv19PA",
-  "Incline Bench": "https://youtu.be/0ewIJJKaTsY",
-  "Romanian Deadlift": "https://youtu.be/qohkNmgWUuo",
-  "Bicep Curls": "https://youtu.be/SUnCUmbRJeQ",
-  "Tricep Pushdowns": "https://youtu.be/sYr_FHRLQfI",
-  "Plank": "https://youtu.be/SUnCUmbRJeQ",
-  "Cable Crunches": "https://youtu.be/SUnCUmbRJeQ",
-  "Treadmill Cardio": "https://youtu.be/SUnCUmbRJeQ",
-  "Leg Press": "https://youtu.be/zWv-G9thuII",
-};
-
-export function getExerciseVideo(name: string): string {
-  return exerciseVideos[name] ?? "https://youtu.be/SUnCUmbRJeQ";
-}
-
 export function youtubeIdFromUrl(url: string): string | null {
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([^?&/\s]+)/);
   return m ? m[1] : null;
