@@ -4,9 +4,13 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useMemo, useRef, useState, Suspense } from "react";
 import {
   ArrowLeft,
+  Apple,
   Bot,
   Camera,
   ChevronRight,
+  Download,
+  Dumbbell,
+  FileText,
   Mic,
   MoreVertical,
   Paperclip,
@@ -347,7 +351,11 @@ function MessageBubble({ m }: { m: Message }) {
       )}
       <div
         className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-3.5 py-2 shadow-sm ${
-          isTrainer
+          m.kind === "document"
+            ? isTrainer
+              ? "bg-teal-600/95 text-white rounded-br-md p-2"
+              : "bg-white text-stone-800 border border-stone-200 rounded-bl-md p-2"
+            : isTrainer
             ? "bg-teal-600 text-white rounded-br-md"
             : isBot
             ? "bg-stone-100 text-stone-800 rounded-bl-md"
@@ -355,6 +363,9 @@ function MessageBubble({ m }: { m: Message }) {
         }`}
       >
         {m.kind === "text" && <div className="text-sm whitespace-pre-wrap leading-relaxed">{m.text}</div>}
+        {m.kind === "document" && (
+          <DocumentBubble m={m} isTrainer={isTrainer} />
+        )}
         {m.kind === "voice" && (
           <div className="flex items-center gap-2 min-w-[180px]">
             <button className={`h-8 w-8 rounded-full grid place-items-center ${isTrainer ? "bg-white/20 hover:bg-white/30" : "bg-stone-200"}`}>
@@ -387,6 +398,44 @@ function MessageBubble({ m }: { m: Message }) {
         <span>{m.time}</span>
         {isTrainer && <span className="italic">(via FitCoach)</span>}
       </div>
+    </div>
+  );
+}
+
+function DocumentBubble({ m, isTrainer }: { m: Message; isTrainer: boolean }) {
+  const isWorkout = m.docKind === "workout";
+  const isNutrition = m.docKind === "nutrition";
+  const Icon = isNutrition ? Apple : isWorkout ? Dumbbell : FileText;
+  const accentBg = isTrainer ? "bg-white/15" : isNutrition ? "bg-amber-50" : isWorkout ? "bg-teal-50" : "bg-stone-100";
+  const accentBorder = isTrainer ? "border-white/30" : isNutrition ? "border-amber-200" : isWorkout ? "border-teal-200" : "border-stone-200";
+  const accentText = isTrainer ? "text-white" : isNutrition ? "text-amber-700" : isWorkout ? "text-teal-700" : "text-stone-600";
+  const subText = isTrainer ? "text-white/70" : "text-stone-500";
+  const pageBadge = isNutrition ? "Nutrition · PDF" : isWorkout ? "Workout · PDF" : "PDF";
+
+  return (
+    <div className={`flex items-center gap-3 min-w-[260px] rounded-lg ${accentBg} border ${accentBorder} p-2.5`}>
+      <div className={`h-11 w-9 rounded-md grid place-items-center ${accentText} shrink-0 relative`}>
+        <FileText className="h-9 w-9" strokeWidth={1.25} />
+        <Icon className="absolute h-3.5 w-3.5 bottom-0.5" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className={`text-[13px] font-medium leading-snug line-clamp-2 ${isTrainer ? "text-white" : "text-stone-900"}`}>
+          {m.docName}
+        </div>
+        <div className={`text-[11px] ${subText} mt-0.5 tabular-nums`}>
+          {pageBadge}
+          {m.docPages ? ` · ${m.docPages} pages` : ""}
+          {m.docSize ? ` · ${m.docSize}` : ""}
+        </div>
+      </div>
+      <button
+        className={`h-7 w-7 rounded-full grid place-items-center shrink-0 ${
+          isTrainer ? "bg-white/15 hover:bg-white/25 text-white" : "bg-white border border-stone-200 text-stone-600 hover:bg-stone-50"
+        }`}
+        title="Download"
+      >
+        <Download className="h-3.5 w-3.5" />
+      </button>
     </div>
   );
 }

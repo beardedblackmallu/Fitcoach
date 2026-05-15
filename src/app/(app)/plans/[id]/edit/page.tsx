@@ -63,6 +63,10 @@ export default function PlanEditPage() {
   const [libraryCat, setLibraryCat] = useState<(typeof categories)[number]>("All");
   const [editingNote, setEditingNote] = useState<{ day: DayKey; id: string } | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
+  // Per-exercise-name video URL (lives on the library, applies to every day it's used)
+  const [libraryVideos, setLibraryVideos] = useState<Record<string, string>>({});
+  const setLibraryVideo = (name: string, url: string) =>
+    setLibraryVideos((m) => ({ ...m, [name]: url }));
 
   if (!plan) {
     return (
@@ -274,6 +278,12 @@ export default function PlanEditPage() {
                     key={ex.name}
                     name={ex.name}
                     category={ex.category}
+                    videoUrl={libraryVideos[ex.name] ?? ""}
+                    onSetVideo={(url) => setLibraryVideo(ex.name, url)}
+                    onWatch={() => {
+                      const u = libraryVideos[ex.name];
+                      if (u) openExerciseVideo(ex.name, u);
+                    }}
                     onAdd={(day) => addExerciseToDay(day, ex.name)}
                   />
                 ))}
@@ -333,18 +343,21 @@ export default function PlanEditPage() {
                         </button>
                       </div>
                     ) : (
-                      week[day].map((ex) => (
-                        <ExerciseCardInGrid
-                          key={ex.id}
-                          ex={ex}
-                          onWatch={() => {
-                            if (ex.videoUrl) openExerciseVideo(ex.name, ex.videoUrl);
-                          }}
-                          onUpdateUrl={(url) => updateExercise(day, ex.id, { videoUrl: url })}
-                          onOpenNote={() => openNote(day, ex)}
-                          onRemove={() => removeExercise(day, ex.id)}
-                        />
-                      ))
+                      week[day].map((ex) => {
+                        const libUrl = libraryVideos[ex.name] ?? "";
+                        return (
+                          <ExerciseCardInGrid
+                            key={ex.id}
+                            ex={ex}
+                            libraryVideoUrl={libUrl}
+                            onWatch={() => {
+                              if (libUrl) openExerciseVideo(ex.name, libUrl);
+                            }}
+                            onOpenNote={() => openNote(day, ex)}
+                            onRemove={() => removeExercise(day, ex.id)}
+                          />
+                        );
+                      })
                     )}
                   </div>
                   <div className="px-2 pb-2 flex items-center gap-1">
@@ -409,16 +422,15 @@ export default function PlanEditPage() {
 }
 
 function ExerciseCardInGrid({
-  ex, onWatch, onUpdateUrl, onOpenNote, onRemove,
+  ex, libraryVideoUrl, onWatch, onOpenNote, onRemove,
 }: {
   ex: ExerciseEntry;
+  libraryVideoUrl: string;
   onWatch: () => void;
-  onUpdateUrl: (url: string) => void;
   onOpenNote: () => void;
   onRemove: () => void;
 }) {
-  const hasUrl = Boolean(ex.videoUrl && ex.videoUrl.trim().length > 0);
-  const [showUrl, setShowUrl] = useState(false);
+  const hasUrl = libraryVideoUrl.trim().length > 0;
 
   return (
     <div className="group rounded-lg border border-stone-200 bg-white hover:border-teal-300 hover:shadow-sm p-2 transition-all">
@@ -431,48 +443,15 @@ function ExerciseCardInGrid({
             <div className="text-[10px] text-amber-700 mt-1 italic line-clamp-2">📝 {ex.notes}</div>
           )}
 
-          <div className="mt-1.5 flex items-center gap-1">
-            {hasUrl ? (
-              <>
-                <button
-                  onClick={onWatch}
-                  className="text-[10px] font-medium text-red-600 hover:text-red-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-red-50"
-                  title="Watch form video"
-                >
-                  <Video className="h-3 w-3" />
-                  Watch form
-                </button>
-                <button
-                  onClick={() => setShowUrl((s) => !s)}
-                  className="text-[10px] text-stone-400 hover:text-stone-600"
-                  title="Edit video URL"
-                >
-                  {showUrl ? "−" : "✎"}
-                </button>
-              </>
-            ) : (
-              <button
-                onClick={() => setShowUrl(true)}
-                className="text-[10px] font-medium text-stone-500 hover:text-teal-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-teal-50 border border-dashed border-stone-300"
-                title="Paste a YouTube URL"
-              >
-                <Plus className="h-3 w-3" />
-                Add form video
-              </button>
-            )}
-          </div>
-
-          {showUrl && (
-            <input
-              autoFocus={!hasUrl}
-              value={ex.videoUrl ?? ""}
-              onChange={(e) => onUpdateUrl(e.target.value)}
-              onBlur={() => {
-                if (!ex.videoUrl || ex.videoUrl.trim() === "") setShowUrl(false);
-              }}
-              placeholder="Paste YouTube link (https://youtu.be/…)"
-              className="mt-1 w-full h-6 px-1.5 rounded border border-stone-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-100 outline-none text-[10px] bg-stone-50"
-            />
+          {hasUrl && (
+            <button
+              onClick={onWatch}
+              className="mt-1.5 text-[10px] font-medium text-red-600 hover:text-red-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-red-50"
+              title="Watch form video (set on the library)"
+            >
+              <Video className="h-3 w-3" />
+              Watch form
+            </button>
           )}
         </div>
 
@@ -500,26 +479,84 @@ function ExerciseCardInGrid({
 function ExerciseLibraryItem({
   name,
   category,
+  videoUrl,
+  onSetVideo,
+  onWatch,
   onAdd,
 }: {
   name: string;
   category: string;
+  videoUrl: string;
+  onSetVideo: (url: string) => void;
+  onWatch: () => void;
   onAdd: (day: DayKey) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [dayOpen, setDayOpen] = useState(false);
+  const [editingUrl, setEditingUrl] = useState(false);
+  const hasUrl = videoUrl.trim().length > 0;
+
   return (
-    <div className="relative">
-      <button
-        onClick={() => setOpen((o) => !o)}
-        className="w-full text-left px-2 py-1.5 rounded-md hover:bg-stone-100 flex items-center justify-between gap-2 group"
-      >
-        <div className="min-w-0">
+    <div className="rounded-md border border-transparent hover:border-stone-200 hover:bg-stone-50 px-2 py-1.5 relative">
+      <div className="flex items-start gap-1">
+        <div className="flex-1 min-w-0">
           <div className="text-xs font-medium text-stone-800 truncate">{name}</div>
           <div className="text-[10px] text-stone-400">{category}</div>
         </div>
-        <Plus className="h-3.5 w-3.5 text-stone-400 group-hover:text-teal-600 shrink-0" />
-      </button>
-      {open && (
+        <button
+          onClick={() => setDayOpen((o) => !o)}
+          className="p-1 rounded text-stone-400 hover:text-teal-600 hover:bg-teal-50 shrink-0"
+          title="Add to day"
+        >
+          <Plus className="h-3.5 w-3.5" />
+        </button>
+      </div>
+
+      <div className="mt-1 flex items-center gap-1">
+        {hasUrl && !editingUrl ? (
+          <>
+            <button
+              onClick={onWatch}
+              className="text-[10px] font-medium text-red-600 hover:text-red-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-red-50"
+              title="Watch form video"
+            >
+              <Video className="h-3 w-3" />
+              Watch form
+            </button>
+            <button
+              onClick={() => setEditingUrl(true)}
+              className="text-[10px] text-stone-400 hover:text-stone-600"
+              title="Edit video URL"
+            >
+              ✎
+            </button>
+          </>
+        ) : !hasUrl && !editingUrl ? (
+          <button
+            onClick={() => setEditingUrl(true)}
+            className="text-[10px] font-medium text-stone-500 hover:text-teal-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-teal-50 border border-dashed border-stone-300"
+            title="Paste a YouTube URL — shared across every day this exercise appears"
+          >
+            <Plus className="h-3 w-3" />
+            Add form video
+          </button>
+        ) : null}
+      </div>
+
+      {editingUrl && (
+        <input
+          autoFocus
+          value={videoUrl}
+          onChange={(e) => onSetVideo(e.target.value)}
+          onBlur={() => setEditingUrl(false)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") setEditingUrl(false);
+          }}
+          placeholder="Paste YouTube link (https://youtu.be/…)"
+          className="mt-1 w-full h-6 px-1.5 rounded border border-stone-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-100 outline-none text-[10px] bg-white"
+        />
+      )}
+
+      {dayOpen && (
         <div className="absolute right-0 top-full mt-1 z-10 bg-white border border-stone-200 rounded-lg shadow-lg p-1.5 w-32 scale-in origin-top-right">
           <div className="text-[10px] uppercase tracking-wide text-stone-400 px-2 pb-1">Add to</div>
           {days.map((day) => (
@@ -527,7 +564,7 @@ function ExerciseLibraryItem({
               key={day}
               onClick={() => {
                 onAdd(day);
-                setOpen(false);
+                setDayOpen(false);
               }}
               className="block w-full text-left text-xs px-2 py-1 rounded hover:bg-teal-50 hover:text-teal-700"
             >

@@ -331,7 +331,7 @@ export function getClient(id: string): Client | undefined {
 
 // Conversations / messages
 export type MessageSender = "bot" | "trainer" | "client" | "system";
-export type MessageKind = "text" | "voice" | "image";
+export type MessageKind = "text" | "voice" | "image" | "document";
 
 export interface Message {
   id: string;
@@ -342,6 +342,10 @@ export interface Message {
   voiceLength?: string; // "0:34"
   time: string; // "9:32 AM"
   fromName?: string; // "From Sandeep" / "Auto"
+  docName?: string;
+  docSize?: string;
+  docKind?: "workout" | "nutrition" | "other";
+  docPages?: number;
 }
 
 export interface ConversationSeed {
@@ -361,6 +365,12 @@ export const conversations: ConversationSeed[] = [
     lastTime: "1:13 PM",
     lastFromBot: true,
     messages: [
+      { id: "m-onb-0", sender: "system", kind: "text", text: "📦 Plan delivered · 8 weeks ago", time: "" },
+      { id: "m-onb-1", sender: "trainer", kind: "text", text: "Hi Priya, here's your custom 12-week plan. Let's get started! Reply with any questions.", time: "8 weeks ago", fromName: "From Sandeep" },
+      { id: "m-onb-2", sender: "trainer", kind: "document", docName: "Priya — 12-Week Transformation (Workout).pdf", docSize: "234 KB", docKind: "workout", docPages: 9, time: "8 weeks ago", fromName: "From Sandeep" },
+      { id: "m-onb-3", sender: "trainer", kind: "document", docName: "Priya — Nutrition Plan.pdf", docSize: "187 KB", docKind: "nutrition", docPages: 4, time: "8 weeks ago", fromName: "From Sandeep" },
+      { id: "m-onb-4", sender: "client", kind: "text", text: "Wow, this is detailed — thanks coach! Will start tomorrow morning 🙌", time: "8 weeks ago" },
+      { id: "m-onb-sep", sender: "system", kind: "text", text: "Today", time: "" },
       { id: "m1", sender: "bot", kind: "text", text: "Good morning Priya! Time for your check-in. Please share: weight, sleep hours, energy (1-10)", time: "7:00 AM" },
       { id: "m2", sender: "client", kind: "text", text: "75.2 kg, slept 7 hours, energy 8", time: "7:14 AM" },
       { id: "m3", sender: "bot", kind: "text", text: "Logged. Have a great workout today 💪", time: "7:14 AM" },
