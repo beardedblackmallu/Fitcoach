@@ -738,6 +738,23 @@ const blankMeal = (id: string, name: string): Meal => ({
   ],
 });
 
+export const emptyNutritionPlan: NutritionPlan = {
+  calories: 0,
+  protein: 0,
+  carbs: 0,
+  fats: 0,
+  meals: [
+    blankMeal("pre", "Pre-workout"),
+    blankMeal("post", "Post-workout"),
+    blankMeal("m1", "Meal 1 — Breakfast"),
+    blankMeal("m2", "Meal 2 — Lunch"),
+    blankMeal("snacks", "Snacks"),
+    blankMeal("m3", "Meal 3 — Dinner"),
+  ],
+  coachNotes: "",
+  hungerSubs: [],
+};
+
 export const defaultNutritionPlan: NutritionPlan = {
   calories: 2100,
   protein: 130,

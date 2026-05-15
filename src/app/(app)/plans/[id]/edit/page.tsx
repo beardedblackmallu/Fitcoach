@@ -25,6 +25,7 @@ import {
   exerciseLibrary,
   initialWeekPlan,
   defaultNutritionPlan,
+  emptyNutritionPlan,
   NutritionPlan,
 } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
@@ -56,9 +57,13 @@ export default function PlanEditPage() {
   const [week, setWeek] = useState<Record<DayKey, ExerciseEntry[]>>(
     plan && plan.clientIds.length > 0 ? initialWeekPlan : emptyWeek
   );
-  const [nutritionPlan, setNutritionPlan] = useState<NutritionPlan>(() =>
-    JSON.parse(JSON.stringify(defaultNutritionPlan))
-  );
+  const [nutritionPlan, setNutritionPlan] = useState<NutritionPlan>(() => {
+    // Only the existing "12-Week Transformation" demo plan gets the sample
+    // pre-fill. Every other plan — templates and freshly-created — starts
+    // with an empty nutrition tab so trainers build their own.
+    const seed = params.id === "p-12wt" ? defaultNutritionPlan : emptyNutritionPlan;
+    return JSON.parse(JSON.stringify(seed));
+  });
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryCat, setLibraryCat] = useState<(typeof categories)[number]>("All");
   const [editingNote, setEditingNote] = useState<{ day: DayKey; id: string } | null>(null);

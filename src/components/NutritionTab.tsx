@@ -19,7 +19,12 @@ interface Props {
 }
 
 export function NutritionTab({ plan, setPlan }: Props) {
-  const [expandedMealIds, setExpandedMealIds] = useState<string[]>(["m1"]);
+  // Auto-expand any meal that already has content; collapse the rest.
+  const [expandedMealIds, setExpandedMealIds] = useState<string[]>(() =>
+    plan.meals
+      .filter((m) => m.variants.some((v) => v.foods.length > 0))
+      .map((m) => m.id)
+  );
 
   const toggleMeal = (id: string) => {
     setExpandedMealIds((prev) =>
@@ -42,6 +47,7 @@ export function NutritionTab({ plan, setPlan }: Props) {
             onChange={(v) => updateMacro("calories", v)}
             label="Total calories"
             unit="kcal"
+            placeholder="e.g., 2000"
             color="bg-amber-50 border-amber-200 text-amber-900"
             valueColor="text-amber-900"
             icon={<Flame className="h-3.5 w-3.5 text-amber-600" />}
@@ -51,6 +57,7 @@ export function NutritionTab({ plan, setPlan }: Props) {
             onChange={(v) => updateMacro("protein", v)}
             label="Protein"
             unit="g"
+            placeholder="e.g., 130"
             color="bg-rose-50 border-rose-200 text-rose-900"
             valueColor="text-rose-900"
           />
@@ -59,6 +66,7 @@ export function NutritionTab({ plan, setPlan }: Props) {
             onChange={(v) => updateMacro("carbs", v)}
             label="Carbs"
             unit="g"
+            placeholder="e.g., 250"
             color="bg-teal-50 border-teal-200 text-teal-900"
             valueColor="text-teal-900"
           />
@@ -67,6 +75,7 @@ export function NutritionTab({ plan, setPlan }: Props) {
             onChange={(v) => updateMacro("fats", v)}
             label="Fats"
             unit="g"
+            placeholder="e.g., 60"
             color="bg-stone-50 border-stone-200 text-stone-900"
             valueColor="text-stone-900"
           />
@@ -126,31 +135,22 @@ export function NutritionTab({ plan, setPlan }: Props) {
           value={plan.coachNotes}
           onChange={(e) => setPlan((p) => ({ ...p, coachNotes: e.target.value }))}
           rows={5}
-          className="w-full p-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm leading-relaxed resize-none"
+          placeholder="Add your diet rules and guidelines for this plan (e.g., oil limits, restaurant rules, alcohol guidelines, foods to avoid)"
+          className="w-full p-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm leading-relaxed resize-none placeholder:text-stone-400"
         />
       </div>
 
       {/* Hunger subs */}
-      <div className="bg-amber-50/50 border border-amber-200 rounded-xl p-4">
-        <div className="flex items-center gap-2 mb-2">
-          <Lightbulb className="h-4 w-4 text-amber-700" />
-          <h3 className="text-sm font-semibold text-amber-900">Hunger substitutions</h3>
-        </div>
-        <ul className="space-y-1 text-sm text-stone-800">
-          {plan.hungerSubs.map((sub, i) => (
-            <li key={i} className="flex items-start gap-2">
-              <span className="text-amber-600 mt-0.5">•</span>
-              <span>{sub}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <HungerSubsSection
+        items={plan.hungerSubs}
+        onChange={(updater) => setPlan((p) => ({ ...p, hungerSubs: updater(p.hungerSubs) }))}
+      />
     </div>
   );
 }
 
 function MacroCard({
-  value, onChange, label, unit, color, valueColor, icon,
+  value, onChange, label, unit, color, valueColor, icon, placeholder,
 }: {
   value: number;
   onChange: (v: number) => void;
@@ -159,16 +159,19 @@ function MacroCard({
   color: string;
   valueColor: string;
   icon?: React.ReactNode;
+  placeholder?: string;
 }) {
+  const displayValue = value === 0 ? "" : String(value);
   return (
     <div className={`rounded-xl border p-3 ${color}`}>
       <div className="flex items-baseline gap-1">
         <input
           type="number"
           min={0}
-          value={value}
+          value={displayValue}
           onChange={(e) => onChange(Number(e.target.value) || 0)}
-          className={`text-2xl font-semibold ${valueColor} bg-transparent outline-none w-full tabular-nums focus:border-b focus:border-current`}
+          placeholder={placeholder}
+          className={`text-2xl font-semibold ${valueColor} bg-transparent outline-none w-full tabular-nums focus:border-b focus:border-current placeholder:text-current placeholder:opacity-30 placeholder:font-medium`}
         />
         <span className="text-xs opacity-70">{unit}</span>
       </div>
@@ -220,6 +223,9 @@ function MealCard({
           <span className="text-[11px] text-stone-500 tabular-nums">
             {totals.calories} kcal · {totals.protein}P / {totals.carbs}C / {totals.fats}F
           </span>
+        )}
+        {!totals && !expanded && (
+          <span className="text-[11px] text-stone-400 italic">Empty</span>
         )}
         <button
           onClick={onDelete}
@@ -284,7 +290,7 @@ function MealCard({
               value={meal.notes ?? ""}
               onChange={(e) => onChange((p) => ({ ...p, notes: e.target.value }))}
               placeholder="e.g., 30 min before workout"
-              className="w-full h-8 px-2 rounded-md border border-stone-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-xs"
+              className="w-full h-8 px-2 rounded-md border border-stone-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-xs placeholder:text-stone-400"
             />
           </div>
         </div>
@@ -336,6 +342,8 @@ function VariantBlock({
   const removeFood = (id: string) =>
     onChange((p) => ({ ...p, foods: p.foods.filter((f) => f.id !== id) }));
 
+  const isEmpty = variant.foods.length === 0;
+
   return (
     <div className={`mt-3 ${!isPrimary ? "pt-3 border-t border-dashed border-stone-200" : ""}`}>
       <div className="flex items-center justify-between mb-2">
@@ -370,10 +378,10 @@ function VariantBlock({
             </tr>
           </thead>
           <tbody>
-            {variant.foods.length === 0 && (
+            {isEmpty && (
               <tr>
                 <td colSpan={8} className="text-center text-stone-400 italic py-3">
-                  No foods yet
+                  Add food items for this {isPrimary ? "meal" : "alternative"}
                 </td>
               </tr>
             )}
@@ -415,7 +423,8 @@ function VariantBlock({
                 </td>
               </tr>
             ))}
-            {variant.foods.length > 0 && (
+            {/* Meal/alternative total — always show, including for empty variants */}
+            {isPrimary && (
               <tr className="border-t border-stone-200 font-semibold text-stone-800">
                 <td className="pr-2 pt-1.5 pb-1 text-[10px] uppercase tracking-wide text-stone-500">Meal total</td>
                 <td></td>
@@ -438,6 +447,61 @@ function VariantBlock({
         <Plus className="h-3.5 w-3.5" />
         Add food item
         <span className="text-stone-400 font-normal ml-0.5">to {variantIdx === 0 ? "primary" : "alternative"}</span>
+      </button>
+    </div>
+  );
+}
+
+function HungerSubsSection({
+  items,
+  onChange,
+}: {
+  items: string[];
+  onChange: (updater: (prev: string[]) => string[]) => void;
+}) {
+  const isEmpty = items.length === 0;
+
+  return (
+    <div className="bg-amber-50/50 border border-amber-200 rounded-xl p-4">
+      <div className="flex items-center gap-2 mb-2">
+        <Lightbulb className="h-4 w-4 text-amber-700" />
+        <h3 className="text-sm font-semibold text-amber-900">Hunger substitutions</h3>
+      </div>
+
+      {isEmpty ? (
+        <p className="text-xs text-amber-800/80 mb-2 leading-relaxed">
+          Add items your client can have when hungry between meals.
+        </p>
+      ) : (
+        <ul className="space-y-1 text-sm text-stone-800 mb-2">
+          {items.map((sub, i) => (
+            <li key={i} className="group flex items-start gap-2">
+              <span className="text-amber-600 mt-0.5 select-none">•</span>
+              <input
+                value={sub}
+                onChange={(e) =>
+                  onChange((prev) => prev.map((x, idx) => (idx === i ? e.target.value : x)))
+                }
+                className="flex-1 bg-transparent outline-none focus:border-b focus:border-amber-400 text-sm"
+              />
+              <button
+                onClick={() => onChange((prev) => prev.filter((_, idx) => idx !== i))}
+                className="p-1 rounded text-stone-300 hover:text-red-500 opacity-0 group-hover:opacity-100"
+                aria-label="Remove substitution"
+              >
+                <Trash2 className="h-3 w-3" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <button
+        onClick={() => onChange((prev) => [...prev, ""])}
+        className="text-xs font-medium text-amber-800 hover:text-amber-900 inline-flex items-center gap-1"
+      >
+        <Plus className="h-3.5 w-3.5" />
+        Add substitution
       </button>
     </div>
   );
