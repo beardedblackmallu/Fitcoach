@@ -8,6 +8,7 @@ import {
   Edit3,
   GripVertical,
   Lock,
+  Pencil,
   Plus,
   Search,
   Send,
@@ -30,6 +31,7 @@ import {
 } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
 import { NutritionTab } from "@/components/NutritionTab";
+import { VideoLinkModal } from "@/components/VideoLinkModal";
 
 const days: DayKey[] = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 const dayLabels: Record<DayKey, string> = {
@@ -47,7 +49,15 @@ type TopTab = "workouts" | "nutrition";
 export default function PlanEditPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
-  const { showToast, plans, openClientPicker, openExerciseVideo } = useApp();
+  const {
+    showToast,
+    plans,
+    openClientPicker,
+    openExerciseVideo,
+    libraryVideos,
+    setLibraryVideo,
+    removeLibraryVideo,
+  } = useApp();
 
   const plan = useMemo(() => plans.find((p) => p.id === params.id), [plans, params.id]);
 
@@ -68,10 +78,8 @@ export default function PlanEditPage() {
   const [libraryCat, setLibraryCat] = useState<(typeof categories)[number]>("All");
   const [editingNote, setEditingNote] = useState<{ day: DayKey; id: string } | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
-  // Per-exercise-name video URL (lives on the library, applies to every day it's used)
-  const [libraryVideos, setLibraryVideos] = useState<Record<string, string>>({});
-  const setLibraryVideo = (name: string, url: string) =>
-    setLibraryVideos((m) => ({ ...m, [name]: url }));
+  // Which exercise (by name) is being added/edited in the video-link modal
+  const [videoLinkFor, setVideoLinkFor] = useState<string | null>(null);
 
   if (!plan) {
     return (
@@ -284,7 +292,7 @@ export default function PlanEditPage() {
                     name={ex.name}
                     category={ex.category}
                     videoUrl={libraryVideos[ex.name] ?? ""}
-                    onSetVideo={(url) => setLibraryVideo(ex.name, url)}
+                    onEdit={() => setVideoLinkFor(ex.name)}
                     onWatch={() => {
                       const u = libraryVideos[ex.name];
                       if (u) openExerciseVideo(ex.name, u);
@@ -380,6 +388,28 @@ export default function PlanEditPage() {
           </div>
         </>
       )}
+
+      {/* Video link modal */}
+      <VideoLinkModal
+        open={videoLinkFor !== null}
+        exerciseName={videoLinkFor ?? ""}
+        initialUrl={videoLinkFor ? (libraryVideos[videoLinkFor] ?? "") : ""}
+        onSave={(url) => {
+          if (videoLinkFor) {
+            setLibraryVideo(videoLinkFor, url);
+            showToast("Video link updated", "success");
+          }
+          setVideoLinkFor(null);
+        }}
+        onRemove={() => {
+          if (videoLinkFor) {
+            removeLibraryVideo(videoLinkFor);
+            showToast("Video link removed", "success");
+          }
+          setVideoLinkFor(null);
+        }}
+        onClose={() => setVideoLinkFor(null)}
+      />
 
       {/* Notes modal */}
       {editingNote && (
@@ -485,23 +515,22 @@ function ExerciseLibraryItem({
   name,
   category,
   videoUrl,
-  onSetVideo,
+  onEdit,
   onWatch,
   onAdd,
 }: {
   name: string;
   category: string;
   videoUrl: string;
-  onSetVideo: (url: string) => void;
+  onEdit: () => void;
   onWatch: () => void;
   onAdd: (day: DayKey) => void;
 }) {
   const [dayOpen, setDayOpen] = useState(false);
-  const [editingUrl, setEditingUrl] = useState(false);
   const hasUrl = videoUrl.trim().length > 0;
 
   return (
-    <div className="rounded-md border border-transparent hover:border-stone-200 hover:bg-stone-50 px-2 py-1.5 relative">
+    <div className="rounded-md border border-transparent hover:border-stone-200 hover:bg-stone-50 px-2 py-1.5 relative group/row">
       <div className="flex items-start gap-1">
         <div className="flex-1 min-w-0">
           <div className="text-xs font-medium text-stone-800 truncate">{name}</div>
@@ -517,7 +546,7 @@ function ExerciseLibraryItem({
       </div>
 
       <div className="mt-1 flex items-center gap-1">
-        {hasUrl && !editingUrl ? (
+        {hasUrl ? (
           <>
             <button
               onClick={onWatch}
@@ -528,38 +557,25 @@ function ExerciseLibraryItem({
               Watch form
             </button>
             <button
-              onClick={() => setEditingUrl(true)}
-              className="text-[10px] text-stone-400 hover:text-stone-600"
-              title="Edit video URL"
+              onClick={onEdit}
+              className="p-0.5 rounded text-stone-300 hover:text-stone-700 hover:bg-stone-100 opacity-60 group-hover/row:opacity-100 transition-opacity"
+              title="Edit video link"
+              aria-label="Edit video link"
             >
-              ✎
+              <Pencil className="h-3 w-3" />
             </button>
           </>
-        ) : !hasUrl && !editingUrl ? (
+        ) : (
           <button
-            onClick={() => setEditingUrl(true)}
+            onClick={onEdit}
             className="text-[10px] font-medium text-stone-500 hover:text-teal-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-teal-50 border border-dashed border-stone-300"
-            title="Paste a YouTube URL — shared across every day this exercise appears"
+            title="Add a YouTube link for this exercise"
           >
             <Plus className="h-3 w-3" />
-            Add form video
+            Add video link
           </button>
-        ) : null}
+        )}
       </div>
-
-      {editingUrl && (
-        <input
-          autoFocus
-          value={videoUrl}
-          onChange={(e) => onSetVideo(e.target.value)}
-          onBlur={() => setEditingUrl(false)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") setEditingUrl(false);
-          }}
-          placeholder="Paste YouTube link (https://youtu.be/…)"
-          className="mt-1 w-full h-6 px-1.5 rounded border border-stone-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-100 outline-none text-[10px] bg-white"
-        />
-      )}
 
       {dayOpen && (
         <div className="absolute right-0 top-full mt-1 z-10 bg-white border border-stone-200 rounded-lg shadow-lg p-1.5 w-32 scale-in origin-top-right">

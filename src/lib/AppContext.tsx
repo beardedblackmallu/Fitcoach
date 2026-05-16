@@ -79,6 +79,11 @@ interface AppCtx {
   exerciseVideoTarget: ExerciseVideoTarget;
   openExerciseVideo: (name: string, url: string) => void;
   closeExerciseVideo: () => void;
+
+  // Library video URLs (keyed by exercise name — shared across all plans)
+  libraryVideos: Record<string, string>;
+  setLibraryVideo: (name: string, url: string) => void;
+  removeLibraryVideo: (name: string) => void;
 }
 
 const AppContext = createContext<AppCtx | null>(null);
@@ -99,6 +104,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [assignPlanPicker, setAssignPlanPicker] = useState<AssignPlanPicker>(null);
   const [addClientOpen, setAddClientOpen] = useState(false);
   const [exerciseVideoTarget, setExerciseVideoTarget] = useState<ExerciseVideoTarget>(null);
+  const [libraryVideos, setLibraryVideosState] = useState<Record<string, string>>({});
 
   const showToast = useCallback((text: string, tone: "default" | "success" = "default") => {
     const id = Date.now() + Math.random();
@@ -188,6 +194,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const openExerciseVideo = useCallback((name: string, url: string) => setExerciseVideoTarget({ name, url }), []);
   const closeExerciseVideo = useCallback(() => setExerciseVideoTarget(null), []);
 
+  const setLibraryVideo = useCallback((name: string, url: string) => {
+    setLibraryVideosState((m) => ({ ...m, [name]: url }));
+  }, []);
+  const removeLibraryVideo = useCallback((name: string) => {
+    setLibraryVideosState((m) => {
+      const next = { ...m };
+      delete next[name];
+      return next;
+    });
+  }, []);
+
   return (
     <AppContext.Provider
       value={{
@@ -205,6 +222,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         assignPlanPicker, openAssignPlanPicker, closeAssignPlanPicker,
         addClientOpen, openAddClient, closeAddClient,
         exerciseVideoTarget, openExerciseVideo, closeExerciseVideo,
+        libraryVideos, setLibraryVideo, removeLibraryVideo,
       }}
     >
       {children}
