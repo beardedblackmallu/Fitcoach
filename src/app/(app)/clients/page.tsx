@@ -67,7 +67,59 @@ export default function ClientsPage() {
           </div>
         </div>
 
-        <div className="overflow-x-auto">
+        {/* Mobile card list */}
+        <div className="md:hidden divide-y divide-stone-100">
+          {filtered.map((c) => (
+            <button
+              key={c.id}
+              onClick={() => router.push(`/clients/${c.id}`)}
+              className="w-full text-left px-4 py-3 flex items-center gap-3 active:bg-stone-100 transition-colors touch-manipulation"
+            >
+              <Avatar initials={c.initials} color={c.avatarColor} size="md" />
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 justify-between">
+                  <span className="font-semibold text-stone-900 truncate">{c.name}</span>
+                  <span
+                    className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full shrink-0 ${statusStyles[c.status]}`}
+                  >
+                    {c.status}
+                  </span>
+                </div>
+                <div className="text-xs text-stone-600 truncate mt-0.5">
+                  {getEffectivePlanName(c.id, c.plan)}
+                </div>
+                <div className="flex items-center gap-2 mt-1.5">
+                  <div className="h-1.5 w-20 rounded-full bg-stone-200 overflow-hidden">
+                    <div
+                      className={`h-full ${
+                        c.compliance >= 80
+                          ? "bg-emerald-500"
+                          : c.compliance >= 60
+                          ? "bg-amber-500"
+                          : "bg-red-400"
+                      }`}
+                      style={{ width: `${c.compliance}%` }}
+                    />
+                  </div>
+                  <span className="text-[11px] text-stone-500 tabular-nums">
+                    {c.compliance}% · {c.weightCurrent} kg
+                  </span>
+                </div>
+              </div>
+              <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
+                <RowMenu client={c} />
+              </div>
+            </button>
+          ))}
+          {filtered.length === 0 && (
+            <div className="px-4 py-12 text-center text-sm text-stone-500">
+              No clients match "{query}"
+            </div>
+          )}
+        </div>
+
+        {/* Desktop table */}
+        <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
               <tr className="text-left text-xs text-stone-500 uppercase tracking-wide bg-stone-50 border-b border-stone-200">

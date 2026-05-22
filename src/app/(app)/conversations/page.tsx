@@ -109,7 +109,7 @@ function ConversationsInner() {
   };
 
   return (
-    <div className="h-[calc(100vh-4rem)] flex bg-white">
+    <div className="h-[calc(100dvh-56px-env(safe-area-inset-bottom))] md:h-[calc(100vh-4rem)] flex bg-white">
       {/* Conversation list */}
       <aside
         className={`${
@@ -225,30 +225,46 @@ function ConversationsInner() {
         </div>
 
         {/* Composer */}
-        <div className="border-t border-stone-200 bg-white px-3 sm:px-4 py-3 shrink-0">
+        <div className="border-t border-stone-200 bg-white px-3 sm:px-4 py-2.5 shrink-0 pb-[max(env(safe-area-inset-bottom),0.625rem)]">
           <div className="max-w-3xl mx-auto">
-            <div className="flex items-end gap-2">
-              <button
-                onClick={() => showToast("File picker would open here")}
-                className="p-2 rounded-md hover:bg-stone-100 text-stone-500"
-                title="Attach file"
+            <div className="flex items-end gap-1.5 sm:gap-2">
+              {/* Hidden file input — image or video, opens camera/library on mobile */}
+              <label
+                className="h-11 w-11 sm:h-10 sm:w-10 rounded-lg hover:bg-stone-100 active:bg-stone-200 text-stone-500 grid place-items-center cursor-pointer shrink-0"
+                title="Attach photo or video"
               >
                 <Paperclip className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => openVoiceModal(activeClient.name)}
-                className="p-2 rounded-md hover:bg-stone-100 text-teal-700"
-                title="Record voice note"
-              >
-                <Mic className="h-5 w-5" />
-              </button>
-              <button
-                onClick={() => showToast("Camera would open here")}
-                className="p-2 rounded-md hover:bg-stone-100 text-stone-500"
-                title="Camera"
+                <input
+                  type="file"
+                  accept="image/*,video/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) showToast(`${f.name} ready to send`, "success");
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+
+              {/* Camera capture (mobile only — falls back to library on desktop) */}
+              <label
+                className="h-11 w-11 sm:h-10 sm:w-10 rounded-lg hover:bg-stone-100 active:bg-stone-200 text-stone-500 grid place-items-center cursor-pointer shrink-0"
+                title="Take photo"
               >
                 <Camera className="h-5 w-5" />
-              </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  capture="environment"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) showToast(`Photo ready to send to ${activeClient.name}`, "success");
+                    e.target.value = "";
+                  }}
+                />
+              </label>
+
               <div className="flex-1">
                 <textarea
                   rows={1}
@@ -261,17 +277,30 @@ function ConversationsInner() {
                     }
                   }}
                   placeholder={`Message ${activeClient.name.split(" ")[0]}...`}
-                  className="w-full resize-none px-3 py-2 rounded-lg bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-teal-100 outline-none text-sm max-h-32"
+                  className="w-full resize-none px-3 py-2.5 rounded-2xl bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-teal-100 outline-none text-[15px] sm:text-sm max-h-32 leading-snug"
                 />
               </div>
-              <button
-                onClick={sendMessage}
-                disabled={!draft.trim()}
-                className="h-10 w-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white grid place-items-center disabled:opacity-40 disabled:cursor-not-allowed"
-                title="Send"
-              >
-                <Send className="h-4 w-4" />
-              </button>
+
+              {/* Send if there's a draft, otherwise the prominent voice-note button */}
+              {draft.trim() ? (
+                <button
+                  onClick={sendMessage}
+                  className="h-11 w-11 sm:h-10 sm:w-10 rounded-full bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white grid place-items-center shrink-0"
+                  title="Send"
+                  aria-label="Send"
+                >
+                  <Send className="h-4.5 w-4.5" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => openVoiceModal(activeClient.name)}
+                  className="h-11 w-11 sm:h-10 sm:w-10 rounded-full bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white grid place-items-center shrink-0 shadow-sm"
+                  title="Record voice note"
+                  aria-label="Record voice note"
+                >
+                  <Mic className="h-5 w-5" />
+                </button>
+              )}
             </div>
             <div className="text-[11px] text-stone-400 mt-2 text-center">
               Messages send via WhatsApp from your business number

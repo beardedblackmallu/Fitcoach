@@ -39,9 +39,9 @@ export function Sidebar() {
       )}
 
       <aside
-        className={`${
+        className={`hidden lg:flex ${
           sidebarOpen ? "translate-x-0" : "-translate-x-full"
-        } lg:translate-x-0 fixed lg:sticky inset-y-0 left-0 z-40 w-64 bg-white border-r border-stone-200 flex flex-col transition-transform duration-200 ease-out`}
+        } lg:translate-x-0 fixed lg:sticky inset-y-0 left-0 z-40 w-64 bg-white border-r border-stone-200 flex-col transition-transform duration-200 ease-out`}
       >
         <div className="h-16 flex items-center justify-between gap-2 px-5 border-b border-stone-200">
           <Link href="/" className="flex items-center gap-2">

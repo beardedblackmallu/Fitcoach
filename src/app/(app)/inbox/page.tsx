@@ -186,21 +186,21 @@ function EscalationCard({
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={onOpenChat}
-            className="text-sm font-medium px-3 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white inline-flex items-center gap-1.5"
+            className="text-sm font-medium px-3 min-h-[44px] rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white inline-flex items-center gap-1.5 touch-manipulation"
           >
             <MessageCircle className="h-4 w-4" />
             Open conversation
           </button>
           <button
             onClick={() => onCall(c.name, c.phone)}
-            className="text-sm font-medium px-3 py-2 rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 inline-flex items-center gap-1.5"
+            className="text-sm font-medium px-3 min-h-[44px] rounded-lg border border-stone-300 hover:bg-stone-50 active:bg-stone-100 text-stone-700 inline-flex items-center gap-1.5 touch-manipulation"
           >
             <Phone className="h-4 w-4" />
             Tap to call
           </button>
           <button
             onClick={() => onVoice(c.name)}
-            className="text-sm font-medium px-3 py-2 rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 inline-flex items-center gap-1.5"
+            className="text-sm font-medium px-3 min-h-[44px] rounded-lg border border-stone-300 hover:bg-stone-50 active:bg-stone-100 text-stone-700 inline-flex items-center gap-1.5 touch-manipulation"
           >
             <Mic className="h-4 w-4" />
             Send voice note
@@ -228,12 +228,12 @@ function EscalationCard({
             {escalation.suggestedReplies.map((r, i) => (
               <div
                 key={i}
-                className="bg-gradient-to-br from-teal-50 to-stone-50 border border-teal-100 rounded-lg p-3 flex items-start gap-3"
+                className="bg-gradient-to-br from-teal-50 to-stone-50 border border-teal-100 rounded-lg p-3 flex flex-col sm:flex-row sm:items-start gap-3"
               >
                 <p className="flex-1 text-sm text-stone-700 leading-relaxed">{r}</p>
                 <button
                   onClick={() => useReply(r)}
-                  className="shrink-0 text-xs font-medium px-2.5 py-1.5 rounded-md bg-teal-600 hover:bg-teal-700 text-white"
+                  className="self-end sm:self-auto shrink-0 text-sm font-medium px-4 min-h-[40px] rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white touch-manipulation"
                 >
                   Use this
                 </button>

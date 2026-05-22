@@ -55,7 +55,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Metrics */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
         {metrics.map((m) => (
           <div
             key={m.label}
@@ -126,16 +126,16 @@ export default function DashboardPage() {
                       <div className="mt-3 flex items-center gap-2 flex-wrap">
                         <button
                           onClick={() => router.push(`/conversations?c=${c.id}`)}
-                          className="text-xs font-medium px-3 py-1.5 rounded-md bg-teal-600 hover:bg-teal-700 text-white inline-flex items-center gap-1.5"
+                          className="text-sm font-medium px-3 min-h-[40px] rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white inline-flex items-center gap-1.5"
                         >
-                          <MessageCircle className="h-3.5 w-3.5" />
+                          <MessageCircle className="h-4 w-4" />
                           Open conversation
                         </button>
                         <button
                           onClick={() => openCallModal(c.id, c.name, c.phone)}
-                          className="text-xs font-medium px-3 py-1.5 rounded-md border border-stone-300 hover:bg-white text-stone-700 inline-flex items-center gap-1.5"
+                          className="text-sm font-medium px-3 min-h-[40px] rounded-lg border border-stone-300 hover:bg-white active:bg-stone-100 text-stone-700 inline-flex items-center gap-1.5"
                         >
-                          <Phone className="h-3.5 w-3.5" />
+                          <Phone className="h-4 w-4" />
                           Tap to call
                         </button>
                       </div>
@@ -193,13 +193,13 @@ export default function DashboardPage() {
                     if (isPaymentAction) router.push("/payments");
                     else router.push(`/conversations?c=${c.id}`);
                   }}
-                  className={`text-xs font-medium px-3 py-1.5 rounded-md inline-flex items-center gap-1.5 ${
+                  className={`text-xs font-medium px-3 min-h-[36px] rounded-lg inline-flex items-center gap-1.5 shrink-0 ${
                     isReminderAction
-                      ? "border border-stone-300 hover:bg-stone-100 text-stone-700"
-                      : "bg-teal-600 hover:bg-teal-700 text-white"
+                      ? "border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700"
+                      : "bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white"
                   }`}
                 >
-                  {isReminderAction && <Send className="h-3 w-3" />}
+                  {isReminderAction && <Send className="h-3.5 w-3.5" />}
                   {item.primaryAction}
                 </button>
               </div>

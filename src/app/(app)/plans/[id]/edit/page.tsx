@@ -76,6 +76,7 @@ export default function PlanEditPage() {
   });
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryCat, setLibraryCat] = useState<(typeof categories)[number]>("All");
+  const [libraryDrawerOpen, setLibraryDrawerOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<{ day: DayKey; id: string } | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
   // Which exercise (by name) is being added/edited in the video-link modal
@@ -151,7 +152,7 @@ export default function PlanEditPage() {
   const weeksPerCycle = plan.cycleLengthWeeks;
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-[1400px] mx-auto">
+    <div className="px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6 max-w-[1400px] mx-auto">
       <button
         onClick={() => router.push("/plans")}
         className="text-xs text-stone-500 hover:text-stone-800 inline-flex items-center gap-1 mb-3"
@@ -172,7 +173,8 @@ export default function PlanEditPage() {
           />
           <Edit3 className="h-3.5 w-3.5 text-stone-400" />
         </div>
-        <div className="flex items-center gap-2">
+        {/* Header action buttons — visible on tablet+; on mobile they appear as a sticky bottom bar below */}
+        <div className="hidden md:flex items-center gap-2">
           <button
             onClick={() => showToast("Plan saved as draft", "success")}
             className="h-9 px-3 text-sm rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 font-medium"
@@ -256,8 +258,8 @@ export default function PlanEditPage() {
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-[260px_1fr] gap-4">
-            {/* Library */}
-            <aside className="bg-white border border-stone-200 rounded-xl p-3 h-fit lg:sticky lg:top-20">
+            {/* Library — inline on desktop only */}
+            <aside className="hidden lg:block bg-white border border-stone-200 rounded-xl p-3 h-fit lg:sticky lg:top-20">
               <div className="text-xs font-semibold text-stone-500 uppercase tracking-wider mb-2 px-1">
                 Exercise library
               </div>
@@ -452,6 +454,110 @@ export default function PlanEditPage() {
           </div>
         </div>
       )}
+
+      {/* Mobile-only FAB to open the exercise library drawer (only on Workouts tab) */}
+      {topTab === "workouts" && (
+        <button
+          onClick={() => setLibraryDrawerOpen(true)}
+          className="lg:hidden fixed right-4 bottom-[124px] z-20 h-14 w-14 rounded-full bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white shadow-lg grid place-items-center"
+          aria-label="Open exercise library"
+        >
+          <Dumbbell className="h-6 w-6" />
+        </button>
+      )}
+
+      {/* Mobile-only library drawer (slide-up sheet) */}
+      {libraryDrawerOpen && (
+        <div className="lg:hidden fixed inset-0 z-40 fade-in">
+          <div
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setLibraryDrawerOpen(false)}
+          />
+          <div
+            className="absolute bottom-0 inset-x-0 bg-white rounded-t-2xl shadow-2xl border-t border-stone-200 max-h-[80vh] flex flex-col pb-[env(safe-area-inset-bottom)] scale-in origin-bottom"
+            style={{ animation: "slide-up 0.22s ease-out forwards" }}
+          >
+            <div className="flex items-center justify-between px-5 pt-4 pb-2 shrink-0">
+              <div className="text-sm font-semibold text-stone-900 inline-flex items-center gap-2">
+                <Dumbbell className="h-4 w-4 text-teal-600" />
+                Exercise library
+              </div>
+              <button
+                onClick={() => setLibraryDrawerOpen(false)}
+                className="p-2 -mr-2 rounded-md hover:bg-stone-100 text-stone-500"
+                aria-label="Close"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="px-4 pt-1 pb-2 shrink-0">
+              <div className="relative mb-2">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-stone-400" />
+                <input
+                  value={librarySearch}
+                  onChange={(e) => setLibrarySearch(e.target.value)}
+                  placeholder="Search exercises..."
+                  className="w-full h-10 pl-9 pr-3 rounded-lg bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 outline-none text-sm"
+                />
+              </div>
+              <div className="flex gap-1.5 overflow-x-auto -mx-1 px-1">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setLibraryCat(cat)}
+                    className={`text-xs px-3 py-1.5 rounded-full font-medium shrink-0 ${
+                      libraryCat === cat
+                        ? "bg-teal-100 text-teal-700"
+                        : "bg-stone-100 text-stone-600"
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto px-2 pb-3">
+              {filteredLibrary.map((ex) => (
+                <ExerciseLibraryItem
+                  key={ex.name}
+                  name={ex.name}
+                  category={ex.category}
+                  videoUrl={libraryVideos[ex.name] ?? ""}
+                  onEdit={() => setVideoLinkFor(ex.name)}
+                  onWatch={() => {
+                    const u = libraryVideos[ex.name];
+                    if (u) openExerciseVideo(ex.name, u);
+                  }}
+                  onAdd={(day) => {
+                    addExerciseToDay(day, ex.name);
+                    setLibraryDrawerOpen(false);
+                  }}
+                />
+              ))}
+              {filteredLibrary.length === 0 && (
+                <div className="text-sm text-stone-400 text-center py-8">No matches</div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Mobile-only sticky bottom action bar: Save + Send */}
+      <div className="md:hidden fixed bottom-[56px] inset-x-0 z-20 bg-white border-t border-stone-200 shadow-[0_-4px_12px_rgba(0,0,0,0.04)] px-3 py-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] flex items-center gap-2">
+        <button
+          onClick={() => showToast("Plan saved as draft", "success")}
+          className="flex-1 h-11 rounded-lg border border-stone-300 active:bg-stone-100 text-stone-700 text-sm font-medium"
+        >
+          Save plan
+        </button>
+        <button
+          onClick={() => openClientPicker(plan)}
+          className="flex-[1.6] h-11 rounded-lg bg-teal-600 active:bg-teal-800 text-white text-sm font-semibold inline-flex items-center justify-center gap-1.5"
+        >
+          <Send className="h-4 w-4" />
+          Send plan
+        </button>
+      </div>
     </div>
   );
 }
