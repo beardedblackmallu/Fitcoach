@@ -364,16 +364,23 @@ function VariantBlock({
       </div>
 
       <div className="overflow-x-auto -mx-3 px-3">
-        <table className="w-full min-w-[640px] text-xs">
+        <table className="w-full min-w-[720px] text-xs">
           <thead>
+            <tr className="text-[9px] text-stone-400 uppercase tracking-wide">
+              <th colSpan={2}></th>
+              <th colSpan={5} className="text-center font-medium pb-1 border-b border-stone-100">
+                Macros (per portion)
+              </th>
+              <th></th>
+            </tr>
             <tr className="text-[10px] text-stone-500 uppercase tracking-wide">
-              <th className="text-left font-medium pb-1 pr-2">Food</th>
-              <th className="text-left font-medium pb-1 pr-2 w-[90px]">Qty</th>
-              <th className="text-right font-medium pb-1 px-1 w-[55px]">Cal</th>
-              <th className="text-right font-medium pb-1 px-1 w-[40px]">C</th>
-              <th className="text-right font-medium pb-1 px-1 w-[40px]">F</th>
-              <th className="text-right font-medium pb-1 px-1 w-[40px]">P</th>
-              <th className="text-right font-medium pb-1 px-1 w-[40px]">Fib</th>
+              <th className="text-left font-medium pt-1 pb-1 pr-2">Food</th>
+              <th className="text-left font-medium pt-1 pb-1 pr-2 w-[90px]">Qty</th>
+              <th className="text-right font-medium pt-1 pb-1 px-1 w-[60px] cursor-help" title="Calories (kcal)">Cal</th>
+              <th className="text-right font-medium pt-1 pb-1 px-1 w-[52px] cursor-help" title="Carbohydrates (grams)">C</th>
+              <th className="text-right font-medium pt-1 pb-1 px-1 w-[52px] cursor-help" title="Fats (grams)">F</th>
+              <th className="text-right font-medium pt-1 pb-1 px-1 w-[52px] cursor-help" title="Protein (grams)">P</th>
+              <th className="text-right font-medium pt-1 pb-1 px-1 w-[52px] cursor-help" title="Fiber (grams)">Fib</th>
               <th className="w-7"></th>
             </tr>
           </thead>

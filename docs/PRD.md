@@ -910,6 +910,7 @@ These are deliberate omissions for the prototype phase.
 Each meaningful product change goes here. Newest at the top.
 
 ### 2026-05
+- **Nutrition table header clarity + truncation fix** — macro columns widened (40px → 52px, Cal 55px → 60px) so two-digit values like 37 and 25 no longer truncate to single digits. Every column header gets a `title` tooltip with the full name (Cal → "Calories (kcal)", C → "Carbohydrates (grams)", etc.). A new "Macros (per portion)" sub-header sits above the C/F/P/Fib columns so new trainers don't have to decode abbreviations.
 - **Editable video links in library** — VideoLinkModal supports add/edit/remove with YouTube validation. `libraryVideos` lifted to AppContext for cross-navigation persistence. Pencil edit icon on library rows next to Watch form button.
 - **Empty nutrition tab by default** — only `p-12wt` gets the demo idly+chutney pre-fill. New plans and other templates start with empty macros, empty meals, empty coach notes, empty hunger subs (with placeholder text and helper lines).
 - **Move video URL to library** — videos now belong to the exercise library row, not per-day-card instances. One video applies everywhere that exercise appears.
