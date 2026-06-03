@@ -52,17 +52,14 @@ For each checkpoint:
 ---
 
 ### Checkpoint 2 — Authentication
-> ⚠️ Test 12 (second account signup) still pending — blocked by Supabase
-> free-tier email rate limit (4 emails/hour). Re-run before closing CP2.
-
-- [ ] Supabase Auth configured (email + Google OAuth)
-- [ ] /src/app/(auth)/login/page.tsx
-- [ ] /src/app/(auth)/signup/page.tsx
-- [ ] /src/app/(auth)/forgot-password/page.tsx
-- [ ] src/proxy.ts protects /(app) routes (Next.js 16 — NOT middleware.ts)
-- [ ] Header shows real trainer name from auth session
-- [ ] Logout works
-- [ ] Test: signup → verify → login → logout → can't access dashboard
+- [x] Supabase Auth configured (email + Google OAuth)
+- [x] /src/app/(auth)/login/page.tsx
+- [x] /src/app/(auth)/signup/page.tsx
+- [x] /src/app/(auth)/forgot-password/page.tsx
+- [x] src/proxy.ts protects /(app) routes (Next.js 16 — NOT middleware.ts)
+- [x] Header shows real trainer name from auth session
+- [x] Logout works
+- [x] Test: signup → verify → login → logout → can't access dashboard
 
 #### Watch for these
 - @supabase/ssr used — not @supabase/auth-helpers-nextjs
@@ -93,15 +90,15 @@ For each checkpoint:
 ---
 
 ### Checkpoint 3 — Replace mock data
-- [ ] AppContext reads from Supabase, not data.ts
-- [ ] Clients list (real data, filtered by trainer_id)
-- [ ] Client detail page
-- [ ] Plans list + plan builder saves to DB
-- [ ] Escalations/inbox
-- [ ] Payments stub
-- [ ] RLS policies active
-- [ ] Test: two trainer accounts, data isolation confirmed
-- [ ] Test: refresh page, data persists
+- [x] AppContext reads from Supabase, not data.ts
+- [x] Clients list (real data, filtered by trainer_id)
+- [x] Client detail page
+- [x] Plans list + plan builder saves to DB
+- [x] Escalations/inbox
+- [x] Payments stub
+- [x] RLS policies active
+- [x] Test: two trainer accounts, data isolation confirmed
+- [x] Test: refresh page, data persists
 
 #### Watch for these
 - Every Supabase query filters by trainer_id (or relies on RLS)
