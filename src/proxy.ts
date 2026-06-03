@@ -25,9 +25,12 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  // Refresh the session — this is required for Supabase SSR.
-  // Do NOT remove this call even if it looks unused.
-  const { data: { user } } = await supabase.auth.getUser();
+  // Read the session from the cookie — no network request.
+  // getUser() makes a live network call to Supabase auth servers which
+  // can fail in the proxy/edge context with "Failed to fetch".
+  // getSession() validates the JWT locally from the cookie — reliable here.
+  const { data: { session } } = await supabase.auth.getSession();
+  const user = session?.user ?? null;
 
   const { pathname } = request.nextUrl;
 
@@ -36,6 +39,7 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/login") ||
     pathname.startsWith("/signup") ||
     pathname.startsWith("/forgot-password") ||
+    pathname.startsWith("/reset-password") ||
     pathname.startsWith("/auth/callback") ||
     pathname.startsWith("/_next") ||
     pathname.startsWith("/favicon") ||

@@ -32,7 +32,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#FAFAF9] text-stone-900">
+      <body className="min-h-full bg-[#FAFAF9] text-stone-900" suppressHydrationWarning>
         <AppProvider>{children}</AppProvider>
         <ServiceWorkerRegistration />
       </body>

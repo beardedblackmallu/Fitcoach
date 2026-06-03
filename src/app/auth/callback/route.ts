@@ -19,9 +19,7 @@ export async function GET(request: NextRequest) {
 
     if (!error) {
       if (type === "recovery") {
-        // Send to a page where they can set a new password
-        // For now, redirect to login with a message
-        return NextResponse.redirect(`${origin}/login?reset=true`);
+        return NextResponse.redirect(`${origin}/reset-password`);
       }
       return NextResponse.redirect(`${origin}${next}`);
     }
