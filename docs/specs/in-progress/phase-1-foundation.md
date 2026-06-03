@@ -4,6 +4,22 @@
 **Goal:** Replace prototype mock data with real Supabase backend,
 add authentication, wrap with Capacitor for iOS + Android.
 
+## Completion protocol
+
+For each checkpoint:
+1. Claude Code completes the work
+2. Run all "Tests to run" — user performs them manually
+3. User reports "all tests pass" or lists which failed
+4. If all pass: Claude Code marks every item under that checkpoint
+   as [x], commits with "Phase 1 Checkpoint N complete", pushes to
+   GitHub, then proceeds to next checkpoint
+5. If any fail: Claude Code does NOT mark complete. Fixes the
+   failing issue, asks user to re-run failed tests
+6. User does not need to ask for these updates — Claude Code does
+   them automatically once tests are confirmed
+
+---
+
 ## Checkpoints
 
 ### Checkpoint 1 — Supabase setup
@@ -17,15 +33,61 @@ add authentication, wrap with Capacitor for iOS + Android.
 - [x] /src/lib/supabase/server.ts created
 - [x] Simple test query confirms connection (✅ Connected! trainers rows: 0)
 
+#### Watch for these
+- Legacy Supabase API key format used (anon / service_role starting
+  with `eyJ...`) — NOT the new sb_publishable_ / sb_secret_ format.
+  We deliberately chose legacy for SDK compatibility.
+- @supabase/ssr installed — not deprecated @supabase/auth-helpers-nextjs
+- RLS enabled on every table in schema
+- trainer_id foreign key on every client-owned table
+
+#### Tests to run
+1. Test query returns successfully (SELECT COUNT FROM trainers returns 0)
+2. .env.local has all three Supabase variables
+3. Both /src/lib/supabase/client.ts and server.ts exist and export createClient()
+
+#### Completion status
+✅ Complete — all tests passed.
+
+---
+
 ### Checkpoint 2 — Authentication
 - [ ] Supabase Auth configured (email + Google OAuth)
 - [ ] /src/app/(auth)/login/page.tsx
 - [ ] /src/app/(auth)/signup/page.tsx
 - [ ] /src/app/(auth)/forgot-password/page.tsx
-- [ ] middleware.ts protects /(app) routes
+- [ ] src/proxy.ts protects /(app) routes (Next.js 16 — NOT middleware.ts)
 - [ ] Header shows real trainer name from auth session
 - [ ] Logout works
 - [ ] Test: signup → verify → login → logout → can't access dashboard
+
+#### Watch for these
+- @supabase/ssr used — not @supabase/auth-helpers-nextjs
+- src/proxy.ts exists and protects (app) routes — NOT middleware.ts.
+  Next.js 16 renamed middleware.ts to proxy.ts. Having both causes
+  unstable behavior. Do not recreate middleware.ts.
+- /auth/callback/route.ts handles OAuth code exchange (not /callback)
+- Auth pages in (auth) route group — do not inherit (app) layout
+- Real auth session used in Header — not hardcoded "Sandeep Kumar"
+
+#### Tests to run
+1. http://localhost:3000 → redirects to /login when logged out
+2. Sign up at /signup with real email → receive verification email
+3. Click verification link → lands on dashboard
+4. Sign out via header dropdown → redirects to /login
+5. Sign in again with email + password → reaches dashboard
+6. Try /signup while logged in → redirects to /
+7. Logged out, paste /clients into URL → redirects to /login.
+   Repeat for /conversations, /plans, /inbox
+8. Close browser tab, reopen localhost:3000 → still logged in
+9. Try login with wrong password → clear error message shown
+10. Header shows real signed-up name, not "Sandeep Kumar"
+11. /forgot-password flow: enter email → receive reset link →
+    reset password → log in with new password
+12. Sign up a second account (use email+test@gmail.com alias) →
+    both accounts can log in independently
+
+---
 
 ### Checkpoint 3 — Replace mock data
 - [ ] AppContext reads from Supabase, not data.ts
@@ -38,6 +100,34 @@ add authentication, wrap with Capacitor for iOS + Android.
 - [ ] Test: two trainer accounts, data isolation confirmed
 - [ ] Test: refresh page, data persists
 
+#### Watch for these
+- Every Supabase query filters by trainer_id (or relies on RLS)
+- RLS policies actually deny cross-tenant access (test it)
+- No remaining references to data.ts in production code paths
+- AppContext refactored cleanly, components still work
+- Loading states added where data is fetched
+- Error states added where queries can fail
+- TypeScript types match Supabase schema — no any
+
+#### Tests to run
+1. Sign in as Trainer A → add a client → refresh page → client
+   still there
+2. Sign in as Trainer A → create a plan → refresh page → plan
+   still there
+3. Sign in as Trainer A → assign plan to client → refresh →
+   assignment persists
+4. Sign in as Trainer A → mark an escalation resolved → refresh
+   → still resolved
+5. Sign in as Trainer B → see ZERO of Trainer A's clients, plans,
+   or escalations
+6. Trainer A's dashboard counts match Trainer A's actual data
+7. Open Supabase dashboard → confirm rows exist in tables for
+   Trainer A's actions
+8. Try to query Trainer A's data while signed in as Trainer B
+   via browser console → should fail with RLS error
+
+---
+
 ### Checkpoint 4 — Capacitor setup
 - [ ] Capacitor installed and configured
 - [ ] capacitor.config.ts: appId com.fitcoach.app
@@ -49,6 +139,24 @@ add authentication, wrap with Capacitor for iOS + Android.
 - [ ] package.json scripts: build:mobile, ios, android
 - [ ] Test: npm run android → app runs on emulator
 
+#### Watch for these
+- capacitor.config.ts: appId is com.fitcoach.app, appName "FitCoach"
+- next.config.ts has output: 'export' for mobile builds
+- All required Capacitor plugins installed
+- ios/ and android/ folders created at project root
+- package.json has build:mobile, ios, android scripts
+- No Next.js API routes used (incompatible with static export)
+
+#### Tests to run
+1. npm run build:mobile completes without errors
+2. npm run android opens Android Studio with FitCoach project
+3. Build to Android emulator → app launches, shows login screen
+4. Can sign in on Android emulator → reaches dashboard
+5. Can navigate between screens on emulator
+6. Web build still works at npm run dev (Capacitor didn't break web)
+
+---
+
 ### Checkpoint 5 — Mobile polish
 - [ ] Splash screen (teal background, FitCoach logo)
 - [ ] Status bar configured
@@ -56,11 +164,33 @@ add authentication, wrap with Capacitor for iOS + Android.
 - [ ] Safe area handling (iOS notch + Android nav bar)
 - [ ] Test: full flow on real Android device
 
+#### Watch for these
+- Splash screen uses FitCoach logo on teal #0D9488 background
+- Status bar color matches active screen (teal on app screens)
+- Android back button navigates back through history, only exits
+  app from root screen
+- Safe area insets respected on iOS (notch) and Android (nav bar)
+- No text overflowing or buttons cut off on small screens
+
+#### Tests to run
+1. Cold launch app on Android device → splash screen shows before
+   login appears
+2. Press Android back button at /clients → returns to /
+3. Press Android back button at / → app exits (or shows confirm)
+4. Open on Android device with notch → no content hidden behind
+   status bar
+5. Test full flow: signup → login → add client → create plan →
+   logout on real Android device
+6. iOS simulator: same full flow works
+
+---
+
 ## Architecture rules for this phase
 - Every query filters by trainer_id — enforced via RLS
 - No mock data in any production code path
 - TypeScript strict — no any types
 - Use Supabase client/RPC — no Next.js API routes
+- Route protection: src/proxy.ts (not middleware.ts — see CLAUDE.md)
 
 ## Success criteria
 - Two trainer accounts can sign up, log in, add clients
