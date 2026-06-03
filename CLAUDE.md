@@ -12,16 +12,9 @@ Full spec: docs/FitCoach-PRD.md (v1.1)
 WhatsApp architecture: docs/FitCoach-WhatsApp-Infrastructure.md
 Mobile decisions: docs/FitCoach-Mobile-Strategy.md
 
-> ⚠️ NOTE: The three docs above do not yet exist on disk (May 2026).
-> Current working spec is docs/PRD.md. When the new docs are created,
-> remove this note and update references throughout.
-
 ## Current build phase
 **Phase 1 — Foundation**
 Active spec: docs/specs/in-progress/phase-1-foundation.md
-
-> ⚠️ NOTE: docs/specs/ directory does not yet exist. Create it when
-> the phase spec is written.
 
 Checkpoints:
 - [ ] Supabase project + schema deployed
