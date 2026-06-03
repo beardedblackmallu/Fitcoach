@@ -1,26 +1,64 @@
 "use client";
 
-import { Bell, ChevronDown, Menu, Search } from "lucide-react";
+import { Bell, ChevronDown, LogOut, Menu, Search } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useApp } from "@/lib/AppContext";
 import { notifications } from "@/lib/data";
 import { Avatar } from "./Avatar";
+import { createClient } from "@/lib/supabase/client";
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const [profileOpen, setProfileOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const profileRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { setSidebarOpen } = useApp();
   const [readIds, setReadIds] = useState<string[]>([]);
+  const [trainerName, setTrainerName] = useState("Coach");
+  const [trainerInitials, setTrainerInitials] = useState("C");
 
   useEffect(() => {
-    function onClick(e: MouseEvent) {
+    const supabase = createClient();
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (user) {
+        const name: string =
+          (user.user_metadata?.name as string) ||
+          user.email?.split("@")[0] ||
+          "Coach";
+        setTrainerName(name);
+        setTrainerInitials(
+          name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
+        );
+      }
+    });
+  }, []);
+
+  const handleLogout = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.push("/login");
+    router.refresh();
+  };
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
+  }, []);
+
+  useEffect(() => {
+    function onClickOutside(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
-    document.addEventListener("mousedown", onClick);
-    return () => document.removeEventListener("mousedown", onClick);
+    document.addEventListener("mousedown", onClickOutside);
+    return () => document.removeEventListener("mousedown", onClickOutside);
   }, []);
 
   const unreadCount = Math.max(0, notifications.length - readIds.length);
@@ -128,15 +166,37 @@ export function Header() {
         </div>
 
         {/* Coach profile */}
-        <div className="hidden sm:flex items-center gap-2 pl-2 ml-1 border-l border-stone-200">
-          <Link href="/settings" className="flex items-center gap-2 hover:bg-stone-100 rounded-md px-1 py-1">
-            <Avatar initials="SK" color="bg-teal-600" size="sm" />
+        <div className="hidden sm:flex items-center gap-2 pl-2 ml-1 border-l border-stone-200" ref={profileRef}>
+          <button
+            onClick={() => setProfileOpen((o) => !o)}
+            className="flex items-center gap-2 hover:bg-stone-100 rounded-md px-1 py-1"
+          >
+            <Avatar initials={trainerInitials} color="bg-teal-600" size="sm" />
             <div className="leading-tight">
-              <div className="text-sm font-medium text-stone-900">Sandeep Kumar</div>
+              <div className="text-sm font-medium text-stone-900">{trainerName}</div>
               <div className="text-[11px] text-stone-500">Coach</div>
             </div>
             <ChevronDown className="h-4 w-4 text-stone-400" />
-          </Link>
+          </button>
+          {profileOpen && (
+            <div className="absolute right-4 top-14 w-44 bg-white border border-stone-200 rounded-xl shadow-lg py-1 z-50 scale-in origin-top-right">
+              <Link
+                href="/settings"
+                onClick={() => setProfileOpen(false)}
+                className="flex items-center gap-2 px-3 py-2 text-sm text-stone-700 hover:bg-stone-50"
+              >
+                Settings
+              </Link>
+              <div className="border-t border-stone-100 my-1" />
+              <button
+                onClick={handleLogout}
+                className="w-full flex items-center gap-2 px-3 py-2 text-sm text-red-600 hover:bg-red-50"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>
