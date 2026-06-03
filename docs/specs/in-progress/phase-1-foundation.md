@@ -155,6 +155,37 @@ For each checkpoint:
 5. Can navigate between screens on emulator
 6. Web build still works at npm run dev (Capacitor didn't break web)
 
+#### Known gaps — Checkpoint 4
+
+- **Mobile OAuth deep linking deferred to Phase 2** — email+password only
+  on native for now. Google OAuth needs a deep-link bridge that static
+  export + Capacitor can't do without extra plugin work.
+- **Dynamic routes use placeholder static params** — `/clients/[id]` and
+  `/plans/[id]/edit` export `generateStaticParams() => [{ id: "_" }]` with
+  `dynamicParams=false`. Only a throwaway `_` shell is pre-rendered; real
+  IDs resolve client-side via the App Router inside Capacitor. This is the
+  accepted Capacitor + Next.js static-export pattern.
+- **Auth callback converted from Route Handler to client page** —
+  `auth/callback/route.ts` → `auth/callback/page.tsx`. Static export can't
+  run server Route Handlers that read the Request. Client page does the
+  `exchangeCodeForSession` in the browser.
+- **proxy.ts disabled in mobile build, active on web** — static export
+  strips middleware/proxy. AuthGuard (client-side) is the only auth gate on
+  mobile; on web proxy.ts runs server-side first + AuthGuard as second layer.
+- **iOS `cap sync` blocked by CocoaPods/Ruby encoding bug** — local env
+  issue (Encoding::CompatibilityError in CocoaPods 1.16.2 + Ruby 4.0.5),
+  not our code. Android path unaffected. Resolve iOS env separately.
+- **Android Studio required for `npm run android`** — build + sync work
+  headless, but `cap open android` needs Android Studio + SDK installed.
+
+#### Phase 2 note — evaluate Capgo for native social login
+
+Ionic (Capacitor's parent) was acquired in late 2025 / early 2026 and
+community momentum has partly shifted to Capgo's plugin ecosystem,
+especially for native social login. When building OAuth deep linking in
+Phase 2, evaluate Capgo's social-login plugin before hand-rolling a deep
+link bridge.
+
 ---
 
 ### Checkpoint 5 — Mobile polish
