@@ -3,6 +3,7 @@
 import { Heart, ShieldAlert, Sparkles, User, X } from "lucide-react";
 import { useState } from "react";
 import { useApp } from "@/lib/AppContext";
+import { createClient } from "@/lib/supabase/client";
 
 const genders = ["Male", "Female", "Prefer not to say"] as const;
 const goals = ["Weight loss", "Muscle gain", "General fitness", "Sport-specific", "Postnatal recovery", "Other"] as const;
@@ -28,6 +29,7 @@ export function AddClientModal() {
   const [injuries, setInjuries] = useState("");
   const [medical, setMedical] = useState("");
   const [notes, setNotes] = useState("");
+  const [saving, setSaving] = useState(false);
 
   if (!addClientOpen) return null;
 
@@ -38,12 +40,49 @@ export function AddClientModal() {
     setAllergies(""); setInjuries(""); setMedical(""); setNotes("");
   };
 
-  const submit = () => {
+  const submit = async () => {
     if (!name.trim() || !phone.trim()) {
       showToast("Name and phone are required");
       return;
     }
-    showToast(`${name.trim()} added — onboarding message queued`, "success");
+    setSaving(true);
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      showToast("Not signed in — please refresh");
+      setSaving(false);
+      return;
+    }
+
+    const { error } = await supabase.from("clients").insert({
+      trainer_id: user.id,
+      name: name.trim(),
+      phone: `+91 ${phone.trim()}`,
+      email: email.trim() || null,
+      gender,
+      height_cm: heightCm ? parseFloat(heightCm) : null,
+      weight_start_kg: weight ? parseFloat(weight) : null,
+      weight_current_kg: weight ? parseFloat(weight) : null,
+      weight_target_kg: target ? parseFloat(target) : null,
+      goal: goal,
+      workout_preference: workout,
+      diet_preference: diet,
+      whey_use: wheyUse,
+      allergies: allergies.trim() || null,
+      injuries: injuries.trim() || null,
+      medical_conditions: medical.trim() || null,
+      intake_notes: notes.trim() || null,
+      status: "active",
+    });
+
+    setSaving(false);
+
+    if (error) {
+      showToast(`Failed to add client: ${error.message}`);
+      return;
+    }
+
+    showToast(`${name.trim()} added successfully`, "success");
     reset();
     closeAddClient();
   };
@@ -207,9 +246,11 @@ export function AddClientModal() {
           </button>
           <button
             onClick={submit}
-            className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm"
+            disabled={saving}
+            className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm disabled:opacity-60 flex items-center gap-2"
           >
-            Add client
+            {saving && <span className="h-3.5 w-3.5 rounded-full border-2 border-white/50 border-t-white animate-spin" />}
+            {saving ? "Adding…" : "Add client"}
           </button>
         </div>
       </div>
