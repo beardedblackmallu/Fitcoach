@@ -39,7 +39,9 @@ export function useDashboardStats() {
     const now = Date.now();
     const oneWeek = 7 * 24 * 60 * 60 * 1000;
     const expiringCount = (assignments ?? []).filter((a) => {
-      const plan = a.plans as { duration_weeks: number } | null;
+      // Supabase types a to-one join as an array; normalise to the first element
+      const planRel = a.plans as unknown as { duration_weeks: number } | { duration_weeks: number }[] | null;
+      const plan = Array.isArray(planRel) ? planRel[0] : planRel;
       if (!plan || !a.start_date) return false;
       const endMs = new Date(a.start_date).getTime() + plan.duration_weeks * 7 * 24 * 60 * 60 * 1000;
       return endMs >= now && endMs <= now + oneWeek;

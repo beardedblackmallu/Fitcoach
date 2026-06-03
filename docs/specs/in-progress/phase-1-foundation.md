@@ -244,6 +244,24 @@ The fourth and both feed sections remain mock with console.warn.
 The three mock sections each emit a `console.warn` in dev so they
 are immediately identifiable during testing and not mistaken for bugs.
 
+### Capacitor (CP4)
+
+| Gap | Why deferred |
+|---|---|
+| Mobile OAuth deep linking deferred to Phase 2 — email+password only on native for now | Google OAuth in a native app requires deep-link handling (custom URL scheme → app → token exchange). Static export can't run the server callback route. Email+password works fully on native (Supabase browser client is bundled — verified). |
+| iOS cannot build in this environment yet | Two environment blockers (not code): (1) only Xcode Command Line Tools installed, full Xcode required for `xcodebuild`/pod install; (2) Ruby 4.0.5 (Homebrew) is incompatible with CocoaPods 1.16.2 (Unicode normalization error). iOS folder is scaffolded and web assets copied; needs full Xcode + working CocoaPods to build. Android is unaffected and is the primary CP4 test. |
+| Static export required four code changes | (1) auth callback converted from Route Handler to client page; (2) dynamic routes `/clients/[id]` and `/plans/[id]/edit` split into server wrapper + client View with `generateStaticParams`; (3) `force-static` added to icon + manifest routes; (4) `AuthGuard` client component added because proxy.ts is stripped in static export. Web build keeps proxy.ts server-side protection fully intact. |
+| generateStaticParams returns a placeholder `[{id:"_"}]` not `[]` | Turbopack's static-export collector rejects an empty array. The placeholder generates one throwaway HTML shell; real IDs resolve client-side via the App Router inside Capacitor. |
+
+### Phase 2 note — evaluate Capgo for native social login
+
+Ionic (Capacitor's parent company) was acquired in late 2025/early
+2026 and community momentum has partly shifted to Capgo's plugins,
+especially for native social login. When building OAuth deep linking
+in Phase 2, evaluate Capgo's social-login plugin before hand-rolling
+a deep-link bridge — it may handle the Google sign-in token exchange
+on iOS/Android out of the box.
+
 ---
 
 ## Architecture rules for this phase

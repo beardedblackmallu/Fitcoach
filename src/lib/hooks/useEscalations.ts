@@ -96,13 +96,20 @@ export function useEscalations(): UseEscalationsResult {
       return;
     }
 
-    const uiEscalations: UiEscalation[] = (data ?? []).map((row) => {
-      const client = (row.conversations as { client_id: string; clients: { name: string; phone: string; avatar_color: string | null } } | null);
-      const clientName = client?.clients?.name ?? "Unknown client";
-      const clientPhone = client?.clients?.phone ?? "";
-      const clientAvatarColor = client?.clients?.avatar_color ?? deriveAvatarColor(clientName);
+    type ClientRel = { name: string; phone: string; avatar_color: string | null };
+    type ConvRel = { client_id: string; clients: ClientRel | ClientRel[] | null };
 
-      const triggerMsg = row.trigger_message as { text: string | null } | null;
+    const firstOf = <T,>(rel: T | T[] | null | undefined): T | null =>
+      Array.isArray(rel) ? (rel[0] ?? null) : (rel ?? null);
+
+    const uiEscalations: UiEscalation[] = (data ?? []).map((row) => {
+      const conv = firstOf(row.conversations as unknown as ConvRel | ConvRel[] | null);
+      const clientRec = firstOf(conv?.clients);
+      const clientName = clientRec?.name ?? "Unknown client";
+      const clientPhone = clientRec?.phone ?? "";
+      const clientAvatarColor = clientRec?.avatar_color ?? deriveAvatarColor(clientName);
+
+      const triggerMsg = firstOf(row.trigger_message as unknown as { text: string | null } | { text: string | null }[] | null);
       const quotedMessage = triggerMsg?.text ?? "(message unavailable)";
 
       const replies = ((row.escalation_suggested_replies ?? []) as { text: string; order_index: number }[])
@@ -111,7 +118,7 @@ export function useEscalations(): UseEscalationsResult {
 
       return {
         id: row.id as string,
-        clientId: client?.client_id ?? "",
+        clientId: conv?.client_id ?? "",
         clientName,
         clientPhone,
         clientInitials: deriveInitials(clientName),

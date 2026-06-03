@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AppProvider } from "@/lib/AppContext";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
+import { AuthGuard } from "@/components/AuthGuard";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -33,7 +34,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#FAFAF9] text-stone-900" suppressHydrationWarning>
-        <AppProvider>{children}</AppProvider>
+        <AppProvider>
+          <AuthGuard>{children}</AuthGuard>
+        </AppProvider>
         <ServiceWorkerRegistration />
       </body>
     </html>

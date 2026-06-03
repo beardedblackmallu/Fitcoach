@@ -117,8 +117,11 @@ export function usePayments(): UsePaymentsResult {
       .select("id", { count: "exact", head: true })
       .eq("status", "active");
 
+    type ClientRel = { id: string; name: string; avatar_color: string | null };
+
     const uiPayments: UiPayment[] = (rows ?? []).map((row) => {
-      const client = row.clients as { id: string; name: string; avatar_color: string | null } | null;
+      const clientRel = row.clients as unknown as ClientRel | ClientRel[] | null;
+      const client = Array.isArray(clientRel) ? (clientRel[0] ?? null) : clientRel;
       const clientName = client?.name ?? "Unknown";
       const status = row.status as PaymentStatus;
 

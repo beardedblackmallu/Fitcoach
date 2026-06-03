@@ -1,5 +1,8 @@
 import type { MetadataRoute } from "next";
 
+// force-static required for Next.js static export (Capacitor build)
+export const dynamic = "force-static";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "FitCoach",
