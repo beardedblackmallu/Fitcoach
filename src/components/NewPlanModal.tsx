@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, Sparkles, X } from "lucide-react";
 import { useApp } from "@/lib/AppContext";
-import { Plan, getClient } from "@/lib/data";
+import { getClient } from "@/lib/data";
+import { createClient } from "@/lib/supabase/client";
 
 const presetDurations = [4, 8, 12, 16] as const;
 const presetCycleLengths = [2, 4, 6, 8] as const;
@@ -18,10 +19,9 @@ export function NewPlanModal() {
     newPlanOpen,
     newPlanPrefill,
     closeNewPlanModal,
-    addPlan,
     showToast,
-    assignClientsToPlan,
   } = useApp();
+  const [saving, setSaving] = useState(false);
 
   const [name, setName] = useState("");
   const [durationChoice, setDurationChoice] = useState<DurationChoice>(12);
@@ -92,32 +92,45 @@ export function NewPlanModal() {
 
   if (!newPlanOpen) return null;
 
-  const create = () => {
+  const create = async () => {
     if (!resolved.isValid || resolved.durationNum === null || resolved.cycleNum === null) return;
+    setSaving(true);
+
+    const supabase = createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      showToast("Not signed in — please refresh");
+      setSaving(false);
+      return;
+    }
+
     const dur = resolved.durationNum;
     const cycleLen = resolved.cycleNum;
-    const id = `p-${Date.now()}`;
-    const planType: Plan["type"] = saveAsTemplate ? "template" : "custom";
-    const plan: Plan = {
-      id,
-      name: name.trim() || "Untitled plan",
-      durationWeeks: dur,
-      cycleLengthWeeks: cycleLen,
-      cycles: Math.max(1, Math.ceil(dur / cycleLen)),
-      clientIds: customClient ? [customClient.id] : [],
-      lastEdited: "just now",
-      description: description.trim() || undefined,
-      type: planType,
-    };
-    addPlan(plan);
-    if (customClient) {
-      assignClientsToPlan(id, [customClient.id]);
-      showToast(`Custom plan created for ${customClient.name}`, "success");
-    } else {
-      showToast(planType === "template" ? "Template plan created" : "One-off plan created", "success");
+    const planType = saveAsTemplate ? "template" : "custom";
+
+    const { data: newPlan, error } = await supabase
+      .from("plans")
+      .insert({
+        trainer_id: user.id,
+        name: name.trim() || "Untitled plan",
+        description: description.trim() || null,
+        duration_weeks: dur,
+        cycle_length_weeks: cycleLen,
+        type: planType,
+      })
+      .select("id")
+      .single();
+
+    setSaving(false);
+
+    if (error || !newPlan) {
+      showToast(`Failed to create plan: ${error?.message ?? "unknown error"}`);
+      return;
     }
+
+    showToast(planType === "template" ? "Template created" : "Plan created", "success");
     closeNewPlanModal();
-    router.push(`/plans/${id}/edit`);
+    router.push(`/plans/${newPlan.id}/edit`);
   };
 
   return (
@@ -302,10 +315,11 @@ export function NewPlanModal() {
           </button>
           <button
             onClick={create}
-            disabled={!resolved.isValid}
-            className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed"
+            disabled={!resolved.isValid || saving}
+            className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
           >
-            Create plan
+            {saving && <span className="h-3.5 w-3.5 rounded-full border-2 border-white/50 border-t-white animate-spin" />}
+            {saving ? "Creating…" : "Create plan"}
           </button>
         </div>
       </div>

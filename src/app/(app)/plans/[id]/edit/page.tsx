@@ -24,12 +24,11 @@ import {
   DayKey,
   ExerciseEntry,
   exerciseLibrary,
-  initialWeekPlan,
-  defaultNutritionPlan,
   emptyNutritionPlan,
   NutritionPlan,
 } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
+import { createClient } from "@/lib/supabase/client";
 import { NutritionTab } from "@/components/NutritionTab";
 import { VideoLinkModal } from "@/components/VideoLinkModal";
 
@@ -51,7 +50,6 @@ export default function PlanEditPage() {
   const router = useRouter();
   const {
     showToast,
-    plans,
     openClientPicker,
     openExerciseVideo,
     libraryVideos,
@@ -59,30 +57,117 @@ export default function PlanEditPage() {
     removeLibraryVideo,
   } = useApp();
 
-  const plan = useMemo(() => plans.find((p) => p.id === params.id), [plans, params.id]);
+  // Plan metadata from DB
+  const [planName, setPlanName] = useState("Untitled plan");
+  const [planLoading, setPlanLoading] = useState(true);
+  const [planNotFound, setPlanNotFound] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  const [planName, setPlanName] = useState(plan?.name ?? "Untitled plan");
   const [topTab, setTopTab] = useState<TopTab>("workouts");
   const [activeWeek, setActiveWeek] = useState(1);
-  const [week, setWeek] = useState<Record<DayKey, ExerciseEntry[]>>(
-    plan && plan.clientIds.length > 0 ? initialWeekPlan : emptyWeek
+  const [week, setWeek] = useState<Record<DayKey, ExerciseEntry[]>>(emptyWeek);
+  const [nutritionPlan, setNutritionPlan] = useState<NutritionPlan>(
+    JSON.parse(JSON.stringify(emptyNutritionPlan))
   );
-  const [nutritionPlan, setNutritionPlan] = useState<NutritionPlan>(() => {
-    // Only the existing "12-Week Transformation" demo plan gets the sample
-    // pre-fill. Every other plan — templates and freshly-created — starts
-    // with an empty nutrition tab so trainers build their own.
-    const seed = params.id === "p-12wt" ? defaultNutritionPlan : emptyNutritionPlan;
-    return JSON.parse(JSON.stringify(seed));
-  });
   const [librarySearch, setLibrarySearch] = useState("");
   const [libraryCat, setLibraryCat] = useState<(typeof categories)[number]>("All");
   const [libraryDrawerOpen, setLibraryDrawerOpen] = useState(false);
   const [editingNote, setEditingNote] = useState<{ day: DayKey; id: string } | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
-  // Which exercise (by name) is being added/edited in the video-link modal
   const [videoLinkFor, setVideoLinkFor] = useState<string | null>(null);
 
-  if (!plan) {
+  // Load plan + exercises from Supabase on mount
+  useMemo(() => {
+    const supabase = createClient();
+    supabase
+      .from("plans")
+      .select("id, name")
+      .eq("id", params.id)
+      .single()
+      .then(({ data, error }) => {
+        if (error || !data) { setPlanNotFound(true); setPlanLoading(false); return; }
+        setPlanName(data.name);
+
+        // Load saved exercises for cycle 1 / week 1
+        supabase
+          .from("plan_exercises")
+          .select("day_key, exercise_name, sets_reps, notes, order_index, is_rest_day")
+          .eq("plan_id", params.id)
+          .eq("cycle_number", 1)
+          .eq("week_number", 1)
+          .order("order_index")
+          .then(({ data: exRows }) => {
+            if (exRows && exRows.length > 0) {
+              const loaded: Record<DayKey, ExerciseEntry[]> = { ...emptyWeek };
+              exRows.forEach((row, i) => {
+                const day = (row.day_key.charAt(0).toUpperCase() + row.day_key.slice(1)) as DayKey;
+                if (!loaded[day]) loaded[day] = [];
+                loaded[day].push({
+                  id: `${day}-${i}`,
+                  name: row.exercise_name,
+                  detail: row.sets_reps ?? "3×10",
+                  notes: row.notes ?? undefined,
+                  rest: row.is_rest_day,
+                });
+              });
+              setWeek(loaded);
+            }
+            setPlanLoading(false);
+          });
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params.id]);
+
+  const savePlan = async () => {
+    setSaving(true);
+    const supabase = createClient();
+
+    // Update plan name + last_edited_at
+    await supabase
+      .from("plans")
+      .update({ name: planName, last_edited_at: new Date().toISOString() })
+      .eq("id", params.id);
+
+    // Replace all exercises for cycle 1 / week 1
+    await supabase
+      .from("plan_exercises")
+      .delete()
+      .eq("plan_id", params.id)
+      .eq("cycle_number", 1)
+      .eq("week_number", 1);
+
+    const rows = days.flatMap((day, dayIdx) =>
+      week[day].map((ex, i) => ({
+        plan_id: params.id,
+        cycle_number: 1,
+        week_number: 1,
+        day_key: day.toLowerCase(),
+        exercise_name: ex.name,
+        sets_reps: ex.detail,
+        notes: ex.notes ?? null,
+        order_index: dayIdx * 100 + i,
+        is_rest_day: ex.rest ?? false,
+      }))
+    );
+
+    if (rows.length > 0) {
+      await supabase.from("plan_exercises").insert(rows);
+    }
+
+    setSaving(false);
+    showToast("Plan saved", "success");
+  };
+
+  if (planLoading) {
+    return (
+      <div className="px-4 sm:px-6 lg:px-8 py-12 max-w-2xl mx-auto text-center animate-pulse">
+        <div className="h-8 w-48 bg-stone-200 rounded mx-auto mb-3" />
+        <div className="h-4 w-32 bg-stone-100 rounded mx-auto" />
+      </div>
+    );
+  }
+
+  if (planNotFound) {
     return (
       <div className="px-4 sm:px-6 lg:px-8 py-12 max-w-2xl mx-auto text-center">
         <Dumbbell className="h-10 w-10 text-stone-300 mx-auto mb-2" />
@@ -176,13 +261,15 @@ export default function PlanEditPage() {
         {/* Header action buttons — visible on tablet+; on mobile they appear as a sticky bottom bar below */}
         <div className="hidden md:flex items-center gap-2">
           <button
-            onClick={() => showToast("Plan saved as draft", "success")}
-            className="h-9 px-3 text-sm rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 font-medium"
+            onClick={savePlan}
+            disabled={saving}
+            className="h-9 px-3 text-sm rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 font-medium flex items-center gap-2 disabled:opacity-60"
           >
-            Save plan
+            {saving && <span className="h-3.5 w-3.5 rounded-full border-2 border-stone-400 border-t-transparent animate-spin" />}
+            {saving ? "Saving…" : "Save plan"}
           </button>
           <button
-            onClick={() => openClientPicker(plan)}
+            onClick={() => showToast("Assign clients — coming soon")}
             className="h-9 px-3 text-sm rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium inline-flex items-center gap-1.5"
           >
             <Send className="h-4 w-4" />
@@ -545,13 +632,15 @@ export default function PlanEditPage() {
       {/* Mobile-only sticky bottom action bar: Save + Send */}
       <div className="md:hidden fixed bottom-[56px] inset-x-0 z-20 bg-white border-t border-stone-200 shadow-[0_-4px_12px_rgba(0,0,0,0.04)] px-3 py-2 pb-[max(env(safe-area-inset-bottom),0.5rem)] flex items-center gap-2">
         <button
-          onClick={() => showToast("Plan saved as draft", "success")}
-          className="flex-1 h-11 rounded-lg border border-stone-300 active:bg-stone-100 text-stone-700 text-sm font-medium"
+          onClick={savePlan}
+          disabled={saving}
+          className="flex-1 h-11 rounded-lg border border-stone-300 active:bg-stone-100 text-stone-700 text-sm font-medium flex items-center justify-center gap-2 disabled:opacity-60"
         >
-          Save plan
+          {saving && <span className="h-3.5 w-3.5 rounded-full border-2 border-stone-400 border-t-transparent animate-spin" />}
+          {saving ? "Saving…" : "Save plan"}
         </button>
         <button
-          onClick={() => openClientPicker(plan)}
+          onClick={() => showToast("Assign clients — coming soon")}
           className="flex-[1.6] h-11 rounded-lg bg-teal-600 active:bg-teal-800 text-white text-sm font-semibold inline-flex items-center justify-center gap-1.5"
         >
           <Send className="h-4 w-4" />

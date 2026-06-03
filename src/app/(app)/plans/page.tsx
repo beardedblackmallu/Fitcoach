@@ -14,10 +14,12 @@ import {
   Users,
 } from "lucide-react";
 import { useApp } from "@/lib/AppContext";
+import { usePlans, type UiPlan } from "@/lib/hooks/usePlans";
 
 export default function PlansListPage() {
   const router = useRouter();
-  const { plans, openNewPlanModal, showToast } = useApp();
+  const { openNewPlanModal, showToast } = useApp();
+  const { plans, loading, error, refetch } = usePlans();
   const [filter, setFilter] = useState<"templates" | "custom">("templates");
 
   const visible = plans.filter((p) => (filter === "templates" ? p.type === "template" : p.type === "custom"));
@@ -26,13 +28,25 @@ export default function PlansListPage() {
     custom: plans.filter((p) => p.type === "custom").length,
   };
 
+  if (error) {
+    return (
+      <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+          <p className="text-sm font-medium text-red-700">Failed to load plans</p>
+          <p className="text-xs text-red-500 mt-1">{error}</p>
+          <button onClick={refetch} className="mt-3 text-xs text-red-700 underline">Try again</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
       <div className="flex items-end justify-between mb-5 gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold text-stone-900">Plans</h1>
           <p className="text-sm text-stone-500 mt-1">
-            Reusable templates and one-off plans for individual clients.
+            {loading ? "Loading…" : "Reusable templates and one-off plans for individual clients."}
           </p>
         </div>
         <button
@@ -71,7 +85,17 @@ export default function PlansListPage() {
         </div>
       </div>
 
-      {visible.length === 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1,2,3].map((i) => (
+            <div key={i} className="bg-white border border-stone-200 rounded-xl p-5 animate-pulse space-y-3">
+              <div className="h-9 w-9 rounded-lg bg-stone-200" />
+              <div className="h-4 w-40 bg-stone-200 rounded" />
+              <div className="h-3 w-24 bg-stone-100 rounded" />
+            </div>
+          ))}
+        </div>
+      ) : visible.length === 0 ? (
         <div className="bg-white border border-stone-200 rounded-xl p-12 text-center">
           <Dumbbell className="h-10 w-10 text-stone-300 mx-auto mb-3" />
           <p className="font-medium text-stone-800">
@@ -115,7 +139,7 @@ function PlanCard({
   onArchive,
   onDelete,
 }: {
-  plan: import("@/lib/data").Plan;
+  plan: UiPlan;
   onEdit: () => void;
   onDuplicate: () => void;
   onArchive: () => void;
@@ -141,7 +165,7 @@ function PlanCard({
           </div>
           <h3 className="font-semibold text-stone-900 leading-snug">{plan.name}</h3>
           <p className="text-xs text-stone-500 mt-1">
-            {plan.durationWeeks} weeks · {plan.cycles} cycle{plan.cycles > 1 ? "s" : ""}
+            {plan.durationWeeks} weeks · {plan.cycles} cycle{plan.cycles !== 1 ? "s" : ""}
           </p>
         </Link>
         <div className="relative" ref={ref}>
@@ -187,7 +211,7 @@ function PlanCard({
       <div className="mt-auto pt-3 flex items-center justify-between text-xs text-stone-500 border-t border-stone-100">
         <span className="inline-flex items-center gap-1">
           <Users className="h-3.5 w-3.5" />
-          {plan.clientIds.length} client{plan.clientIds.length !== 1 ? "s" : ""}
+          {plan.clientCount} client{plan.clientCount !== 1 ? "s" : ""}
         </span>
         <span>Edited {plan.lastEdited}</span>
       </div>
