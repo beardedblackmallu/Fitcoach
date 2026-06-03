@@ -19,7 +19,7 @@ import {
 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DayKey,
   ExerciseEntry,
@@ -78,23 +78,30 @@ export default function PlanEditPage() {
   const [noteDraft, setNoteDraft] = useState("");
   const [videoLinkFor, setVideoLinkFor] = useState<string | null>(null);
 
-  // Load plan + exercises from Supabase on mount
-  useMemo(() => {
+  // Load plan + exercises from Supabase — useEffect re-runs when plan ID changes
+  useEffect(() => {
+    let cancelled = false;
+    setPlanLoading(true);
+    setPlanNotFound(false);
+    setWeek(emptyWeek);
+
     const supabase = createClient();
+
     supabase
       .from("plans")
       .select("id, name, duration_weeks, cycle_length_weeks")
       .eq("id", params.id)
       .single()
       .then(({ data, error }) => {
+        if (cancelled) return;
         if (error || !data) { setPlanNotFound(true); setPlanLoading(false); return; }
+
         setPlanName(data.name);
         const cycleLen = data.cycle_length_weeks as number;
         const dur = data.duration_weeks as number;
         setPlanWeeksPerCycle(cycleLen);
         setPlanCycles(Math.max(1, Math.ceil(dur / cycleLen)));
 
-        // Load saved exercises for cycle 1 / week 1
         supabase
           .from("plan_exercises")
           .select("day_key, exercise_name, sets_reps, notes, order_index, is_rest_day")
@@ -103,6 +110,7 @@ export default function PlanEditPage() {
           .eq("week_number", 1)
           .order("order_index")
           .then(({ data: exRows }) => {
+            if (cancelled) return;
             if (exRows && exRows.length > 0) {
               const loaded: Record<DayKey, ExerciseEntry[]> = { ...emptyWeek };
               exRows.forEach((row, i) => {
@@ -121,7 +129,8 @@ export default function PlanEditPage() {
             setPlanLoading(false);
           });
       });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+
+    return () => { cancelled = true; };
   }, [params.id]);
 
   const savePlan = async () => {
