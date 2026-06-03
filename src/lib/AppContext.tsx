@@ -32,9 +32,12 @@ interface AppCtx {
   callLogs: Record<string, { id: string; text: string; time: string }[]>;
   addCallLog: (clientId: string, trainerName: string, clientName: string) => void;
 
-  // Resolved escalations
+  // Resolved escalations (kept for legacy dashboard + bottom nav badge sync)
   resolvedEscalations: string[];
   resolveEscalation: (id: string) => void;
+  // Live escalation count from DB (set by inbox page after fetch)
+  escalationCount: number;
+  setEscalationCount: (n: number) => void;
 
   // Sidebar
   sidebarOpen: boolean;
@@ -94,6 +97,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [callTarget, setCallTarget] = useState<CallTarget>(null);
   const [callLogs, setCallLogs] = useState<Record<string, { id: string; text: string; time: string }[]>>({});
   const [resolvedEscalations, setResolvedEscalations] = useState<string[]>([]);
+  const [escalationCount, setEscalationCount] = useState(0);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [composerPrefill, setComposerPrefill] = useState<ComposerPrefill>(null);
   const [plans, setPlans] = useState<Plan[]>(seedPlans);
@@ -213,6 +217,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         callTarget, openCallModal, closeCallModal,
         callLogs, addCallLog,
         resolvedEscalations, resolveEscalation,
+        escalationCount, setEscalationCount,
         sidebarOpen, setSidebarOpen,
         composerPrefill, setComposerPrefill, consumeComposerPrefill,
         plans, addPlan, assignClientsToPlan,

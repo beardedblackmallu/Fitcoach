@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   ChevronDown,
@@ -13,31 +13,59 @@ import {
   Sparkles,
 } from "lucide-react";
 import { Avatar } from "@/components/Avatar";
-import { escalations, getClient, EscalationCategory } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
+import { useEscalations, type UiEscalation } from "@/lib/hooks/useEscalations";
 
-const tabs: { label: string; value: EscalationCategory | "All" }[] = [
-  { label: "All", value: "All" },
-  { label: "Medical", value: "Medical" },
-  { label: "Off-topic question", value: "Off-topic question" },
-  { label: "Compliance", value: "Compliance" },
-  { label: "Other", value: "Other" },
-];
+const CATEGORIES = ["All", "Medical", "Off-topic question", "Compliance", "Other"] as const;
+type FilterValue = (typeof CATEGORIES)[number];
 
 export default function InboxPage() {
   const router = useRouter();
-  const { resolvedEscalations, resolveEscalation, openVoiceModal, openCallModal, showToast } = useApp();
-  const [filter, setFilter] = useState<EscalationCategory | "All">("All");
+  const {
+    resolveEscalation,
+    openVoiceModal,
+    openCallModal,
+    showToast,
+    setComposerPrefill,
+    setEscalationCount,
+  } = useApp();
 
-  const active = escalations.filter((e) => !resolvedEscalations.includes(e.id));
+  const { escalations, loading, error, resolveInDb } = useEscalations();
+  const [filter, setFilter] = useState<FilterValue>("All");
+
+  // Keep AppContext escalation count in sync for BottomNav badge
+  useEffect(() => {
+    setEscalationCount(escalations.length);
+  }, [escalations.length, setEscalationCount]);
+
+  const visible = filter === "All"
+    ? escalations
+    : escalations.filter((e) => e.category === filter);
+
   const counts: Record<string, number> = {
-    All: active.length,
-    Medical: active.filter((e) => e.category === "Medical").length,
-    "Off-topic question": active.filter((e) => e.category === "Off-topic question").length,
-    Compliance: active.filter((e) => e.category === "Compliance").length,
-    Other: active.filter((e) => e.category === "Other").length,
+    All: escalations.length,
+    Medical: escalations.filter((e) => e.category === "Medical").length,
+    "Off-topic question": escalations.filter((e) => e.category === "Off-topic question").length,
+    Compliance: escalations.filter((e) => e.category === "Compliance").length,
+    Other: escalations.filter((e) => e.category === "Other").length,
   };
-  const visible = filter === "All" ? active : active.filter((e) => e.category === filter);
+
+  const handleResolve = async (esc: UiEscalation) => {
+    await resolveInDb(esc.id);
+    resolveEscalation(esc.id); // keep legacy AppContext in sync for dashboard
+    showToast("Marked resolved", "success");
+  };
+
+  if (error) {
+    return (
+      <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-5xl mx-auto">
+        <div className="bg-red-50 border border-red-200 rounded-xl p-6 text-center">
+          <p className="text-sm font-medium text-red-700">Failed to load inbox</p>
+          <p className="text-xs text-red-500 mt-1">{error}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-5xl mx-auto">
@@ -48,7 +76,7 @@ export default function InboxPage() {
             Action needed
           </h1>
           <p className="text-sm text-stone-500 mt-1">
-            The bot pulls you in when something needs human judgment.
+            {loading ? "Loading…" : "The bot pulls you in when something needs human judgment."}
           </p>
         </div>
       </div>
@@ -56,39 +84,54 @@ export default function InboxPage() {
       {/* Filter tabs */}
       <div className="border-b border-stone-200 mb-5">
         <div className="flex gap-1 overflow-x-auto -mb-px">
-          {tabs.map((t) => (
+          {CATEGORIES.map((cat) => (
             <button
-              key={t.value}
-              onClick={() => setFilter(t.value)}
+              key={cat}
+              onClick={() => setFilter(cat)}
               className={`px-3 py-2.5 text-sm font-medium border-b-2 whitespace-nowrap flex items-center gap-2 transition-colors ${
-                filter === t.value
+                filter === cat
                   ? "border-teal-600 text-teal-700"
                   : "border-transparent text-stone-500 hover:text-stone-800"
               }`}
             >
-              {t.label}
+              {cat}
               <span
                 className={`text-[10px] font-semibold px-1.5 min-w-[18px] h-[18px] grid place-items-center rounded-full ${
-                  filter === t.value
+                  filter === cat
                     ? "bg-teal-100 text-teal-700"
                     : "bg-stone-100 text-stone-500"
                 }`}
               >
-                {counts[t.value] ?? 0}
+                {counts[cat] ?? 0}
               </span>
             </button>
           ))}
         </div>
       </div>
 
-      {visible.length === 0 ? (
+      {loading ? (
+        <div className="space-y-4">
+          {[1, 2].map((i) => (
+            <div key={i} className="bg-white rounded-xl border border-stone-200 p-5 animate-pulse space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-stone-200 shrink-0" />
+                <div className="space-y-2 flex-1">
+                  <div className="h-4 w-32 bg-stone-200 rounded" />
+                  <div className="h-3 w-24 bg-stone-100 rounded" />
+                </div>
+              </div>
+              <div className="h-16 bg-stone-100 rounded-lg" />
+            </div>
+          ))}
+        </div>
+      ) : visible.length === 0 ? (
         <div className="bg-white border border-stone-200 rounded-xl p-12 text-center">
           <div className="h-12 w-12 mx-auto rounded-full bg-emerald-50 grid place-items-center mb-3">
             <CheckCircle2 className="h-6 w-6 text-emerald-600" />
           </div>
           <p className="font-medium text-stone-900">All caught up</p>
           <p className="text-sm text-stone-500 mt-1">
-            No escalations matching this filter.
+            {filter === "All" ? "No open escalations." : `No ${filter.toLowerCase()} escalations.`}
           </p>
         </div>
       ) : (
@@ -98,13 +141,15 @@ export default function InboxPage() {
               key={esc.id}
               escalation={esc}
               defaultExpanded={i === 0}
-              onResolve={() => {
-                resolveEscalation(esc.id);
-                showToast("Marked resolved", "success");
-              }}
+              onResolve={() => handleResolve(esc)}
               onOpenChat={() => router.push(`/conversations?c=${esc.clientId}`)}
-              onCall={(name, phone) => openCallModal(esc.clientId, name, phone)}
-              onVoice={(name) => openVoiceModal(name)}
+              onCall={() => openCallModal(esc.clientId, esc.clientName, esc.clientPhone)}
+              onVoice={() => openVoiceModal(esc.clientName)}
+              onUseReply={(text) => {
+                setComposerPrefill({ clientId: esc.clientId, text });
+                showToast(`Reply ready in ${esc.clientName.split(" ")[0]}'s composer`, "success");
+                router.push(`/conversations?c=${esc.clientId}`);
+              }}
             />
           ))}
         </div>
@@ -120,35 +165,28 @@ function EscalationCard({
   onOpenChat,
   onCall,
   onVoice,
+  onUseReply,
 }: {
-  escalation: (typeof escalations)[number];
+  escalation: UiEscalation;
   defaultExpanded?: boolean;
   onResolve: () => void;
   onOpenChat: () => void;
-  onCall: (clientName: string, phone: string) => void;
-  onVoice: (clientName: string) => void;
+  onCall: () => void;
+  onVoice: () => void;
+  onUseReply: (text: string) => void;
 }) {
-  const c = getClient(escalation.clientId)!;
   const [whyOpen, setWhyOpen] = useState(defaultExpanded);
   const [suggestedOpen, setSuggestedOpen] = useState(defaultExpanded);
-  const router = useRouter();
-  const { showToast, setComposerPrefill } = useApp();
-
-  const useReply = (text: string) => {
-    setComposerPrefill({ clientId: escalation.clientId, text });
-    showToast(`Reply ready in ${c.name.split(" ")[0]}'s composer`, "success");
-    router.push(`/conversations?c=${escalation.clientId}`);
-  };
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
       <div className="h-1 bg-amber-400" />
       <div className="p-5">
         <div className="flex items-start gap-3">
-          <Avatar initials={c.initials} color={c.avatarColor} size="md" />
+          <Avatar initials={escalation.clientInitials} color={escalation.clientAvatarColor} size="md" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
-              <span className="font-semibold text-stone-900">{c.name}</span>
+              <span className="font-semibold text-stone-900">{escalation.clientName}</span>
               <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 inline-flex items-center gap-1">
                 🟡 Escalated by bot
               </span>
@@ -168,7 +206,6 @@ function EscalationCard({
           <div className="text-sm text-stone-800 leading-relaxed">"{escalation.quotedMessage}"</div>
         </div>
 
-        {/* Why escalated */}
         <button
           onClick={() => setWhyOpen((v) => !v)}
           className="mt-3 text-xs font-medium text-stone-600 hover:text-stone-800 inline-flex items-center gap-1"
@@ -182,7 +219,6 @@ function EscalationCard({
           </div>
         )}
 
-        {/* Action buttons */}
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={onOpenChat}
@@ -192,14 +228,14 @@ function EscalationCard({
             Open conversation
           </button>
           <button
-            onClick={() => onCall(c.name, c.phone)}
+            onClick={onCall}
             className="text-sm font-medium px-3 min-h-[44px] rounded-lg border border-stone-300 hover:bg-stone-50 active:bg-stone-100 text-stone-700 inline-flex items-center gap-1.5 touch-manipulation"
           >
             <Phone className="h-4 w-4" />
             Tap to call
           </button>
           <button
-            onClick={() => onVoice(c.name)}
+            onClick={onVoice}
             className="text-sm font-medium px-3 min-h-[44px] rounded-lg border border-stone-300 hover:bg-stone-50 active:bg-stone-100 text-stone-700 inline-flex items-center gap-1.5 touch-manipulation"
           >
             <Mic className="h-4 w-4" />
@@ -214,32 +250,35 @@ function EscalationCard({
           </button>
         </div>
 
-        {/* Suggested replies */}
-        <button
-          onClick={() => setSuggestedOpen((v) => !v)}
-          className="mt-4 text-xs font-medium text-teal-700 hover:text-teal-800 inline-flex items-center gap-1.5"
-        >
-          {suggestedOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
-          <Sparkles className="h-3.5 w-3.5" />
-          Suggested response{escalation.suggestedReplies.length > 1 ? "s" : ""}
-        </button>
-        {suggestedOpen && (
-          <div className="mt-2 space-y-2">
-            {escalation.suggestedReplies.map((r, i) => (
-              <div
-                key={i}
-                className="bg-gradient-to-br from-teal-50 to-stone-50 border border-teal-100 rounded-lg p-3 flex flex-col sm:flex-row sm:items-start gap-3"
-              >
-                <p className="flex-1 text-sm text-stone-700 leading-relaxed">{r}</p>
-                <button
-                  onClick={() => useReply(r)}
-                  className="self-end sm:self-auto shrink-0 text-sm font-medium px-4 min-h-[40px] rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white touch-manipulation"
-                >
-                  Use this
-                </button>
+        {escalation.suggestedReplies.length > 0 && (
+          <>
+            <button
+              onClick={() => setSuggestedOpen((v) => !v)}
+              className="mt-4 text-xs font-medium text-teal-700 hover:text-teal-800 inline-flex items-center gap-1.5"
+            >
+              {suggestedOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
+              <Sparkles className="h-3.5 w-3.5" />
+              Suggested response{escalation.suggestedReplies.length > 1 ? "s" : ""}
+            </button>
+            {suggestedOpen && (
+              <div className="mt-2 space-y-2">
+                {escalation.suggestedReplies.map((r, i) => (
+                  <div
+                    key={i}
+                    className="bg-gradient-to-br from-teal-50 to-stone-50 border border-teal-100 rounded-lg p-3 flex flex-col sm:flex-row sm:items-start gap-3"
+                  >
+                    <p className="flex-1 text-sm text-stone-700 leading-relaxed">{r}</p>
+                    <button
+                      onClick={() => onUseReply(r)}
+                      className="self-end sm:self-auto shrink-0 text-sm font-medium px-4 min-h-[40px] rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white touch-manipulation"
+                    >
+                      Use this
+                    </button>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </div>
     </div>

@@ -38,11 +38,11 @@ function isActive(pathname: string, href: string) {
 export function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
-  const { resolvedEscalations } = useApp();
+  const { escalationCount } = useApp();
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
-  const inboxBadge = Math.max(0, 2 - resolvedEscalations.length);
+  const inboxBadge = escalationCount;
   const moreActive = moreLinks.some((l) => isActive(pathname, l.href));
 
   useEffect(() => {
