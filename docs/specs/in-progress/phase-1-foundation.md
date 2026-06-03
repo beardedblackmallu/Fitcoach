@@ -213,12 +213,39 @@ Phase 1 — they require AiSensy (Phase 3) or significant schema work.
 | Quoted message shows "(message unavailable)" if no trigger message | The escalation schema links to messages via triggered_by_message_id. Without a real message row, the JOIN returns null. Correct in production when bot writes real messages. |
 | BottomNav inbox badge shows 0 | Correct — no real escalations exist yet. Will show real count once bot creates them in Phase 3. |
 
-### Conversations (not yet migrated — CP3 Screen 5)
+### Conversations — fully deferred to Phase 3
 
-The entire conversations page still reads from data.ts mock data.
-Real messages, conversations, and client threads will be wired
-in CP3 Screen 5. Until then, the conversations page shows the
-demo Priya/Karan/Anita threads regardless of who is logged in.
+The conversations page is intentionally left on data.ts mock data.
+It will NOT be migrated in Phase 1.
+
+| Gap | Why deferred |
+|---|---|
+| Entire conversations page reads mock data | Real conversations require AiSensy webhook to write messages to the DB. Without the bot, there is no message data to display. A partial migration (real DB but empty threads) adds complexity with zero user value. |
+| Message sending is visual only | The composer sends messages to AppContext state, not to Supabase or AiSensy. Real sending requires AiSensy BSP API (Phase 3). |
+| Conversation list shows Priya/Karan/Anita regardless of trainer | Mock data.ts conversations are not scoped to any trainer. This is acceptable for Phase 1 prototype testing. |
+
+Phase 3 work required:
+- AiSensy webhook → writes inbound messages to `messages` + `conversations` tables
+- Outbound API → trainer reply → AiSensy → WhatsApp delivery
+- Real-time subscription on `messages` for live updates
+- Conversation list fetched from `conversations` table filtered by trainer
+
+### Dashboard — partial migration (CP3)
+
+Three of four metric cards are now wired to real DB data.
+The fourth and both feed sections remain mock with console.warn.
+
+| Section | Status | Depends on |
+|---|---|---|
+| Active clients count | ✅ Real | clients table |
+| Plans expiring this week | ✅ Real | plan_assignments + plans |
+| Revenue this month | ✅ Real | payments table (paid_at) |
+| Avg compliance | ⚠️ Mock (`console.warn`) | workout_logs aggregation — Phase 4 |
+| Action needed (escalation feed) | ⚠️ Mock (`console.warn`) | AiSensy webhook — Phase 3 |
+| Today's check-ins feed | ⚠️ Mock (`console.warn`) | AiSensy check-in messages — Phase 3 |
+
+The three mock sections each emit a `console.warn` in dev so they
+are immediately identifiable during testing and not mistaken for bugs.
 
 ---
 

@@ -18,15 +18,9 @@ import {
   Clock,
 } from "lucide-react";
 import { Avatar } from "@/components/Avatar";
-import { clients, escalations, todaysCheckins, getClient } from "@/lib/data";
+import { escalations, todaysCheckins, getClient } from "@/lib/data";
 import { useApp } from "@/lib/AppContext";
-
-const metrics = [
-  { label: "Active clients", value: "24", icon: Users, accent: "text-teal-700 bg-teal-50", trend: "+2 this week" },
-  { label: "Plans expiring this week", value: "3", icon: Calendar, accent: "text-amber-700 bg-amber-50", trend: "Renew now" },
-  { label: "Revenue this month", value: "₹48,000", icon: IndianRupee, accent: "text-emerald-700 bg-emerald-50", trend: "+12% vs last" },
-  { label: "Avg compliance", value: "78%", icon: TrendingUp, accent: "text-blue-700 bg-blue-50", trend: "Steady" },
-];
+import { useDashboardStats } from "@/lib/hooks/useDashboardStats";
 
 const statusIcon: Record<string, React.ComponentType<{ className?: string }>> = {
   "Logged workout": CheckCircle2,
@@ -40,7 +34,53 @@ const statusIcon: Record<string, React.ComponentType<{ className?: string }>> = 
 export default function DashboardPage() {
   const router = useRouter();
   const { openCallModal, resolvedEscalations } = useApp();
+  const { stats, loading: statsLoading } = useDashboardStats();
+
+  // Mock sections — console.warn so they're identifiable during testing
+  // These will be replaced in Phase 3 (AiSensy) and Phase 4 (compliance)
   const activeEscalations = escalations.filter((e) => !resolvedEscalations.includes(e.id));
+  if (typeof window !== "undefined") {
+    if (activeEscalations.length > 0) {
+      console.warn("[MOCK] Dashboard escalation feed — reads from data.ts. Real escalations come from AiSensy webhook (Phase 3).");
+    }
+    console.warn("[MOCK] Dashboard check-ins feed — reads from data.ts. Real check-ins come from AiSensy bot messages (Phase 3).");
+    console.warn("[MOCK] Avg compliance metric — hardcoded 78%. Real value requires workout_logs aggregation (Phase 4).");
+  }
+
+  const metrics = [
+    {
+      label: "Active clients",
+      value: statsLoading ? "…" : String(stats.activeClientCount),
+      icon: Users,
+      accent: "text-teal-700 bg-teal-50",
+      trend: "From your client list",
+      mock: false,
+    },
+    {
+      label: "Plans expiring this week",
+      value: statsLoading ? "…" : String(stats.plansExpiringThisWeek),
+      icon: Calendar,
+      accent: "text-amber-700 bg-amber-50",
+      trend: stats.plansExpiringThisWeek > 0 ? "Renew now" : "All good",
+      mock: false,
+    },
+    {
+      label: "Revenue this month",
+      value: statsLoading ? "…" : `₹${stats.revenueThisMonth.toLocaleString("en-IN")}`,
+      icon: IndianRupee,
+      accent: "text-emerald-700 bg-emerald-50",
+      trend: "Paid payments only",
+      mock: false,
+    },
+    {
+      label: "Avg compliance",
+      value: "78%",
+      icon: TrendingUp,
+      accent: "text-blue-700 bg-blue-50",
+      trend: "Mock — Phase 4",
+      mock: true,
+    },
+  ];
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
@@ -66,9 +106,14 @@ export default function DashboardPage() {
               <div className={`p-2 rounded-lg ${m.accent}`}>
                 <m.icon className="h-4 w-4" />
               </div>
-              <ArrowUpRight className="h-4 w-4 text-stone-300" />
+              {m.mock
+                ? <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-stone-100 text-stone-400 uppercase tracking-wide">mock</span>
+                : <ArrowUpRight className="h-4 w-4 text-stone-300" />
+              }
             </div>
-            <div className="text-2xl font-semibold text-stone-900 tracking-tight">{m.value}</div>
+            <div className={`text-2xl font-semibold tracking-tight ${statsLoading && !m.mock ? "text-stone-300" : "text-stone-900"}`}>
+              {m.value}
+            </div>
             <div className="text-xs text-stone-500 mt-1">{m.label}</div>
             <div className="text-[11px] text-stone-400 mt-2">{m.trend}</div>
           </div>
