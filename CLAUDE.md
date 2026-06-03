@@ -40,6 +40,11 @@ Checkpoints:
 - No mock data in production — throw clear errors if data missing
 - No client-side WhatsApp — clients use regular WhatsApp only
 - Capacitor plugins for camera/push/biometrics — not browser APIs
+- **Route protection file is `src/proxy.ts`, NOT `middleware.ts`.**
+  Next.js 16 deprecated `middleware.ts` and renamed the convention to
+  `proxy.ts` (v16.0.0). Having both files simultaneously makes behavior
+  unstable per the Next.js 16 docs. Do NOT create `middleware.ts` as a
+  "safety net" or attempt to rename `proxy.ts` back to `middleware.ts`.
 
 ## Folder structure
 
