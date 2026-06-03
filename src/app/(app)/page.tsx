@@ -44,6 +44,7 @@ export default function DashboardPage() {
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
+
       <div className="flex items-end justify-between mb-6 flex-wrap gap-2">
         <div>
           <h1 className="text-2xl font-semibold text-stone-900">Good afternoon, Sandeep</h1>

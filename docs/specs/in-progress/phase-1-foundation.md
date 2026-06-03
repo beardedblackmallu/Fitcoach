@@ -7,15 +7,15 @@ add authentication, wrap with Capacitor for iOS + Android.
 ## Checkpoints
 
 ### Checkpoint 1 — Supabase setup
-- [ ] Supabase project created
-- [ ] Schema from docs/schema.md deployed via SQL editor
-- [ ] Environment variables set in .env.local:
+- [x] Supabase project created (gcendipptiwpipadqzan · ap-south-1 Mumbai)
+- [x] Schema from docs/schema.md deployed via SQL editor
+- [x] Environment variables set in .env.local:
       NEXT_PUBLIC_SUPABASE_URL
       NEXT_PUBLIC_SUPABASE_ANON_KEY
       SUPABASE_SERVICE_ROLE_KEY
-- [ ] /src/lib/supabase/client.ts created
-- [ ] /src/lib/supabase/server.ts created
-- [ ] Simple test query confirms connection
+- [x] /src/lib/supabase/client.ts created
+- [x] /src/lib/supabase/server.ts created
+- [x] Simple test query confirms connection (✅ Connected! trainers rows: 0)
 
 ### Checkpoint 2 — Authentication
 - [ ] Supabase Auth configured (email + Google OAuth)
