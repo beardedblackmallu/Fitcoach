@@ -52,6 +52,9 @@ For each checkpoint:
 ---
 
 ### Checkpoint 2 — Authentication
+> ⚠️ Test 12 (second account signup) still pending — blocked by Supabase
+> free-tier email rate limit (4 emails/hour). Re-run before closing CP2.
+
 - [ ] Supabase Auth configured (email + Google OAuth)
 - [ ] /src/app/(auth)/login/page.tsx
 - [ ] /src/app/(auth)/signup/page.tsx
