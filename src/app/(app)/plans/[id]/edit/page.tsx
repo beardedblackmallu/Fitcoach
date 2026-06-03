@@ -59,6 +59,8 @@ export default function PlanEditPage() {
 
   // Plan metadata from DB
   const [planName, setPlanName] = useState("Untitled plan");
+  const [planCycles, setPlanCycles] = useState(1);
+  const [planWeeksPerCycle, setPlanWeeksPerCycle] = useState(4);
   const [planLoading, setPlanLoading] = useState(true);
   const [planNotFound, setPlanNotFound] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -81,12 +83,16 @@ export default function PlanEditPage() {
     const supabase = createClient();
     supabase
       .from("plans")
-      .select("id, name")
+      .select("id, name, duration_weeks, cycle_length_weeks")
       .eq("id", params.id)
       .single()
       .then(({ data, error }) => {
         if (error || !data) { setPlanNotFound(true); setPlanLoading(false); return; }
         setPlanName(data.name);
+        const cycleLen = data.cycle_length_weeks as number;
+        const dur = data.duration_weeks as number;
+        setPlanWeeksPerCycle(cycleLen);
+        setPlanCycles(Math.max(1, Math.ceil(dur / cycleLen)));
 
         // Load saved exercises for cycle 1 / week 1
         supabase
@@ -233,8 +239,8 @@ export default function PlanEditPage() {
     showToast("Notes saved", "success");
   };
 
-  const cycleCount = plan.cycles;
-  const weeksPerCycle = plan.cycleLengthWeeks;
+  const cycleCount = planCycles;
+  const weeksPerCycle = planWeeksPerCycle;
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6 max-w-[1400px] mx-auto">
