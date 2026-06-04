@@ -6,11 +6,14 @@
 import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
-// Root paths where back button should exit the app instead of going back
-const ROOT_PATHS = ["/", "/clients", "/conversations", "/inbox", "/payments", "/plans"];
+// Tab-level root paths — back button exits the app instead of navigating back.
+// Strip trailing slash first: trailingSlash:true in the mobile build means
+// Next.js routes are served as /clients/ not /clients, so a bare === check fails.
+const ROOT_PATHS = new Set(["/", "/clients", "/conversations", "/inbox", "/payments", "/plans"]);
 
 function isRootPath(pathname: string) {
-  return ROOT_PATHS.some((p) => pathname === p);
+  const clean = pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
+  return ROOT_PATHS.has(clean);
 }
 
 export function CapacitorInit() {

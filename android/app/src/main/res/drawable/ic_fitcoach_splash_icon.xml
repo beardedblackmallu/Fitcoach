@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    FitCoach splash icon — white "F" lettermark on transparent background.
+    Designed to sit on the teal (#0D9488) splash background.
+    108×108dp canvas; visible icon area is the inner 72×72dp (18–90dp range).
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!--
+        Capital F shape built from rectangles:
+          Vertical bar  : x 28–44,  y 20–88
+          Top crossbar  : x 28–80,  y 20–36
+          Middle crossbar: x 28–70, y 51–66
+    -->
+
+    <!-- Vertical bar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M28,20 L44,20 L44,88 L28,88 Z" />
+
+    <!-- Top crossbar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44,20 L80,20 L80,36 L44,36 Z" />
+
+    <!-- Middle crossbar -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M44,51 L70,51 L70,66 L44,66 Z" />
+
+</vector>
