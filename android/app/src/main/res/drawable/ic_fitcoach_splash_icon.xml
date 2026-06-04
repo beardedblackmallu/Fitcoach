@@ -1,27 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    FitCoach splash icon — white "F" on transparent background.
-    Proportions match Futura Bold:
-      Canvas: 108×108dp (Android adaptive icon standard)
-      Letter sits in the inner 72×72dp safe zone (centred, 18–90dp range)
+    FitCoach splash icon — 108×108dp canvas.
 
-      Futura Bold F anatomy (relative to a 72-unit cap height):
-        Stem width  : ~17% → 12 units
-        Top crossbar: full cap width (56 units)
-        Mid crossbar: ~80% cap width (45 units)
-        Crossbar h  : same as stem width (12 units)
-        Mid crossbar starts at ~42% of cap height from top
+    The Android 12+ splash screen renders windowSplashScreenAnimatedIcon
+    inside a white circle container. Without a background, that white circle
+    is visible above the letter, creating an arch artefact.
 
-      Mapped onto 108×108 canvas (letter left edge at x=26, top at y=18):
-        Left stem : x 26–38,  y 18–90   (12 wide, 72 tall)
-        Top bar   : x 26–82,  y 18–30   (56 wide, 12 tall — full width)
-        Mid bar   : x 26–71,  y 48–60   (45 wide, 12 tall)
+    Fix: fill the entire 108×108 canvas with teal (#0D9488) first.
+    Android's circular mask clips the corners — but since the fill colour
+    matches windowSplashScreenBackground (also teal), the circle becomes
+    invisible. The white F then sits cleanly on teal, matching iOS.
+
+    F proportions match Futura Bold (same as iOS LaunchScreen.storyboard):
+      Stem    : x 26–38, y 18–90  (12 wide, 72 tall)
+      Top bar : x 26–82, y 18–30  (56 wide, 12 tall — full cap width)
+      Mid bar : x 26–71, y 48–60  (45 wide, 12 tall — 80% cap width)
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
+
+    <!-- Teal fill — hides the white circle container Android draws behind the icon -->
+    <path
+        android:fillColor="#0D9488"
+        android:pathData="M0,0 L108,0 L108,108 L0,108 Z" />
 
     <!-- Left vertical stem -->
     <path
@@ -33,7 +37,7 @@
         android:fillColor="#FFFFFF"
         android:pathData="M26,18 L82,18 L82,30 L26,30 Z" />
 
-    <!-- Middle horizontal crossbar (~80% width, at 42% cap height) -->
+    <!-- Middle horizontal crossbar (~80% width) -->
     <path
         android:fillColor="#FFFFFF"
         android:pathData="M26,48 L71,48 L71,60 L26,60 Z" />
