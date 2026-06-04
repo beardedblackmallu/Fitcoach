@@ -16,9 +16,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <Sidebar />
       <div className="flex-1 flex flex-col min-w-0 lg:ml-0">
         <Header />
-        {/* Extra bottom padding on mobile so scrollable pages don't hide behind BottomNav (56px) + iOS safe area.
-            Full-height pages like /conversations set their own height and override this with a negative margin. */}
-        <main className="flex-1 pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0">
+        {/* Top safe area on mobile (status bar / notch). Desktop Header already handles this.
+            Bottom: BottomNav (56px) + iOS home indicator. */}
+        <main className="flex-1 pt-[env(safe-area-inset-top)] md:pt-0 pb-[calc(56px+env(safe-area-inset-bottom))] md:pb-0">
           {children}
         </main>
       </div>

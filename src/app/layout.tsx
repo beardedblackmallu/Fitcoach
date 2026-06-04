@@ -4,6 +4,7 @@ import "./globals.css";
 import { AppProvider } from "@/lib/AppContext";
 import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 import { AuthGuard } from "@/components/AuthGuard";
+import { CapacitorInit } from "@/components/CapacitorInit";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -35,6 +36,7 @@ export default function RootLayout({
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
       <body className="min-h-full bg-[#FAFAF9] text-stone-900" suppressHydrationWarning>
         <AppProvider>
+          <CapacitorInit />
           <AuthGuard>{children}</AuthGuard>
         </AppProvider>
         <ServiceWorkerRegistration />

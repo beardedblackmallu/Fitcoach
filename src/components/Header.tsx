@@ -64,7 +64,7 @@ export function Header() {
   const unreadCount = Math.max(0, notifications.length - readIds.length);
 
   return (
-    <header className="hidden md:flex sticky top-0 z-20 h-16 bg-white/85 backdrop-blur border-b border-stone-200 items-center gap-3 px-4 lg:px-6">
+    <header className="hidden md:flex sticky top-0 z-20 h-16 bg-white/85 backdrop-blur border-b border-stone-200 items-center gap-3 px-4 lg:px-6 pt-[env(safe-area-inset-top)]">
       <button
         onClick={() => setSidebarOpen(true)}
         className="lg:hidden p-2 rounded-md hover:bg-stone-100"
