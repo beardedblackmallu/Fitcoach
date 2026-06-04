@@ -1,8 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    FitCoach splash icon — white "F" lettermark on transparent background.
-    Designed to sit on the teal (#0D9488) splash background.
-    108×108dp canvas; visible icon area is the inner 72×72dp (18–90dp range).
+    FitCoach splash icon — white "F" on transparent background.
+    Proportions match Futura Bold:
+      Canvas: 108×108dp (Android adaptive icon standard)
+      Letter sits in the inner 72×72dp safe zone (centred, 18–90dp range)
+
+      Futura Bold F anatomy (relative to a 72-unit cap height):
+        Stem width  : ~17% → 12 units
+        Top crossbar: full cap width (56 units)
+        Mid crossbar: ~80% cap width (45 units)
+        Crossbar h  : same as stem width (12 units)
+        Mid crossbar starts at ~42% of cap height from top
+
+      Mapped onto 108×108 canvas (letter left edge at x=26, top at y=18):
+        Left stem : x 26–38,  y 18–90   (12 wide, 72 tall)
+        Top bar   : x 26–82,  y 18–30   (56 wide, 12 tall — full width)
+        Mid bar   : x 26–71,  y 48–60   (45 wide, 12 tall)
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
@@ -10,26 +23,19 @@
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!--
-        Capital F shape built from rectangles:
-          Vertical bar  : x 28–44,  y 20–88
-          Top crossbar  : x 28–80,  y 20–36
-          Middle crossbar: x 28–70, y 51–66
-    -->
-
-    <!-- Vertical bar -->
+    <!-- Left vertical stem -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M28,20 L44,20 L44,88 L28,88 Z" />
+        android:pathData="M26,18 L38,18 L38,90 L26,90 Z" />
 
-    <!-- Top crossbar -->
+    <!-- Top horizontal crossbar (full width) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M44,20 L80,20 L80,36 L44,36 Z" />
+        android:pathData="M26,18 L82,18 L82,30 L26,30 Z" />
 
-    <!-- Middle crossbar -->
+    <!-- Middle horizontal crossbar (~80% width, at 42% cap height) -->
     <path
         android:fillColor="#FFFFFF"
-        android:pathData="M44,51 L70,51 L70,66 L44,66 Z" />
+        android:pathData="M26,48 L71,48 L71,60 L26,60 Z" />
 
 </vector>
