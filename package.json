@@ -9,7 +9,7 @@
     "lint": "eslint",
     "build:mobile": "MOBILE_BUILD=true next build",
     "android": "npm run build:mobile && npx cap sync android && npx cap open android",
-    "ios": "npm run build:mobile && npx cap sync ios && npx cap open ios"
+    "ios": "npm run build:mobile && LANG=en_US.UTF-8 npx cap sync ios && npx cap open ios"
   },
   "dependencies": {
     "@capacitor/android": "^8.4.0",
