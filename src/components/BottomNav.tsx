@@ -8,6 +8,7 @@ import {
   Dumbbell,
   Inbox,
   LayoutDashboard,
+  LogOut,
   MessageCircle,
   MoreHorizontal,
   Settings,
@@ -16,6 +17,7 @@ import {
   X,
 } from "lucide-react";
 import { useApp } from "@/lib/AppContext";
+import { createClient } from "@/lib/supabase/client";
 
 const primary = [
   { href: "/", label: "Home", Icon: LayoutDashboard },
@@ -38,7 +40,13 @@ function isActive(pathname: string, href: string) {
 export function BottomNav() {
   const pathname = usePathname();
   const router = useRouter();
-  const { escalationCount } = useApp();
+  const { escalationCount, showToast } = useApp();
+
+  const handleSignOut = async () => {
+    const supabase = createClient();
+    await supabase.auth.signOut();
+    router.replace("/login");
+  };
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -110,6 +118,21 @@ export function BottomNav() {
                   </button>
                 );
               })}
+
+              {/* Divider + Sign out */}
+              <div className="mx-3 my-2 border-t border-stone-100" />
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-red-50 active:bg-red-100"
+              >
+                <div className="h-10 w-10 rounded-lg grid place-items-center shrink-0 bg-stone-100 text-red-500">
+                  <LogOut className="h-5 w-5" />
+                </div>
+                <div className="flex-1 min-w-0 text-left">
+                  <div className="text-sm font-medium text-red-600">Sign out</div>
+                  <div className="text-xs text-stone-500">Log out of FitCoach</div>
+                </div>
+              </button>
             </div>
           </div>
         </div>

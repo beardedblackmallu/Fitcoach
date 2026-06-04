@@ -4,80 +4,61 @@
 // Gracefully no-ops on web (Capacitor plugins are stubs in a browser context).
 
 import { useEffect } from "react";
-import { usePathname, useRouter } from "next/navigation";
-
-// Tab-level root paths — back button exits the app instead of navigating back.
-// Strip trailing slash first: trailingSlash:true in the mobile build means
-// Next.js routes are served as /clients/ not /clients, so a bare === check fails.
-const ROOT_PATHS = new Set(["/", "/clients", "/conversations", "/inbox", "/payments", "/plans"]);
-
-function isRootPath(pathname: string) {
-  const clean = pathname.endsWith("/") && pathname !== "/" ? pathname.slice(0, -1) : pathname;
-  return ROOT_PATHS.has(clean);
-}
+import { useRouter } from "next/navigation";
 
 export function CapacitorInit() {
-  const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
-    // Dynamic imports keep these out of the web bundle entirely
-    // when Capacitor is not present — no SSR issues, no bundle bloat.
     let backButtonCleanup: (() => void) | undefined;
 
     const init = async () => {
       try {
-        // ── Splash screen ──────────────────────────────────────────────
         const { SplashScreen } = await import("@capacitor/splash-screen");
-        // Hide the native splash now that React has rendered.
-        // The 300ms fade gives a smooth handoff to the app.
         await SplashScreen.hide({ fadeOutDuration: 300 });
       } catch {
-        // Not running in Capacitor — silently skip
+        // Not in Capacitor
       }
 
       try {
-        // ── Status bar ────────────────────────────────────────────────
         const { StatusBar, Style } = await import("@capacitor/status-bar");
-        await StatusBar.setStyle({ style: Style.Light }); // white icons
-        await StatusBar.setBackgroundColor({ color: "#0D9488" }); // teal
+        await StatusBar.setStyle({ style: Style.Light });
+        await StatusBar.setBackgroundColor({ color: "#0D9488" });
       } catch {
-        // Not running in Capacitor or iOS where setBackgroundColor is unavailable
+        // Not in Capacitor or iOS (setBackgroundColor not available on iOS)
       }
     };
 
-    init();
-
-    // Back button listener is re-registered whenever pathname changes
-    // so it always knows the current route.
     const registerBackButton = async () => {
       try {
         const { App } = await import("@capacitor/app");
 
         const listener = await App.addListener("backButton", ({ canGoBack }) => {
-          if (isRootPath(pathname)) {
-            // At a root tab — exit the app
-            App.exitApp();
-          } else if (canGoBack) {
+          // If the WebView has history to go back through → go back.
+          // If there's no more history → we're at the entry point → exit.
+          // This is simpler and more reliable than pathname matching, which
+          // is fragile in a Capacitor static-export WebView context.
+          if (canGoBack) {
             window.history.back();
           } else {
-            // No history to go back to — treat as root
-            router.replace("/");
+            App.exitApp();
           }
         });
 
         backButtonCleanup = () => listener.remove();
       } catch {
-        // Not running in Capacitor
+        // Not in Capacitor
       }
     };
 
+    init();
     registerBackButton();
 
     return () => {
       backButtonCleanup?.();
     };
-  }, [pathname, router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Renders nothing — pure side effects
   return null;
