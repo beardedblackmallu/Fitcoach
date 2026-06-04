@@ -18,9 +18,10 @@
                         <color key="backgroundColor" red="0.051" green="0.580" blue="0.533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <subviews>
                             <!-- FitCoach "F" lettermark — white, centred -->
+                            <!-- Futura-Bold is geometric/slab — matches the rectangular Android vector F -->
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="F" textAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GJd-Yh-RWb">
-                                <rect key="frame" x="137.5" y="293.5" width="100" height="80"/>
-                                <fontDescription key="fontDescription" type="system" weight="bold" pointSize="72"/>
+                                <rect key="frame" x="127.5" y="283.5" width="120" height="100"/>
+                                <fontDescription key="fontDescription" type="custom" customFontName="Futura-Bold" pointSize="96"/>
                                 <color key="textColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
