@@ -13,15 +13,19 @@ WhatsApp architecture: docs/FitCoach-WhatsApp-Infrastructure.md
 Mobile decisions: docs/FitCoach-Mobile-Strategy.md
 
 ## Current build phase
-**Phase 1 — Foundation**
-Active spec: docs/specs/in-progress/phase-1-foundation.md
+**Phase 1 — Foundation: ✅ Complete (2026-06-04)**
+Completed spec: docs/specs/done/phase-1-foundation.md
+Build plan index: docs/specs/BUILD-PLAN.md
 
-Checkpoints:
-- [ ] Supabase project + schema deployed
-- [ ] Supabase Auth (email + Google OAuth)
-- [ ] AppContext mock data replaced with real Supabase queries
-- [ ] RLS policies active and tested
-- [ ] Capacitor iOS + Android builds working
+Phase 1 checkpoints (all complete):
+- [x] Supabase project + schema deployed
+- [x] Supabase Auth (email — Google OAuth deferred to Phase 2)
+- [x] AppContext mock data replaced with real Supabase queries
+- [x] RLS policies active and tested (cross-tenant isolation confirmed)
+- [x] Capacitor iOS + Android builds working
+
+**Next:** Phase 2 — Plan builder polish + mobile OAuth.
+No active in-progress spec until Phase 2 is scoped.
 
 ## Tech stack (locked — do not deviate)
 - **Frontend:** Next.js 16 + TypeScript strict + Tailwind v4 + Recharts

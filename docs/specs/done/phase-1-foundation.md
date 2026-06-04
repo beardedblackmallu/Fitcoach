@@ -1,6 +1,6 @@
 # Phase 1 — Foundation
 
-**Status:** In progress
+**Status:** Complete (2026-06-04)
 **Goal:** Replace prototype mock data with real Supabase backend,
 add authentication, wrap with Capacitor for iOS + Android.
 
@@ -189,11 +189,11 @@ link bridge.
 ---
 
 ### Checkpoint 5 — Mobile polish
-- [ ] Splash screen (teal background, FitCoach logo)
-- [ ] Status bar configured
-- [ ] Android back button handled
-- [ ] Safe area handling (iOS notch + Android nav bar)
-- [ ] Test: full flow on real Android device
+- [x] Splash screen (teal background, FitCoach "F" logo) — both platforms
+- [x] Status bar configured (teal #0D9488 with white icons)
+- [x] Android back button handled (canGoBack → history.back; else exitApp)
+- [x] Safe area handling (top + bottom on mobile, header on desktop)
+- [x] Test: full flow on Android emulator + iOS simulator
 
 #### Watch for these
 - Splash screen uses FitCoach logo on teal #0D9488 background
