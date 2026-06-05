@@ -29,15 +29,16 @@ wrap with Capacitor so the app runs natively on iOS and Android.
 
 ---
 
-## Phase 2 — Plan builder polish + mobile OAuth (not started)
+## Phase 2 — Plan builder polish + mobile OAuth 🔄 In progress
 
-Close the most impactful Phase 1 gaps before AiSensy integration.
+**Spec:** [`in-progress/phase-2-onboarding-billing.md`](in-progress/phase-2-onboarding-billing.md)
 
-- Plan builder per-week variation (different exercises in W2 vs W1)
-- Nutrition tab persistence (5 nested tables: nutrition_plans →
+- ✅ CP0: Color reskin — charcoal + burnt orange (2026-06-05)
+- [ ] CP1: Plan builder per-week variation (different exercises in W2 vs W1)
+- [ ] CP2: Nutrition tab persistence (5 nested tables: nutrition_plans →
   meals → variants → foods → hunger_substitutions)
-- AssignPlanModal + ClientPickerModal read from real DB plans
-- Mobile OAuth deep linking (evaluate Capgo's social-login plugin
+- [ ] CP3: AssignPlanModal + ClientPickerModal read from real DB plans
+- [ ] CP4: Mobile OAuth deep linking (evaluate Capgo's social-login plugin
   before hand-rolling)
 
 ---
