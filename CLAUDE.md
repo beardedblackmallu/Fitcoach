@@ -13,19 +13,21 @@ WhatsApp architecture: docs/FitCoach-WhatsApp-Infrastructure.md
 Mobile decisions: docs/FitCoach-Mobile-Strategy.md
 
 ## Current build phase
-**Phase 1 — Foundation: ✅ Complete (2026-06-04)**
-Completed spec: docs/specs/done/phase-1-foundation.md
+**Phase 2 — Plan builder polish + mobile OAuth**
+Active spec: docs/specs/in-progress/phase-2-onboarding-billing.md
 Build plan index: docs/specs/BUILD-PLAN.md
 
-Phase 1 checkpoints (all complete):
-- [x] Supabase project + schema deployed
-- [x] Supabase Auth (email — Google OAuth deferred to Phase 2)
-- [x] AppContext mock data replaced with real Supabase queries
-- [x] RLS policies active and tested (cross-tenant isolation confirmed)
-- [x] Capacitor iOS + Android builds working
+Completed:
+- [x] CP0 — Color reskin (teal → charcoal + burnt orange, 2026-06-05)
 
-**Next:** Phase 2 — Plan builder polish + mobile OAuth.
-No active in-progress spec until Phase 2 is scoped.
+In progress:
+- [ ] CP1 — Plan builder per-week variation
+- [ ] CP2 — Nutrition tab persistence
+- [ ] CP3 — AssignPlanModal real DB integration
+- [ ] CP4 — Mobile OAuth deep linking
+
+**Previous:** Phase 1 — Foundation (✅ Complete 2026-06-04)
+Completed spec: docs/specs/done/phase-1-foundation.md
 
 ## Tech stack (locked — do not deviate)
 - **Frontend:** Next.js 16 + TypeScript strict + Tailwind v4 + Recharts
@@ -86,15 +88,17 @@ docs/
     └── done/
 ```
 
-## Visual design tokens (unchanged)
-- **Primary:** teal `#0D9488` (`bg-teal-600`, `text-teal-700`)
-- **Accent:** amber `#F59E0B` — escalations only
-- **Background:** `#FAFAF9`
-- **Cards:** `bg-white border border-stone-200 rounded-xl`
+## Visual design tokens (Phase 2 CP0 reskin — 2026-06-05)
+- **Primary accent:** Burnt orange `#C05C28` — escalations, badges, nav active state, one CTA per screen (replaces teal)
+- **Charcoal:** `#1C1C1C` — sidebar, default primary buttons
+- **Background:** `#F5F4F2` (replaces `#FAFAF9`)
+- **Cards:** `#FFFFFF` border `#E5E3DE`
+- **Success:** Teal `#1D9E75` — positive states ONLY
+- **Text:** Primary `#1A1A1A`, secondary `#6B7280`, muted `#9A9A9A`
 - **Font:** Inter via next/font/google, exposed as `--font-inter`
-- **Stone text scale:** `stone-900` headings, `stone-700` body, `stone-500` secondary, `stone-400` muted
 - **Border radius:** inputs `rounded-lg`, cards `rounded-xl`, modals `rounded-2xl`, pills `rounded-full`
 - **Spacing:** pages `px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto`
+- **Principle:** Orange is used sparingly. Default primary buttons are charcoal. If in doubt, use charcoal not orange.
 
 ## Message bubble styles
 - **Bot:** `bg-stone-100`, left-aligned, `🤖 Bot` label above timestamp
