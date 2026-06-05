@@ -28,8 +28,8 @@ function deriveInitials(name: string): string {
 }
 
 const AVATAR_COLORS = [
-  "bg-rose-500", "bg-blue-500", "bg-amber-500", "bg-emerald-500",
-  "bg-violet-500", "bg-pink-500", "bg-indigo-500", "bg-teal-600",
+  "bg-rose-500", "bg-blue-500", "bg-[#C05C28]", "bg-emerald-500",
+  "bg-violet-500", "bg-pink-500", "bg-indigo-500", "bg-[#1C1C1C]",
 ];
 
 function deriveAvatarColor(name: string): string {

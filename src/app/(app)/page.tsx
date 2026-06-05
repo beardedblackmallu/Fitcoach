@@ -52,7 +52,7 @@ export default function DashboardPage() {
       label: "Active clients",
       value: statsLoading ? "…" : String(stats.activeClientCount),
       icon: Users,
-      accent: "text-teal-700 bg-teal-50",
+      accent: "text-[#1A1A1A] bg-[#F5F4F2]",
       trend: "From your client list",
       mock: false,
     },
@@ -60,7 +60,7 @@ export default function DashboardPage() {
       label: "Plans expiring this week",
       value: statsLoading ? "…" : String(stats.plansExpiringThisWeek),
       icon: Calendar,
-      accent: "text-amber-700 bg-amber-50",
+      accent: "text-[#8A4427] bg-[#F7EEE8]",
       trend: stats.plansExpiringThisWeek > 0 ? "Renew now" : "All good",
       mock: false,
     },
@@ -122,23 +122,23 @@ export default function DashboardPage() {
 
       {/* Action needed */}
       {activeEscalations.length > 0 && (
-        <div className="mb-8 rounded-2xl border border-[#F59E0B] bg-[#FFFBEB] p-4 sm:p-5">
+        <div className="mb-8 rounded-2xl border border-[#C05C28] bg-[#FFFBEB] p-4 sm:p-5">
           <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+            <span className="inline-flex items-center gap-1 text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-[#F7EEE8] text-[#8A4427]">
               <span>🟡</span> Needs your attention
             </span>
           </div>
           <div className="flex items-center justify-between mb-3 mt-2 flex-wrap gap-2">
             <h2 className="text-base font-semibold text-stone-900 flex items-center gap-2">
-              <AlertTriangle className="h-4 w-4 text-amber-600" />
+              <AlertTriangle className="h-4 w-4 text-[#C05C28]" />
               Action needed
-              <span className="text-xs font-medium text-amber-700 bg-white/80 ring-1 ring-amber-200 px-2 py-0.5 rounded-full">
+              <span className="text-xs font-medium text-[#8A4427] bg-white/80 ring-1 ring-[#DCC3B2] px-2 py-0.5 rounded-full">
                 {activeEscalations.length}
               </span>
             </h2>
             <Link
               href="/inbox"
-              className="text-xs text-teal-700 hover:text-teal-800 font-medium flex items-center gap-1"
+              className="text-xs text-[#1A1A1A] hover:text-[#1A1A1A] font-medium flex items-center gap-1"
             >
               View all
               <ArrowUpRight className="h-3.5 w-3.5" />
@@ -151,7 +151,7 @@ export default function DashboardPage() {
               return (
                 <div
                   key={esc.id}
-                  className="bg-white rounded-xl border border-stone-200 border-l-4 border-l-[#F59E0B] p-4 shadow-sm hover:shadow transition-shadow"
+                  className="bg-white rounded-xl border border-stone-200 border-l-4 border-l-[#C05C28] p-4 shadow-sm hover:shadow transition-shadow"
                 >
                   <div className="flex items-start gap-3">
                     <Avatar initials={c.initials} color={c.avatarColor} size="md" />
@@ -160,10 +160,10 @@ export default function DashboardPage() {
                         <div className="font-semibold text-stone-900">{c.name}</div>
                         <div className="text-xs text-stone-500">{esc.time}</div>
                       </div>
-                      <div className="text-xs text-amber-700 font-medium mt-0.5">{esc.reasonBadge}</div>
+                      <div className="text-xs text-[#8A4427] font-medium mt-0.5">{esc.reasonBadge}</div>
 
-                      <div className="mt-3 bg-amber-50 border border-amber-100 rounded-lg p-3">
-                        <div className="text-[11px] text-amber-700 font-medium uppercase tracking-wide mb-1">
+                      <div className="mt-3 bg-[#F7EEE8] border border-[#DCC3B2] rounded-lg p-3">
+                        <div className="text-[11px] text-[#8A4427] font-medium uppercase tracking-wide mb-1">
                           Client said
                         </div>
                         <div className="text-sm text-stone-800 leading-snug">"{esc.quotedMessage}"</div>
@@ -172,7 +172,7 @@ export default function DashboardPage() {
                       <div className="mt-3 flex items-center gap-2 flex-wrap">
                         <button
                           onClick={() => router.push(`/conversations?c=${c.id}`)}
-                          className="text-sm font-medium px-3 min-h-[40px] rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white inline-flex items-center gap-1.5"
+                          className="text-sm font-medium px-3 min-h-[40px] rounded-lg bg-[#C05C28] hover:bg-[#A84E22] text-white inline-flex items-center gap-1.5"
                         >
                           <MessageCircle className="h-4 w-4" />
                           Open conversation
@@ -204,7 +204,7 @@ export default function DashboardPage() {
           </h2>
           <Link
             href="/clients"
-            className="text-xs text-teal-700 hover:text-teal-800 font-medium flex items-center gap-1"
+            className="text-xs text-[#1A1A1A] hover:text-[#1A1A1A] font-medium flex items-center gap-1"
           >
             View all clients
             <ArrowUpRight className="h-3.5 w-3.5" />
@@ -242,7 +242,7 @@ export default function DashboardPage() {
                   className={`text-xs font-medium px-3 min-h-[36px] rounded-lg inline-flex items-center gap-1.5 shrink-0 ${
                     isReminderAction
                       ? "border border-stone-300 hover:bg-stone-100 active:bg-stone-200 text-stone-700"
-                      : "bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white"
+                      : "bg-[#1C1C1C] hover:bg-[#2A2A2A] active:bg-[#0F0F0F] text-white"
                   }`}
                 >
                   {isReminderAction && <Send className="h-3.5 w-3.5" />}

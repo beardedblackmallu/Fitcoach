@@ -1,22 +1,58 @@
 @import "tailwindcss";
 
 :root {
-  --background: #FAFAF9;
-  --foreground: #18181B;
-  --teal: #0D9488;
-  --teal-dark: #0F766E;
-  --teal-light: #14B8A6;
-  --amber: #F59E0B;
-  --amber-soft: #FEF3C7;
-  --border: #E7E5E4;
+  /* Surfaces */
+  --background: #F5F4F2;       /* page background */
+  --foreground: #1A1A1A;       /* text primary */
+  --card: #FFFFFF;
+  --card-border: #E5E3DE;
+  --card-border-hover: #D4D1CB;
+
+  /* Primary accent — burnt orange (use sparingly) */
+  --primary: #C05C28;
+  --primary-hover: #A84E22;
+  --primary-subtle-bg: rgba(192, 92, 40, 0.10);
+  --primary-subtle-border: rgba(192, 92, 40, 0.25);
+  --on-primary: #FFFFFF;
+
+  /* Charcoal — sidebar + default primary buttons */
+  --charcoal: #1C1C1C;
+  --charcoal-secondary: #2A2A2A;
+  --charcoal-muted: #3A3A3A;
+
+  /* Text scale */
+  --text-primary: #1A1A1A;
+  --text-secondary: #6B7280;
+  --text-muted: #9A9A9A;
+  --text-on-dark: #FFFFFF;
+  --text-on-dark-muted: #9A9A9A;
+
+  /* Success — teal retained for positive states ONLY */
+  --success: #1D9E75;
+  --success-bg: #E1F5EE;
+  --success-text: #0F6E56;
+
+  /* Warning / escalations — burnt orange family */
+  --warning: #C05C28;
+  --warning-bg: #F7EEE8;
+  --warning-border: #DCC3B2;
+  --warning-text: #8A4427;
+
+  /* Error */
+  --error: #DC2626;
+  --error-bg: #FEE2E2;
+
+  --border: #E5E3DE;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-teal: var(--teal);
-  --color-teal-dark: var(--teal-dark);
-  --color-amber: var(--amber);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-charcoal: var(--charcoal);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
   --font-sans: var(--font-inter);
 }
 
@@ -41,7 +77,7 @@ html, body {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  background: rgba(13, 148, 136, 0.5);
+  background: rgba(192, 92, 40, 0.5);
   animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 

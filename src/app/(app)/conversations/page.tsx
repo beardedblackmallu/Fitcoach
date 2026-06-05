@@ -123,7 +123,7 @@ function ConversationsInner() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search conversations..."
-              className="w-full h-9 pl-9 pr-3 rounded-lg bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-teal-100 outline-none text-sm"
+              className="w-full h-9 pl-9 pr-3 rounded-lg bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm"
             />
           </div>
         </div>
@@ -140,14 +140,14 @@ function ConversationsInner() {
                   router.replace(`/conversations?c=${c.clientId}`);
                 }}
                 className={`w-full text-left flex items-start gap-3 px-3 py-3 border-b border-stone-100 transition-colors ${
-                  isActive ? "bg-teal-50/60" : "hover:bg-stone-50"
+                  isActive ? "bg-[#F5F4F2]/60" : "hover:bg-stone-50"
                 }`}
               >
                 <Avatar initials={client.initials} color={client.avatarColor} size="md" online={client.online} />
                 <div className="flex-1 min-w-0">
                   <div className="flex items-baseline justify-between gap-2">
                     <span className="font-medium text-sm text-stone-900 truncate">{client.name}</span>
-                    <span className={`text-[11px] shrink-0 ${c.unread > 0 ? "text-teal-700 font-medium" : "text-stone-400"}`}>
+                    <span className={`text-[11px] shrink-0 ${c.unread > 0 ? "text-[#1A1A1A] font-medium" : "text-stone-400"}`}>
                       {c.lastTime}
                     </span>
                   </div>
@@ -163,7 +163,7 @@ function ConversationsInner() {
                   </div>
                 </div>
                 {c.unread > 0 && (
-                  <span className="h-5 min-w-[20px] grid place-items-center px-1.5 rounded-full bg-teal-600 text-white text-[10px] font-semibold mt-1">
+                  <span className="h-5 min-w-[20px] grid place-items-center px-1.5 rounded-full bg-[#1C1C1C] text-white text-[10px] font-semibold mt-1">
                     {c.unread}
                   </span>
                 )}
@@ -277,7 +277,7 @@ function ConversationsInner() {
                     }
                   }}
                   placeholder={`Message ${activeClient.name.split(" ")[0]}...`}
-                  className="w-full resize-none px-3 py-2.5 rounded-2xl bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-teal-100 outline-none text-[15px] sm:text-sm max-h-32 leading-snug"
+                  className="w-full resize-none px-3 py-2.5 rounded-2xl bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-[#E5E3DE] outline-none text-[15px] sm:text-sm max-h-32 leading-snug"
                 />
               </div>
 
@@ -285,7 +285,7 @@ function ConversationsInner() {
               {draft.trim() ? (
                 <button
                   onClick={sendMessage}
-                  className="h-11 w-11 sm:h-10 sm:w-10 rounded-full bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white grid place-items-center shrink-0"
+                  className="h-11 w-11 sm:h-10 sm:w-10 rounded-full bg-[#1C1C1C] hover:bg-[#2A2A2A] active:bg-[#0F0F0F] text-white grid place-items-center shrink-0"
                   title="Send"
                   aria-label="Send"
                 >
@@ -294,7 +294,7 @@ function ConversationsInner() {
               ) : (
                 <button
                   onClick={() => openVoiceModal(activeClient.name)}
-                  className="h-11 w-11 sm:h-10 sm:w-10 rounded-full bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white grid place-items-center shrink-0 shadow-sm"
+                  className="h-11 w-11 sm:h-10 sm:w-10 rounded-full bg-[#1C1C1C] hover:bg-[#2A2A2A] active:bg-[#0F0F0F] text-white grid place-items-center shrink-0 shadow-sm"
                   title="Record voice note"
                   aria-label="Record voice note"
                 >
@@ -347,7 +347,7 @@ function ConversationsInner() {
         </div>
         <Link
           href={`/clients/${activeClient.id}`}
-          className="mx-5 mb-5 mt-auto text-xs text-teal-700 hover:text-teal-800 font-medium flex items-center gap-1"
+          className="mx-5 mb-5 mt-auto text-xs text-[#1A1A1A] hover:text-[#1A1A1A] font-medium flex items-center gap-1"
         >
           View full profile <ChevronRight className="h-3.5 w-3.5" />
         </Link>
@@ -374,7 +374,7 @@ function MessageBubble({ m }: { m: Message }) {
   return (
     <div className={`flex flex-col ${align}`}>
       {(isBot || isTrainer) && (
-        <div className={`text-[10px] font-medium mb-0.5 px-1 ${isTrainer ? "text-teal-700" : "text-stone-500"}`}>
+        <div className={`text-[10px] font-medium mb-0.5 px-1 ${isTrainer ? "text-[#1A1A1A]" : "text-stone-500"}`}>
           {isBot ? "🤖 Bot" : `✓ ${m.fromName ?? "From Sandeep"}`}
         </div>
       )}
@@ -382,10 +382,10 @@ function MessageBubble({ m }: { m: Message }) {
         className={`max-w-[80%] sm:max-w-[70%] rounded-2xl px-3.5 py-2 shadow-sm ${
           m.kind === "document"
             ? isTrainer
-              ? "bg-teal-600/95 text-white rounded-br-md p-2"
+              ? "bg-[#1C1C1C]/95 text-white rounded-br-md p-2"
               : "bg-white text-stone-800 border border-stone-200 rounded-bl-md p-2"
             : isTrainer
-            ? "bg-teal-600 text-white rounded-br-md"
+            ? "bg-[#1C1C1C] text-white rounded-br-md"
             : isBot
             ? "bg-stone-100 text-stone-800 rounded-bl-md"
             : "bg-white text-stone-800 border border-stone-200 rounded-bl-md"
@@ -416,7 +416,7 @@ function MessageBubble({ m }: { m: Message }) {
         )}
         {m.kind === "image" && (
           <div>
-            <div className="h-32 w-44 rounded-lg bg-gradient-to-br from-amber-200 via-orange-300 to-red-300 grid place-items-center text-amber-900/50 text-3xl">
+            <div className="h-32 w-44 rounded-lg bg-gradient-to-br from-amber-200 via-orange-300 to-red-300 grid place-items-center text-[#8A4427]/50 text-3xl">
               🍛
             </div>
             {m.text && <div className="text-sm mt-1.5">{m.text}</div>}
@@ -435,9 +435,9 @@ function DocumentBubble({ m, isTrainer }: { m: Message; isTrainer: boolean }) {
   const isWorkout = m.docKind === "workout";
   const isNutrition = m.docKind === "nutrition";
   const Icon = isNutrition ? Apple : isWorkout ? Dumbbell : FileText;
-  const accentBg = isTrainer ? "bg-white/15" : isNutrition ? "bg-amber-50" : isWorkout ? "bg-teal-50" : "bg-stone-100";
-  const accentBorder = isTrainer ? "border-white/30" : isNutrition ? "border-amber-200" : isWorkout ? "border-teal-200" : "border-stone-200";
-  const accentText = isTrainer ? "text-white" : isNutrition ? "text-amber-700" : isWorkout ? "text-teal-700" : "text-stone-600";
+  const accentBg = isTrainer ? "bg-white/15" : isNutrition ? "bg-[#F7EEE8]" : isWorkout ? "bg-[#F5F4F2]" : "bg-stone-100";
+  const accentBorder = isTrainer ? "border-white/30" : isNutrition ? "border-[#DCC3B2]" : isWorkout ? "border-[#E5E3DE]" : "border-stone-200";
+  const accentText = isTrainer ? "text-white" : isNutrition ? "text-[#8A4427]" : isWorkout ? "text-[#1A1A1A]" : "text-stone-600";
   const subText = isTrainer ? "text-white/70" : "text-stone-500";
   const pageBadge = isNutrition ? "Nutrition · PDF" : isWorkout ? "Workout · PDF" : "PDF";
 

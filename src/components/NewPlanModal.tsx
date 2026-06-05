@@ -162,7 +162,7 @@ export function NewPlanModal() {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g., 12-Week Transformation"
-              className="w-full h-10 px-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm"
+              className="w-full h-10 px-3 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm"
             />
           </div>
 
@@ -175,7 +175,7 @@ export function NewPlanModal() {
                 onChange={(e) =>
                   setDurationChoice(e.target.value === "custom" ? "custom" : Number(e.target.value))
                 }
-                className="w-full h-10 px-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm bg-white"
+                className="w-full h-10 px-3 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm bg-white"
               >
                 {presetDurations.map((d) => (
                   <option key={d} value={d}>{d} weeks</option>
@@ -195,7 +195,7 @@ export function NewPlanModal() {
                     className={`w-full h-9 px-3 rounded-md border text-sm outline-none focus:ring-2 ${
                       resolved.errors.duration
                         ? "border-red-300 focus:border-red-400 focus:ring-red-100"
-                        : "border-stone-300 focus:border-teal-500 focus:ring-teal-100"
+                        : "border-stone-300 focus:border-[#1C1C1C] focus:ring-[#E5E3DE]"
                     }`}
                   />
                   {resolved.errors.duration && (
@@ -216,7 +216,7 @@ export function NewPlanModal() {
                 onChange={(e) =>
                   setCycleChoice(e.target.value === "custom" ? "custom" : Number(e.target.value))
                 }
-                className="w-full h-10 px-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm bg-white"
+                className="w-full h-10 px-3 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm bg-white"
               >
                 {presetCycleLengths.map((c) => (
                   <option key={c} value={c}>
@@ -237,7 +237,7 @@ export function NewPlanModal() {
                     className={`w-full h-9 px-3 rounded-md border text-sm outline-none focus:ring-2 ${
                       resolved.errors.cycle
                         ? "border-red-300 focus:border-red-400 focus:ring-red-100"
-                        : "border-stone-300 focus:border-teal-500 focus:ring-teal-100"
+                        : "border-stone-300 focus:border-[#1C1C1C] focus:ring-[#E5E3DE]"
                     }`}
                   />
                   {resolved.errors.cycle && (
@@ -275,7 +275,7 @@ export function NewPlanModal() {
               onChange={(e) => setDescription(e.target.value)}
               rows={3}
               placeholder="Who is this plan for, what's the focus..."
-              className="w-full p-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm resize-none"
+              className="w-full p-3 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm resize-none"
             />
           </div>
 
@@ -285,7 +285,7 @@ export function NewPlanModal() {
               type="checkbox"
               checked={saveAsTemplate}
               onChange={(e) => setSaveAsTemplate(e.target.checked)}
-              className="mt-0.5 h-4 w-4 accent-teal-600 cursor-pointer"
+              className="mt-0.5 h-4 w-4 accent-[#1C1C1C] cursor-pointer"
             />
             <div className="text-xs leading-relaxed">
               <div className="font-medium text-stone-800">Save as reusable template</div>
@@ -297,9 +297,9 @@ export function NewPlanModal() {
             </div>
           </label>
 
-          <div className="bg-teal-50/60 border border-teal-100 rounded-lg p-3 flex items-start gap-2">
-            <Sparkles className="h-4 w-4 text-teal-600 mt-0.5 shrink-0" />
-            <p className="text-xs text-teal-800 leading-relaxed">
+          <div className="bg-[#F5F4F2]/60 border border-[#E5E3DE] rounded-lg p-3 flex items-start gap-2">
+            <Sparkles className="h-4 w-4 text-[#1A1A1A] mt-0.5 shrink-0" />
+            <p className="text-xs text-[#1A1A1A] leading-relaxed">
               You'll start with an empty grid. Drag exercises from the library to build out each
               day, then assign to clients when ready.
             </p>
@@ -316,7 +316,7 @@ export function NewPlanModal() {
           <button
             onClick={create}
             disabled={!resolved.isValid || saving}
-            className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+            className="px-4 h-10 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
           >
             {saving && <span className="h-3.5 w-3.5 rounded-full border-2 border-white/50 border-t-white animate-spin" />}
             {saving ? "Creating…" : "Create plan"}

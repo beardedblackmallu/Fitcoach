@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#0D9488",
+  themeColor: "#1C1C1C",
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
@@ -34,7 +34,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[#FAFAF9] text-stone-900" suppressHydrationWarning>
+      <body className="min-h-full bg-[#F5F4F2] text-stone-900" suppressHydrationWarning>
         <AppProvider>
           <CapacitorInit />
           <AuthGuard>{children}</AuthGuard>

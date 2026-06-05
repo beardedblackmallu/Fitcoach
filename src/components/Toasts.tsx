@@ -13,7 +13,7 @@ export function Toasts() {
           className="toast-enter pointer-events-auto bg-stone-900 text-white px-4 py-2.5 rounded-lg shadow-lg flex items-center gap-2 text-sm max-w-md"
         >
           {t.tone === "success" && (
-            <span className="h-5 w-5 rounded-full bg-teal-500 grid place-items-center shrink-0">
+            <span className="h-5 w-5 rounded-full bg-[#1C1C1C] grid place-items-center shrink-0">
               <Check className="h-3 w-3 text-white" strokeWidth={3} />
             </span>
           )}

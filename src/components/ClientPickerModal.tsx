@@ -177,7 +177,7 @@ function SelectStep({
     <>
       <div className="px-6 pt-5 pb-3 border-b border-stone-100">
         <h2 className="text-lg font-semibold text-stone-900 pr-6">
-          Send <span className="text-teal-700">{plan.name}</span> to client(s)
+          Send <span className="text-[#1A1A1A]">{plan.name}</span> to client(s)
         </h2>
         <p className="text-xs text-stone-500 mt-1">
           Pick clients to send this plan to via WhatsApp. They'll receive the workout & nutrition
@@ -192,7 +192,7 @@ function SelectStep({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search clients..."
-            className="w-full h-10 pl-10 pr-3 rounded-lg bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-teal-100 outline-none text-sm"
+            className="w-full h-10 pl-10 pr-3 rounded-lg bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm"
           />
         </div>
       </div>
@@ -213,14 +213,14 @@ function SelectStep({
                   alreadyAssigned
                     ? "opacity-60 cursor-not-allowed"
                     : isSelected
-                    ? "bg-teal-50"
+                    ? "bg-[#F5F4F2]"
                     : "hover:bg-stone-50"
                 }`}
               >
                 <div
                   className={`h-5 w-5 rounded-md border-2 grid place-items-center shrink-0 ${
                     alreadyAssigned || isSelected
-                      ? "bg-teal-600 border-teal-600 text-white"
+                      ? "bg-[#1C1C1C] border-[#1C1C1C] text-white"
                       : "border-stone-300"
                   }`}
                 >
@@ -251,7 +251,7 @@ function SelectStep({
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="text-xs px-2 py-1 rounded border border-stone-300 focus:border-teal-500 outline-none bg-white"
+              className="text-xs px-2 py-1 rounded border border-stone-300 focus:border-[#1C1C1C] outline-none bg-white"
             />
           </label>
         </div>
@@ -267,7 +267,7 @@ function SelectStep({
         <button
           onClick={onPreview}
           disabled={selected.length === 0}
-          className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
+          className="px-4 h-10 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium text-sm disabled:opacity-40 disabled:cursor-not-allowed inline-flex items-center gap-1.5"
         >
           <FileText className="h-4 w-4" />
           {selected.length === 0
@@ -348,11 +348,11 @@ function PreviewStep({
                 What client receives
               </div>
               <ul className="space-y-1 text-[12px] text-stone-700">
-                <li className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-teal-600" /> Workout plan PDF (week 1 + full)</li>
-                <li className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-teal-600" /> Nutrition plan PDF</li>
-                <li className="inline-flex items-center gap-1.5"><Video className="h-3.5 w-3.5 text-teal-600" /> Exercise video links</li>
-                <li className="inline-flex items-center gap-1.5"><MessageCircle className="h-3.5 w-3.5 text-teal-600" /> Welcome message</li>
-                <li className="inline-flex items-center gap-1.5"><Wand2 className="h-3.5 w-3.5 text-teal-600" /> Onboarding instructions</li>
+                <li className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-[#1A1A1A]" /> Workout plan PDF (week 1 + full)</li>
+                <li className="inline-flex items-center gap-1.5"><Check className="h-3.5 w-3.5 text-[#1A1A1A]" /> Nutrition plan PDF</li>
+                <li className="inline-flex items-center gap-1.5"><Video className="h-3.5 w-3.5 text-[#1A1A1A]" /> Exercise video links</li>
+                <li className="inline-flex items-center gap-1.5"><MessageCircle className="h-3.5 w-3.5 text-[#1A1A1A]" /> Welcome message</li>
+                <li className="inline-flex items-center gap-1.5"><Wand2 className="h-3.5 w-3.5 text-[#1A1A1A]" /> Onboarding instructions</li>
               </ul>
             </div>
             <div>
@@ -363,7 +363,7 @@ function PreviewStep({
                 value={welcomeMsg}
                 onChange={(e) => setWelcomeMsg(e.target.value)}
                 rows={4}
-                className="w-full p-2.5 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-xs resize-none"
+                className="w-full p-2.5 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-xs resize-none"
               />
             </div>
           </div>
@@ -373,7 +373,7 @@ function PreviewStep({
             <div className="bg-white rounded-lg shadow-lg max-w-[560px] mx-auto p-6 text-[12px]">
               <div className="border-b border-stone-200 pb-3 mb-4">
                 <div className="flex items-center gap-2">
-                  <div className="h-8 w-8 rounded-md bg-teal-600 grid place-items-center text-white font-bold text-sm">F</div>
+                  <div className="h-8 w-8 rounded-md bg-[#1C1C1C] grid place-items-center text-white font-bold text-sm">F</div>
                   <div className="text-[10px] uppercase tracking-wider text-stone-500 font-semibold">FitCoach</div>
                 </div>
                 <h3 className="text-lg font-semibold text-stone-900 mt-3">{plan.name}</h3>
@@ -384,7 +384,7 @@ function PreviewStep({
               </div>
 
               <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-wider text-teal-700 font-bold mb-2">Daily targets</div>
+                <div className="text-[10px] uppercase tracking-wider text-[#1A1A1A] font-bold mb-2">Daily targets</div>
                 <div className="grid grid-cols-4 gap-2">
                   {[
                     { label: "Calories", value: `${defaultNutritionPlan.calories}`, unit: "kcal" },
@@ -402,7 +402,7 @@ function PreviewStep({
               </div>
 
               <div className="mb-5">
-                <div className="text-[10px] uppercase tracking-wider text-teal-700 font-bold mb-2">Sample meal — Breakfast</div>
+                <div className="text-[10px] uppercase tracking-wider text-[#1A1A1A] font-bold mb-2">Sample meal — Breakfast</div>
                 <div className="border border-stone-200 rounded-md overflow-hidden">
                   <div className="bg-stone-50 px-3 py-1.5 text-[11px] font-medium text-stone-700 border-b border-stone-200">Primary option</div>
                   <ul className="divide-y divide-stone-100">
@@ -417,7 +417,7 @@ function PreviewStep({
               </div>
 
               <div>
-                <div className="text-[10px] uppercase tracking-wider text-teal-700 font-bold mb-2">Week 1 · Monday</div>
+                <div className="text-[10px] uppercase tracking-wider text-[#1A1A1A] font-bold mb-2">Week 1 · Monday</div>
                 <div className="space-y-1.5">
                   {[
                     { name: "Squat", detail: "4×8 @ 80kg" },
@@ -451,7 +451,7 @@ function PreviewStep({
         </button>
         <button
           onClick={onSend}
-          className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm inline-flex items-center gap-1.5"
+          className="px-4 h-10 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium text-sm inline-flex items-center gap-1.5"
         >
           <Send className="h-4 w-4" />
           Send via WhatsApp
@@ -464,13 +464,13 @@ function PreviewStep({
 function SendingStep({ count }: { count: number }) {
   return (
     <div className="px-6 py-16 text-center">
-      <div className="h-14 w-14 mx-auto rounded-full bg-teal-50 grid place-items-center mb-4">
-        <Loader2 className="h-7 w-7 text-teal-600 animate-spin" />
+      <div className="h-14 w-14 mx-auto rounded-full bg-[#F5F4F2] grid place-items-center mb-4">
+        <Loader2 className="h-7 w-7 text-[#1A1A1A] animate-spin" />
       </div>
       <p className="font-semibold text-stone-900">Sending to {count} client{count !== 1 ? "s" : ""}…</p>
       <p className="text-sm text-stone-500 mt-1.5">Uploading PDFs and dispatching via WhatsApp.</p>
       <div className="mt-6 max-w-xs mx-auto h-1 bg-stone-100 rounded-full overflow-hidden">
-        <div className="h-full bg-teal-500 rounded-full animate-pulse" style={{ width: "60%" }} />
+        <div className="h-full bg-[#1C1C1C] rounded-full animate-pulse" style={{ width: "60%" }} />
       </div>
     </div>
   );
@@ -510,8 +510,8 @@ function SuccessStep({
           </ul>
         </div>
 
-        <div className="bg-teal-50/60 border border-teal-100 rounded-lg p-3">
-          <div className="text-[11px] font-semibold text-teal-800 uppercase tracking-wider mb-1.5">
+        <div className="bg-[#F5F4F2]/60 border border-[#E5E3DE] rounded-lg p-3">
+          <div className="text-[11px] font-semibold text-[#1A1A1A] uppercase tracking-wider mb-1.5">
             What happens next
           </div>
           <p className="text-xs text-stone-700 leading-relaxed">
@@ -538,7 +538,7 @@ function SuccessStep({
         </button>
         <button
           onClick={onOpenChat}
-          className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm inline-flex items-center gap-1.5"
+          className="px-4 h-10 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium text-sm inline-flex items-center gap-1.5"
         >
           <MessageCircle className="h-4 w-4" />
           Open Conversations

@@ -63,7 +63,7 @@ export default function ClientsPage() {
           </button>
           <button
             onClick={openAddClient}
-            className="h-9 px-3 text-sm rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium inline-flex items-center gap-1.5"
+            className="h-9 px-3 text-sm rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium inline-flex items-center gap-1.5"
           >
             <Plus className="h-4 w-4" />
             Add client
@@ -79,7 +79,7 @@ export default function ClientsPage() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search clients..."
-              className="w-full h-9 pl-9 pr-3 rounded-lg bg-stone-50 border border-stone-200 focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-teal-100 outline-none text-sm"
+              className="w-full h-9 pl-9 pr-3 rounded-lg bg-stone-50 border border-stone-200 focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm"
             />
           </div>
         </div>
@@ -121,7 +121,7 @@ export default function ClientsPage() {
                     <>
                       <div className="h-1.5 w-20 rounded-full bg-stone-200 overflow-hidden">
                         <div
-                          className={`h-full ${c.compliance >= 80 ? "bg-emerald-500" : c.compliance >= 60 ? "bg-amber-500" : "bg-red-400"}`}
+                          className={`h-full ${c.compliance >= 80 ? "bg-emerald-500" : c.compliance >= 60 ? "bg-[#C05C28]" : "bg-red-400"}`}
                           style={{ width: `${c.compliance}%` }}
                         />
                       </div>
@@ -184,7 +184,7 @@ export default function ClientsPage() {
                       <div className="flex items-center gap-2">
                         <div className="h-1.5 w-16 rounded-full bg-stone-200 overflow-hidden">
                           <div
-                            className={`h-full ${c.compliance >= 80 ? "bg-emerald-500" : c.compliance >= 60 ? "bg-amber-500" : "bg-red-400"}`}
+                            className={`h-full ${c.compliance >= 80 ? "bg-emerald-500" : c.compliance >= 60 ? "bg-[#C05C28]" : "bg-red-400"}`}
                             style={{ width: `${c.compliance}%` }}
                           />
                         </div>
@@ -263,7 +263,7 @@ function RowMenu({ client, onRefetch }: { client: UiClient; onRefetch: () => voi
             }}
             className="w-full text-left text-sm px-3 py-1.5 hover:bg-stone-50 flex items-center gap-2"
           >
-            <Send className="h-3.5 w-3.5 text-teal-600" />
+            <Send className="h-3.5 w-3.5 text-[#1A1A1A]" />
             Assign plan
           </button>
           <button

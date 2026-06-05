@@ -99,18 +99,18 @@ export function BottomNav() {
                     key={href}
                     onClick={() => router.push(href)}
                     className={`w-full flex items-center gap-3 px-3 py-3 rounded-lg ${
-                      active ? "bg-teal-50" : "hover:bg-stone-50 active:bg-stone-100"
+                      active ? "bg-[#F5F4F2]" : "hover:bg-stone-50 active:bg-stone-100"
                     }`}
                   >
                     <div
                       className={`h-10 w-10 rounded-lg grid place-items-center shrink-0 ${
-                        active ? "bg-teal-600 text-white" : "bg-stone-100 text-stone-700"
+                        active ? "bg-[#1C1C1C] text-white" : "bg-stone-100 text-stone-700"
                       }`}
                     >
                       <Icon className="h-5 w-5" />
                     </div>
                     <div className="flex-1 min-w-0 text-left">
-                      <div className={`text-sm font-medium ${active ? "text-teal-700" : "text-stone-900"}`}>
+                      <div className={`text-sm font-medium ${active ? "text-[#1A1A1A]" : "text-stone-900"}`}>
                         {label}
                       </div>
                       <div className="text-xs text-stone-500 truncate">{desc}</div>
@@ -155,13 +155,13 @@ export function BottomNav() {
               >
                 <div className="relative">
                   <Icon
-                    className={`h-[22px] w-[22px] ${active ? "text-teal-700" : "text-stone-500"}`}
+                    className={`h-[22px] w-[22px] ${active ? "text-[#C05C28]" : "text-[#9A9A9A]"}`}
                     strokeWidth={active ? 2.5 : 2}
                   />
                   {badge !== undefined && badge > 0 && (
                     <span
                       className={`absolute -top-1.5 -right-2 h-[16px] min-w-[16px] px-1 rounded-full grid place-items-center text-[10px] font-bold ring-2 ring-white ${
-                        isEscalation ? "bg-red-500 text-white" : "bg-teal-600 text-white"
+                        isEscalation ? "bg-[#C05C28] text-white" : "bg-[#C05C28] text-white"
                       }`}
                     >
                       {badge}
@@ -170,13 +170,13 @@ export function BottomNav() {
                 </div>
                 <span
                   className={`text-[10px] leading-tight font-medium ${
-                    active ? "text-teal-700" : "text-stone-500"
+                    active ? "text-[#C05C28]" : "text-[#9A9A9A]"
                   }`}
                 >
                   {label}
                 </span>
                 {active && (
-                  <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-teal-600" />
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-[#C05C28]" />
                 )}
               </Link>
             );
@@ -186,18 +186,18 @@ export function BottomNav() {
             className="relative flex flex-col items-center justify-center gap-0.5 active:bg-stone-100 touch-manipulation"
           >
             <MoreHorizontal
-              className={`h-[22px] w-[22px] ${moreActive ? "text-teal-700" : "text-stone-500"}`}
+              className={`h-[22px] w-[22px] ${moreActive ? "text-[#C05C28]" : "text-[#9A9A9A]"}`}
               strokeWidth={moreActive ? 2.5 : 2}
             />
             <span
               className={`text-[10px] leading-tight font-medium ${
-                moreActive ? "text-teal-700" : "text-stone-500"
+                moreActive ? "text-[#C05C28]" : "text-[#9A9A9A]"
               }`}
             >
               More
             </span>
             {moreActive && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-teal-600" />
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-[#C05C28]" />
             )}
           </button>
         </div>

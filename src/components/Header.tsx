@@ -79,7 +79,7 @@ export function Header() {
           <input
             type="text"
             placeholder="Search clients, plans, conversations..."
-            className="w-full h-10 pl-10 pr-4 rounded-lg bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-teal-100 outline-none text-sm placeholder:text-stone-400"
+            className="w-full h-10 pl-10 pr-4 rounded-lg bg-stone-100 border border-transparent focus:bg-white focus:border-stone-300 focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm placeholder:text-stone-400"
           />
         </div>
       </div>
@@ -94,7 +94,7 @@ export function Header() {
           >
             <Bell className="h-5 w-5 text-stone-600" />
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] px-1 grid place-items-center rounded-full bg-red-500 text-white text-[10px] font-bold ring-2 ring-white">
+              <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] px-1 grid place-items-center rounded-full bg-[#C05C28] text-white text-[10px] font-bold ring-2 ring-white">
                 {unreadCount}
               </span>
             )}
@@ -131,7 +131,7 @@ export function Header() {
                         <div className="text-sm text-stone-800 leading-snug">{n.text}</div>
                         <div className="text-xs text-stone-500 mt-0.5">{n.time}</div>
                       </div>
-                      {!isRead && <span className="h-2 w-2 rounded-full bg-teal-500 shrink-0 mt-2" />}
+                      {!isRead && <span className="h-2 w-2 rounded-full bg-[#1C1C1C] shrink-0 mt-2" />}
                     </button>
                   );
                 })}
@@ -141,7 +141,7 @@ export function Header() {
                   setReadIds(notifications.map((n) => n.id));
                   setOpen(false);
                 }}
-                className="block w-full text-center text-sm text-teal-700 hover:bg-stone-50 py-2.5 border-t border-stone-100 font-medium"
+                className="block w-full text-center text-sm text-[#1A1A1A] hover:bg-stone-50 py-2.5 border-t border-stone-100 font-medium"
               >
                 Mark all as read
               </button>
@@ -171,7 +171,7 @@ export function Header() {
             onClick={() => setProfileOpen((o) => !o)}
             className="flex items-center gap-2 hover:bg-stone-100 rounded-md px-1 py-1"
           >
-            <Avatar initials={trainerInitials} color="bg-teal-600" size="sm" />
+            <Avatar initials={trainerInitials} color="bg-[#C05C28]" size="sm" />
             <div className="leading-tight">
               <div className="text-sm font-medium text-stone-900">{trainerName}</div>
               <div className="text-[11px] text-stone-500">Coach</div>

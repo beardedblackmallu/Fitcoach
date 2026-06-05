@@ -38,8 +38,8 @@ export function TapToCallModal() {
         </button>
 
         <div className="flex items-center gap-3 mb-4">
-          <div className="h-10 w-10 rounded-full bg-teal-100 grid place-items-center">
-            <Phone className="h-5 w-5 text-teal-700" />
+          <div className="h-10 w-10 rounded-full bg-[#EBEBEA] grid place-items-center">
+            <Phone className="h-5 w-5 text-[#1A1A1A]" />
           </div>
           <div>
             <div className="text-xs text-stone-500">Call</div>

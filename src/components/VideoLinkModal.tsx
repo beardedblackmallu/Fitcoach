@@ -101,7 +101,7 @@ export function VideoLinkModal({
             className={`w-full h-11 pl-10 pr-3 rounded-lg border outline-none focus:ring-2 text-sm ${
               showErrorNow
                 ? "border-red-300 focus:border-red-400 focus:ring-red-100"
-                : "border-stone-300 focus:border-teal-500 focus:ring-teal-100"
+                : "border-stone-300 focus:border-[#1C1C1C] focus:ring-[#E5E3DE]"
             }`}
           />
         </div>
@@ -144,7 +144,7 @@ export function VideoLinkModal({
           <button
             onClick={handleSave}
             disabled={isEmpty}
-            className="h-10 px-4 text-sm font-medium rounded-lg bg-teal-600 hover:bg-teal-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
+            className="h-10 px-4 text-sm font-medium rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Save
           </button>

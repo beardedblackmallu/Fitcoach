@@ -51,7 +51,7 @@ export default function PlansListPage() {
         </div>
         <button
           onClick={() => openNewPlanModal()}
-          className="h-9 px-3 text-sm rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium inline-flex items-center gap-1.5"
+          className="h-9 px-3 text-sm rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium inline-flex items-center gap-1.5"
         >
           <Plus className="h-4 w-4" />
           New plan
@@ -66,7 +66,7 @@ export default function PlansListPage() {
               onClick={() => setFilter(f)}
               className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors flex items-center gap-2 ${
                 filter === f
-                  ? "border-teal-600 text-teal-700"
+                  ? "border-[#1C1C1C] text-[#1A1A1A]"
                   : "border-transparent text-stone-500 hover:text-stone-800"
               }`}
             >
@@ -74,7 +74,7 @@ export default function PlansListPage() {
               <span
                 className={`text-[10px] font-semibold px-1.5 min-w-[18px] h-[18px] grid place-items-center rounded-full ${
                   filter === f
-                    ? "bg-teal-100 text-teal-700"
+                    ? "bg-[#EBEBEA] text-[#1A1A1A]"
                     : "bg-stone-100 text-stone-500"
                 }`}
               >
@@ -108,7 +108,7 @@ export default function PlansListPage() {
           </p>
           <button
             onClick={() => openNewPlanModal()}
-            className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-lg bg-teal-600 hover:bg-teal-700 text-white"
+            className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium px-3 py-2 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white"
           >
             <Plus className="h-4 w-4" />
             New plan
@@ -160,7 +160,7 @@ function PlanCard({
     <div className="bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm hover:border-stone-300 transition-all flex flex-col">
       <div className="flex items-start justify-between gap-2 mb-3">
         <Link href={`/plans/${plan.id}/edit`} className="flex-1 min-w-0">
-          <div className="h-9 w-9 rounded-lg bg-teal-50 grid place-items-center text-teal-700 mb-3">
+          <div className="h-9 w-9 rounded-lg bg-[#F5F4F2] grid place-items-center text-[#1A1A1A] mb-3">
             <Dumbbell className="h-4 w-4" />
           </div>
           <h3 className="font-semibold text-stone-900 leading-snug">{plan.name}</h3>
@@ -218,7 +218,7 @@ function PlanCard({
 
       <button
         onClick={onEdit}
-        className="mt-3 w-full h-9 text-sm rounded-lg border border-stone-300 hover:bg-stone-50 hover:border-teal-300 text-stone-700 hover:text-teal-700 font-medium inline-flex items-center justify-center gap-1.5"
+        className="mt-3 w-full h-9 text-sm rounded-lg border border-stone-300 hover:bg-stone-50 hover:border-[#D4D1CB] text-stone-700 hover:text-[#1A1A1A] font-medium inline-flex items-center justify-center gap-1.5"
       >
         <Edit3 className="h-3.5 w-3.5" />
         Edit

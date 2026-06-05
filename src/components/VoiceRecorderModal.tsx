@@ -105,7 +105,7 @@ export function VoiceRecorderModal() {
                 onTouchStart={startRecording}
                 onTouchEnd={stopRecording}
                 onClick={startRecording}
-                className="relative h-24 w-24 rounded-full bg-teal-600 hover:bg-teal-700 active:bg-teal-800 grid place-items-center text-white shadow-lg transition-colors"
+                className="relative h-24 w-24 rounded-full bg-[#1C1C1C] hover:bg-[#2A2A2A] active:bg-[#0F0F0F] grid place-items-center text-white shadow-lg transition-colors"
               >
                 <Mic className="h-10 w-10" />
               </button>
@@ -133,7 +133,7 @@ export function VoiceRecorderModal() {
                 {Array.from({ length: 24 }).map((_, i) => (
                   <div
                     key={i}
-                    className="wave-bar w-1 bg-teal-500 rounded"
+                    className="wave-bar w-1 bg-[#1C1C1C] rounded"
                     style={{ height: "100%", animationDelay: `${i * 60}ms` }}
                   />
                 ))}
@@ -148,14 +148,14 @@ export function VoiceRecorderModal() {
                 <div className="flex items-center gap-3">
                   <button
                     onClick={() => setPlaying((p) => !p)}
-                    className="h-12 w-12 rounded-full bg-teal-600 hover:bg-teal-700 grid place-items-center text-white shrink-0"
+                    className="h-12 w-12 rounded-full bg-[#1C1C1C] hover:bg-[#2A2A2A] grid place-items-center text-white shrink-0"
                   >
                     {playing ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5 ml-0.5" />}
                   </button>
                   <div className="flex-1">
                     <div className="h-2 bg-stone-200 rounded-full overflow-hidden">
                       <div
-                        className="h-full bg-teal-500 transition-all"
+                        className="h-full bg-[#1C1C1C] transition-all"
                         style={{ width: `${Math.min(100, (playPos / (seconds * 10 || 1)) * 100)}%` }}
                       />
                     </div>
@@ -187,7 +187,7 @@ export function VoiceRecorderModal() {
             </button>
             <button
               onClick={send}
-              className="flex-1 h-11 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm flex items-center justify-center gap-2"
+              className="flex-1 h-11 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium text-sm flex items-center justify-center gap-2"
             >
               <Send className="h-4 w-4" />
               Send

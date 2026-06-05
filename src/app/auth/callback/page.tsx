@@ -43,9 +43,9 @@ function CallbackInner() {
   }, [router, searchParams]);
 
   return (
-    <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center">
+    <div className="min-h-screen bg-[#F5F4F2] flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
-        <div className="h-10 w-10 rounded-full border-2 border-teal-600 border-t-transparent animate-spin" />
+        <div className="h-10 w-10 rounded-full border-2 border-[#1C1C1C] border-t-transparent animate-spin" />
         <p className="text-sm text-stone-500">Completing sign in…</p>
       </div>
     </div>
@@ -56,8 +56,8 @@ export default function CallbackPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#FAFAF9] flex items-center justify-center">
-          <div className="h-10 w-10 rounded-full border-2 border-teal-600 border-t-transparent animate-spin" />
+        <div className="min-h-screen bg-[#F5F4F2] flex items-center justify-center">
+          <div className="h-10 w-10 rounded-full border-2 border-[#1C1C1C] border-t-transparent animate-spin" />
         </div>
       }
     >

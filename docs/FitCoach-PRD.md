@@ -371,10 +371,17 @@ Everything in section 8. Launch with 3–5 design partners using the product fre
 ## 15. Brand & visual design
 
 ### 15.1 Color system
-- **Primary:** Deep teal #0D9488
-- **Accent:** Warm amber #F59E0B (for escalations, alerts, "needs attention" states)
-- **Background:** Warm off-white #FAFAF9
-- **Text primary:** #1F2937
+*(Updated Phase 2 CP0 — reskinned from teal to charcoal + burnt orange.)*
+- **Primary accent:** Burnt orange #C05C28 (escalations, badges, nav active
+  state, one key CTA per screen — replaces teal #0D9488)
+- **Charcoal:** #1C1C1C (sidebar background + default primary buttons)
+- **Accent:** Burnt orange #C05C28 (escalations, alerts, "needs attention"
+  states — replaces amber #F59E0B)
+- **Surface:** #F5F4F2 (page background — replaces #FAFAF9)
+- **Card:** #FFFFFF
+- **Border:** #E5E3DE
+- **Success:** Teal #1D9E75 (retained for positive states ONLY)
+- **Text primary:** #1A1A1A
 - **Text secondary:** #6B7280
 
 ### 15.2 Typography
@@ -382,6 +389,8 @@ Inter as the system font. 14–16px body, 18–24px section headers, 28–32px p
 
 ### 15.3 Aesthetic
 Linear / Notion style modern SaaS. Generous whitespace, subtle shadows, no clutter, no gratuitous gradients or animations. Visual hierarchy through size and weight, not color.
+
+Orange is used sparingly — one primary CTA per screen maximum, escalation indicators, nav active state, badges. Default primary buttons are charcoal #1C1C1C. If in doubt, use charcoal not orange.
 
 ### 15.4 Voice & tone
 Confident, practical, warm. Respects the trainer's expertise. Never preachy. Avoids "AI mystique" or pretending to be smarter than the user.

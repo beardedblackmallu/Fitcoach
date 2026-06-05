@@ -93,9 +93,9 @@ export function AddClientModal() {
   };
 
   const labelCls = "text-[11px] font-medium text-stone-700 block mb-1";
-  const inputCls = "w-full h-9 px-2.5 rounded-md border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm";
+  const inputCls = "w-full h-9 px-2.5 rounded-md border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm";
   const selectCls = `${inputCls} bg-white`;
-  const textareaCls = "w-full p-2.5 rounded-md border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm resize-none";
+  const textareaCls = "w-full p-2.5 rounded-md border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm resize-none";
 
   return (
     <div className="fixed inset-0 z-50 grid place-items-center px-4 py-6 fade-in">
@@ -247,7 +247,7 @@ export function AddClientModal() {
           <button
             onClick={submit}
             disabled={saving}
-            className="px-4 h-10 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium text-sm disabled:opacity-60 flex items-center gap-2"
+            className="px-4 h-10 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium text-sm disabled:opacity-60 flex items-center gap-2"
           >
             {saving && <span className="h-3.5 w-3.5 rounded-full border-2 border-white/50 border-t-white animate-spin" />}
             {saving ? "Adding…" : "Add client"}
@@ -270,7 +270,7 @@ function Section({
   return (
     <div>
       <div className="flex items-center gap-2 mb-2.5">
-        <div className="h-7 w-7 rounded-md bg-teal-50 grid place-items-center text-teal-700">
+        <div className="h-7 w-7 rounded-md bg-[#F5F4F2] grid place-items-center text-[#1A1A1A]">
           <Icon className="h-4 w-4" />
         </div>
         <h3 className="text-sm font-semibold text-stone-900">{title}</h3>

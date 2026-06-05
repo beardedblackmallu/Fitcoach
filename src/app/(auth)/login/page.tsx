@@ -51,7 +51,7 @@ export default function LoginPage() {
   };
 
   const inputCls =
-    "w-full h-11 px-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm bg-white";
+    "w-full h-11 px-3 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm bg-white";
 
   return (
     <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-6">
@@ -94,7 +94,7 @@ export default function LoginPage() {
         <div>
           <div className="flex items-center justify-between mb-1">
             <label className="text-xs font-medium text-stone-700">Password</label>
-            <Link href="/forgot-password" className="text-xs text-teal-700 hover:underline">
+            <Link href="/forgot-password" className="text-xs text-[#1A1A1A] hover:underline">
               Forgot password?
             </Link>
           </div>
@@ -118,7 +118,7 @@ export default function LoginPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-11 rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white text-sm font-semibold disabled:opacity-60 flex items-center justify-center gap-2"
+          className="w-full h-11 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] active:bg-[#0F0F0F] text-white text-sm font-semibold disabled:opacity-60 flex items-center justify-center gap-2"
         >
           {loading && (
             <span className="h-4 w-4 rounded-full border-2 border-white/50 border-t-white animate-spin" />
@@ -129,7 +129,7 @@ export default function LoginPage() {
 
       <p className="text-center text-xs text-stone-500 mt-4">
         No account?{" "}
-        <Link href="/signup" className="text-teal-700 font-medium hover:underline">
+        <Link href="/signup" className="text-[#1A1A1A] font-medium hover:underline">
           Create one
         </Link>
       </p>

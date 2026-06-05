@@ -72,7 +72,7 @@ export default function InboxPage() {
       <div className="mb-5 flex items-end justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold text-stone-900 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-amber-500" />
+            <AlertTriangle className="h-5 w-5 text-[#C05C28]" />
             Action needed
           </h1>
           <p className="text-sm text-stone-500 mt-1">
@@ -90,7 +90,7 @@ export default function InboxPage() {
               onClick={() => setFilter(cat)}
               className={`px-3 py-2.5 text-sm font-medium border-b-2 whitespace-nowrap flex items-center gap-2 transition-colors ${
                 filter === cat
-                  ? "border-teal-600 text-teal-700"
+                  ? "border-[#1C1C1C] text-[#1A1A1A]"
                   : "border-transparent text-stone-500 hover:text-stone-800"
               }`}
             >
@@ -98,7 +98,7 @@ export default function InboxPage() {
               <span
                 className={`text-[10px] font-semibold px-1.5 min-w-[18px] h-[18px] grid place-items-center rounded-full ${
                   filter === cat
-                    ? "bg-teal-100 text-teal-700"
+                    ? "bg-[#EBEBEA] text-[#1A1A1A]"
                     : "bg-stone-100 text-stone-500"
                 }`}
               >
@@ -180,27 +180,27 @@ function EscalationCard({
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
-      <div className="h-1 bg-amber-400" />
+      <div className="h-1 bg-[#C05C28]" />
       <div className="p-5">
         <div className="flex items-start gap-3">
           <Avatar initials={escalation.clientInitials} color={escalation.clientAvatarColor} size="md" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-semibold text-stone-900">{escalation.clientName}</span>
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 inline-flex items-center gap-1">
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#F7EEE8] text-[#8A4427] inline-flex items-center gap-1">
                 🟡 Escalated by bot
               </span>
               <span className="text-xs text-stone-500">{escalation.time}</span>
             </div>
-            <div className="mt-1 text-xs text-amber-700 font-medium inline-flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            <div className="mt-1 text-xs text-[#8A4427] font-medium inline-flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#C05C28]" />
               {escalation.reasonBadge}
             </div>
           </div>
         </div>
 
-        <div className="mt-4 bg-amber-50 border-l-4 border-amber-400 rounded-r-lg p-4">
-          <div className="text-[11px] text-amber-700 uppercase tracking-wide font-medium mb-1.5">
+        <div className="mt-4 bg-[#F7EEE8] border-l-4 border-[#C05C28] rounded-r-lg p-4">
+          <div className="text-[11px] text-[#8A4427] uppercase tracking-wide font-medium mb-1.5">
             Client message
           </div>
           <div className="text-sm text-stone-800 leading-relaxed">"{escalation.quotedMessage}"</div>
@@ -222,7 +222,7 @@ function EscalationCard({
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={onOpenChat}
-            className="text-sm font-medium px-3 min-h-[44px] rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white inline-flex items-center gap-1.5 touch-manipulation"
+            className="text-sm font-medium px-3 min-h-[44px] rounded-lg bg-[#C05C28] hover:bg-[#A84E22] text-white inline-flex items-center gap-1.5 touch-manipulation"
           >
             <MessageCircle className="h-4 w-4" />
             Open conversation
@@ -254,7 +254,7 @@ function EscalationCard({
           <>
             <button
               onClick={() => setSuggestedOpen((v) => !v)}
-              className="mt-4 text-xs font-medium text-teal-700 hover:text-teal-800 inline-flex items-center gap-1.5"
+              className="mt-4 text-xs font-medium text-[#1A1A1A] hover:text-[#1A1A1A] inline-flex items-center gap-1.5"
             >
               {suggestedOpen ? <ChevronDown className="h-3.5 w-3.5" /> : <ChevronRight className="h-3.5 w-3.5" />}
               <Sparkles className="h-3.5 w-3.5" />
@@ -265,12 +265,12 @@ function EscalationCard({
                 {escalation.suggestedReplies.map((r, i) => (
                   <div
                     key={i}
-                    className="bg-gradient-to-br from-teal-50 to-stone-50 border border-teal-100 rounded-lg p-3 flex flex-col sm:flex-row sm:items-start gap-3"
+                    className="bg-gradient-to-br from-[#F5F4F2] to-stone-50 border border-[#E5E3DE] rounded-lg p-3 flex flex-col sm:flex-row sm:items-start gap-3"
                   >
                     <p className="flex-1 text-sm text-stone-700 leading-relaxed">{r}</p>
                     <button
                       onClick={() => onUseReply(r)}
-                      className="self-end sm:self-auto shrink-0 text-sm font-medium px-4 min-h-[40px] rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white touch-manipulation"
+                      className="self-end sm:self-auto shrink-0 text-sm font-medium px-4 min-h-[40px] rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] active:bg-[#0F0F0F] text-white touch-manipulation"
                     >
                       Use this
                     </button>

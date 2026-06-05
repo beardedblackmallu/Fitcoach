@@ -48,9 +48,9 @@ export function NutritionTab({ plan, setPlan }: Props) {
             label="Total calories"
             unit="kcal"
             placeholder="e.g., 2000"
-            color="bg-amber-50 border-amber-200 text-amber-900"
-            valueColor="text-amber-900"
-            icon={<Flame className="h-3.5 w-3.5 text-amber-600" />}
+            color="bg-[#F7EEE8] border-[#DCC3B2] text-[#8A4427]"
+            valueColor="text-[#8A4427]"
+            icon={<Flame className="h-3.5 w-3.5 text-[#C05C28]" />}
           />
           <MacroCard
             value={plan.protein}
@@ -67,8 +67,8 @@ export function NutritionTab({ plan, setPlan }: Props) {
             label="Carbs"
             unit="g"
             placeholder="e.g., 250"
-            color="bg-teal-50 border-teal-200 text-teal-900"
-            valueColor="text-teal-900"
+            color="bg-[#F5F4F2] border-[#E5E3DE] text-[#1A1A1A]"
+            valueColor="text-[#1A1A1A]"
           />
           <MacroCard
             value={plan.fats}
@@ -100,7 +100,7 @@ export function NutritionTab({ plan, setPlan }: Props) {
                 ],
               }))
             }
-            className="text-xs font-medium text-teal-700 hover:text-teal-800 inline-flex items-center gap-1"
+            className="text-xs font-medium text-[#1A1A1A] hover:text-[#1A1A1A] inline-flex items-center gap-1"
           >
             <Plus className="h-3.5 w-3.5" />
             Add meal
@@ -128,7 +128,7 @@ export function NutritionTab({ plan, setPlan }: Props) {
       {/* Coach notes */}
       <div className="bg-white border border-stone-200 rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
-          <StickyNote className="h-4 w-4 text-amber-600" />
+          <StickyNote className="h-4 w-4 text-[#C05C28]" />
           <h3 className="text-sm font-semibold text-stone-900">Coach notes</h3>
         </div>
         <textarea
@@ -136,7 +136,7 @@ export function NutritionTab({ plan, setPlan }: Props) {
           onChange={(e) => setPlan((p) => ({ ...p, coachNotes: e.target.value }))}
           rows={5}
           placeholder="Add your diet rules and guidelines for this plan (e.g., oil limits, restaurant rules, alcohol guidelines, foods to avoid)"
-          className="w-full p-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm leading-relaxed resize-none placeholder:text-stone-400"
+          className="w-full p-3 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm leading-relaxed resize-none placeholder:text-stone-400"
         />
       </div>
 
@@ -213,11 +213,11 @@ function MealCard({
         <button onClick={onToggle} className="text-stone-400 hover:text-stone-700 shrink-0">
           {expanded ? <ChevronDown className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
         </button>
-        <Apple className="h-4 w-4 text-teal-600 shrink-0" />
+        <Apple className="h-4 w-4 text-[#1A1A1A] shrink-0" />
         <input
           value={meal.name}
           onChange={(e) => onChange((p) => ({ ...p, name: e.target.value }))}
-          className="flex-1 text-sm font-medium text-stone-900 bg-transparent outline-none focus:border-b focus:border-teal-500"
+          className="flex-1 text-sm font-medium text-stone-900 bg-transparent outline-none focus:border-b focus:border-[#1C1C1C]"
         />
         {totals && !expanded && (
           <span className="text-[11px] text-stone-500 tabular-nums">
@@ -276,7 +276,7 @@ function MealCard({
                 };
               })
             }
-            className="mt-2 text-xs font-medium text-teal-700 hover:text-teal-800 inline-flex items-center gap-1"
+            className="mt-2 text-xs font-medium text-[#1A1A1A] hover:text-[#1A1A1A] inline-flex items-center gap-1"
           >
             <Plus className="h-3.5 w-3.5" />
             Add alternative
@@ -290,7 +290,7 @@ function MealCard({
               value={meal.notes ?? ""}
               onChange={(e) => onChange((p) => ({ ...p, notes: e.target.value }))}
               placeholder="e.g., 30 min before workout"
-              className="w-full h-8 px-2 rounded-md border border-stone-200 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-xs placeholder:text-stone-400"
+              className="w-full h-8 px-2 rounded-md border border-stone-200 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-xs placeholder:text-stone-400"
             />
           </div>
         </div>
@@ -350,7 +350,7 @@ function VariantBlock({
         <input
           value={variant.label}
           onChange={(e) => onChange((p) => ({ ...p, label: e.target.value }))}
-          className={`text-xs font-semibold ${isPrimary ? "text-stone-700" : "text-amber-700"} bg-transparent outline-none focus:border-b`}
+          className={`text-xs font-semibold ${isPrimary ? "text-stone-700" : "text-[#8A4427]"} bg-transparent outline-none focus:border-b`}
         />
         {!isPrimary && (
           <button
@@ -398,14 +398,14 @@ function VariantBlock({
                   <input
                     value={f.name}
                     onChange={(e) => updateFood(f.id, { name: e.target.value })}
-                    className="w-full h-7 px-1.5 rounded border border-transparent hover:border-stone-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-100 outline-none text-xs bg-transparent"
+                    className="w-full h-7 px-1.5 rounded border border-transparent hover:border-stone-200 focus:border-[#1C1C1C] focus:ring-1 focus:ring-[#E5E3DE] outline-none text-xs bg-transparent"
                   />
                 </td>
                 <td className="pr-2 py-1">
                   <input
                     value={f.quantity}
                     onChange={(e) => updateFood(f.id, { quantity: e.target.value })}
-                    className="w-full h-7 px-1.5 rounded border border-transparent hover:border-stone-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-100 outline-none text-xs bg-transparent"
+                    className="w-full h-7 px-1.5 rounded border border-transparent hover:border-stone-200 focus:border-[#1C1C1C] focus:ring-1 focus:ring-[#E5E3DE] outline-none text-xs bg-transparent"
                   />
                 </td>
                 {(["calories", "carbs", "fats", "protein", "fiber"] as const).map((k) => (
@@ -415,7 +415,7 @@ function VariantBlock({
                       min={0}
                       value={f[k]}
                       onChange={(e) => updateFood(f.id, { [k]: Number(e.target.value) || 0 } as Partial<FoodItem>)}
-                      className="w-full h-7 px-1 rounded border border-transparent hover:border-stone-200 focus:border-teal-500 focus:ring-1 focus:ring-teal-100 outline-none text-xs text-right tabular-nums bg-transparent"
+                      className="w-full h-7 px-1 rounded border border-transparent hover:border-stone-200 focus:border-[#1C1C1C] focus:ring-1 focus:ring-[#E5E3DE] outline-none text-xs text-right tabular-nums bg-transparent"
                     />
                   </td>
                 ))}
@@ -449,7 +449,7 @@ function VariantBlock({
 
       <button
         onClick={addFood}
-        className="mt-1 text-xs font-medium text-teal-700 hover:text-teal-800 inline-flex items-center gap-1"
+        className="mt-1 text-xs font-medium text-[#1A1A1A] hover:text-[#1A1A1A] inline-flex items-center gap-1"
       >
         <Plus className="h-3.5 w-3.5" />
         Add food item
@@ -469,27 +469,27 @@ function HungerSubsSection({
   const isEmpty = items.length === 0;
 
   return (
-    <div className="bg-amber-50/50 border border-amber-200 rounded-xl p-4">
+    <div className="bg-[#F7EEE8]/50 border border-[#DCC3B2] rounded-xl p-4">
       <div className="flex items-center gap-2 mb-2">
-        <Lightbulb className="h-4 w-4 text-amber-700" />
-        <h3 className="text-sm font-semibold text-amber-900">Hunger substitutions</h3>
+        <Lightbulb className="h-4 w-4 text-[#8A4427]" />
+        <h3 className="text-sm font-semibold text-[#8A4427]">Hunger substitutions</h3>
       </div>
 
       {isEmpty ? (
-        <p className="text-xs text-amber-800/80 mb-2 leading-relaxed">
+        <p className="text-xs text-[#8A4427]/80 mb-2 leading-relaxed">
           Add items your client can have when hungry between meals.
         </p>
       ) : (
         <ul className="space-y-1 text-sm text-stone-800 mb-2">
           {items.map((sub, i) => (
             <li key={i} className="group flex items-start gap-2">
-              <span className="text-amber-600 mt-0.5 select-none">•</span>
+              <span className="text-[#C05C28] mt-0.5 select-none">•</span>
               <input
                 value={sub}
                 onChange={(e) =>
                   onChange((prev) => prev.map((x, idx) => (idx === i ? e.target.value : x)))
                 }
-                className="flex-1 bg-transparent outline-none focus:border-b focus:border-amber-400 text-sm"
+                className="flex-1 bg-transparent outline-none focus:border-b focus:border-[#C05C28] text-sm"
               />
               <button
                 onClick={() => onChange((prev) => prev.filter((_, idx) => idx !== i))}
@@ -505,7 +505,7 @@ function HungerSubsSection({
 
       <button
         onClick={() => onChange((prev) => [...prev, ""])}
-        className="text-xs font-medium text-amber-800 hover:text-amber-900 inline-flex items-center gap-1"
+        className="text-xs font-medium text-[#8A4427] hover:text-[#8A4427] inline-flex items-center gap-1"
       >
         <Plus className="h-3.5 w-3.5" />
         Add substitution

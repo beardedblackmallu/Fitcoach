@@ -7,7 +7,7 @@ import { usePayments } from "@/lib/hooks/usePayments";
 
 const STATUS_STYLES: Record<string, string> = {
   paid: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
-  pending: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
+  pending: "bg-[#F7EEE8] text-[#8A4427] ring-1 ring-[#DCC3B2]",
   failed: "bg-red-50 text-red-700 ring-1 ring-red-200",
   refunded: "bg-stone-100 text-stone-600 ring-1 ring-stone-200",
 };
@@ -66,7 +66,7 @@ export default function PaymentsPage() {
         </div>
         <div className="bg-white border border-stone-200 rounded-xl p-4">
           <div className="flex items-center gap-2 text-sm text-stone-600">
-            <ArrowUpRight className="h-4 w-4 text-amber-600" />
+            <ArrowUpRight className="h-4 w-4 text-[#C05C28]" />
             Pending
           </div>
           {loading ? (
@@ -79,7 +79,7 @@ export default function PaymentsPage() {
         </div>
         <div className="bg-white border border-stone-200 rounded-xl p-4">
           <div className="flex items-center gap-2 text-sm text-stone-600">
-            <IndianRupee className="h-4 w-4 text-teal-600" />
+            <IndianRupee className="h-4 w-4 text-[#1A1A1A]" />
             Active clients
           </div>
           {loading ? (
@@ -150,7 +150,7 @@ export default function PaymentsPage() {
                       {p.status === "pending" && (
                         <button
                           onClick={() => showToast(`Payment link — Razorpay integration coming in Phase 6`)}
-                          className="text-xs font-medium px-2.5 py-1 rounded-md bg-teal-600 hover:bg-teal-700 text-white inline-flex items-center gap-1"
+                          className="text-xs font-medium px-2.5 py-1 rounded-md bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white inline-flex items-center gap-1"
                         >
                           <Send className="h-3 w-3" />
                           Send link

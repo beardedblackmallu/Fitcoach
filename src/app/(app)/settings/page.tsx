@@ -47,7 +47,7 @@ export default function SettingsPage() {
       </div>
 
       <div className="bg-white border border-stone-200 rounded-xl p-5 mb-5 flex items-center gap-4">
-        <Avatar initials="SK" color="bg-teal-600" size="lg" />
+        <Avatar initials="SK" color="bg-[#1C1C1C]" size="lg" />
         <div className="flex-1">
           <div className="font-semibold text-stone-900">Sandeep Kumar</div>
           <div className="text-sm text-stone-500">Strength & Nutrition Coach · Bengaluru</div>

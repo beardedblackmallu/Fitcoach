@@ -47,7 +47,7 @@ export default function ClientDetailPage() {
       <div className="px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto">
         <div className="bg-white border border-stone-200 rounded-xl p-12 text-center">
           <p className="text-stone-500 font-medium">Client not found</p>
-          <button onClick={() => router.push("/clients")} className="mt-3 text-sm text-teal-700 hover:underline">
+          <button onClick={() => router.push("/clients")} className="mt-3 text-sm text-[#1A1A1A] hover:underline">
             ← Back to clients
           </button>
         </div>
@@ -76,14 +76,14 @@ export default function ClientDetailPage() {
             <div className="flex items-baseline gap-3 flex-wrap">
               <h1 className="text-2xl font-semibold text-stone-900">{client.name}</h1>
               {client.planName !== "No plan assigned" && (
-                <span className="text-xs px-2 py-0.5 rounded-full bg-teal-50 text-teal-700 ring-1 ring-teal-200 font-medium">
+                <span className="text-xs px-2 py-0.5 rounded-full bg-[#F5F4F2] text-[#1A1A1A] ring-1 ring-[#E5E3DE] font-medium">
                   {client.planName}
                 </span>
               )}
             </div>
             {client.goal && (
               <p className="text-sm text-stone-600 mt-1.5 flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-amber-500" />
+                <Sparkles className="h-3.5 w-3.5 text-[#C05C28]" />
                 {client.goal}
               </p>
             )}
@@ -97,7 +97,7 @@ export default function ClientDetailPage() {
         <div className="mt-5 flex flex-wrap gap-2">
           <button
             onClick={() => openVoiceModal(client.name)}
-            className="inline-flex items-center gap-1.5 text-sm h-9 px-3 rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium"
+            className="inline-flex items-center gap-1.5 text-sm h-9 px-3 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium"
           >
             <Mic className="h-4 w-4" /> Send voice note
           </button>
@@ -145,7 +145,7 @@ export default function ClientDetailPage() {
                   onClick={() => setTab(t)}
                   className={`px-4 py-2.5 text-sm font-medium border-b-2 transition-colors -mb-px whitespace-nowrap ${
                     tab === t
-                      ? "border-teal-600 text-teal-700"
+                      ? "border-[#1C1C1C] text-[#1A1A1A]"
                       : "border-transparent text-stone-500 hover:text-stone-800"
                   }`}
                 >
@@ -160,7 +160,7 @@ export default function ClientDetailPage() {
             <div className="bg-white border border-stone-200 rounded-xl p-8 text-center">
               <Dumbbell className="h-10 w-10 text-stone-300 mx-auto mb-2" />
               <p className="text-sm text-stone-500">Workout history view — coming in Phase 2</p>
-              <Link href="/plans" className="text-sm text-teal-700 hover:underline mt-2 inline-block">
+              <Link href="/plans" className="text-sm text-[#1A1A1A] hover:underline mt-2 inline-block">
                 Open plan builder →
               </Link>
             </div>
@@ -183,7 +183,7 @@ export default function ClientDetailPage() {
               <p className="text-sm text-stone-500 mb-2">Inline chat preview</p>
               <button
                 onClick={() => router.push(`/conversations?c=${client.id}`)}
-                className="text-sm bg-teal-600 hover:bg-teal-700 text-white px-3 py-1.5 rounded-md"
+                className="text-sm bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white px-3 py-1.5 rounded-md"
               >
                 Open in Conversations
               </button>
@@ -244,7 +244,7 @@ function OverviewTab({ client }: { client: UiClientDetail }) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="font-semibold text-stone-900 flex items-center gap-2">
-              <TrendingUp className="h-4 w-4 text-teal-600" />
+              <TrendingUp className="h-4 w-4 text-[#1A1A1A]" />
               Weight progress
             </h3>
             <p className="text-xs text-stone-500 mt-0.5">
@@ -271,7 +271,7 @@ function OverviewTab({ client }: { client: UiClientDetail }) {
                   contentStyle={{ background: "#1c1917", border: "none", borderRadius: 8, fontSize: 12, color: "#fafaf9" }}
                   labelStyle={{ color: "#a8a29e" }}
                 />
-                <Line type="monotone" dataKey="kg" stroke="#0D9488" strokeWidth={2.5} dot={{ r: 4, fill: "#0D9488" }} activeDot={{ r: 6 }} />
+                <Line type="monotone" dataKey="kg" stroke="#1C1C1C" strokeWidth={2.5} dot={{ r: 4, fill: "#1C1C1C" }} activeDot={{ r: 6 }} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -286,14 +286,14 @@ function OverviewTab({ client }: { client: UiClientDetail }) {
       <div className="grid sm:grid-cols-2 gap-3">
         <div className="bg-white border border-stone-200 rounded-xl p-4">
           <div className="flex items-center gap-2 text-sm text-stone-600">
-            <Dumbbell className="h-4 w-4 text-teal-600" />
+            <Dumbbell className="h-4 w-4 text-[#1A1A1A]" />
             Workout compliance
           </div>
           {client.workoutCompliance !== null ? (
             <>
               <div className="text-3xl font-semibold text-stone-900 mt-2 tabular-nums">{client.workoutCompliance}%</div>
               <div className="h-1.5 mt-3 bg-stone-100 rounded-full overflow-hidden">
-                <div className="h-full bg-teal-500" style={{ width: `${client.workoutCompliance}%` }} />
+                <div className="h-full bg-[#1C1C1C]" style={{ width: `${client.workoutCompliance}%` }} />
               </div>
             </>
           ) : (
@@ -302,14 +302,14 @@ function OverviewTab({ client }: { client: UiClientDetail }) {
         </div>
         <div className="bg-white border border-stone-200 rounded-xl p-4">
           <div className="flex items-center gap-2 text-sm text-stone-600">
-            <Apple className="h-4 w-4 text-amber-600" />
+            <Apple className="h-4 w-4 text-[#C05C28]" />
             Nutrition compliance
           </div>
           {client.nutritionCompliance !== null ? (
             <>
               <div className="text-3xl font-semibold text-stone-900 mt-2 tabular-nums">{client.nutritionCompliance}%</div>
               <div className="h-1.5 mt-3 bg-stone-100 rounded-full overflow-hidden">
-                <div className="h-full bg-amber-500" style={{ width: `${client.nutritionCompliance}%` }} />
+                <div className="h-full bg-[#C05C28]" style={{ width: `${client.nutritionCompliance}%` }} />
               </div>
             </>
           ) : (
@@ -328,9 +328,9 @@ function OverviewTab({ client }: { client: UiClientDetail }) {
         <ul className="space-y-3">
           {[
             { icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50", text: "Logged workout — Squat 4×8 completed", time: "12 min ago" },
-            { icon: ImageIcon, color: "text-amber-600 bg-amber-50", text: "Sent food photo — lunch logged", time: "2h ago" },
+            { icon: ImageIcon, color: "text-[#C05C28] bg-[#F7EEE8]", text: "Sent food photo — lunch logged", time: "2h ago" },
             { icon: Activity, color: "text-blue-600 bg-blue-50", text: "Morning check-in logged", time: "5h ago" },
-            { icon: Mic, color: "text-teal-600 bg-teal-50", text: "Voice note sent — 0:34", time: "yesterday" },
+            { icon: Mic, color: "text-[#1A1A1A] bg-[#F5F4F2]", text: "Voice note sent — 0:34", time: "yesterday" },
             { icon: Calendar, color: "text-violet-600 bg-violet-50", text: "Plan updated", time: "2 days ago" },
           ].map((a, i) => (
             <li key={i} className="flex items-start gap-3">
@@ -375,7 +375,7 @@ function HealthProfile({ client }: { client: UiClientDetail }) {
       </div>
 
       {showWarning && (
-        <div className="mb-3 px-2 py-1.5 rounded-md bg-amber-50 border border-amber-200 inline-flex items-center gap-1.5 text-[11px] text-amber-800 font-medium">
+        <div className="mb-3 px-2 py-1.5 rounded-md bg-[#F7EEE8] border border-[#DCC3B2] inline-flex items-center gap-1.5 text-[11px] text-[#8A4427] font-medium">
           <AlertTriangle className="h-3.5 w-3.5" />
           Review before planning
         </div>

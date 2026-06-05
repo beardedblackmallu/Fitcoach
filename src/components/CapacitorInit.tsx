@@ -23,7 +23,7 @@ export function CapacitorInit() {
       try {
         const { StatusBar, Style } = await import("@capacitor/status-bar");
         await StatusBar.setStyle({ style: Style.Light });
-        await StatusBar.setBackgroundColor({ color: "#0D9488" });
+        await StatusBar.setBackgroundColor({ color: "#1C1C1C" });
       } catch {
         // Not in Capacitor or iOS (setBackgroundColor not available on iOS)
       }

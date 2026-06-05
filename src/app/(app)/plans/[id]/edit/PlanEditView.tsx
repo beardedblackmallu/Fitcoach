@@ -188,7 +188,7 @@ export default function PlanEditPage() {
         <Dumbbell className="h-10 w-10 text-stone-300 mx-auto mb-2" />
         <h2 className="text-lg font-semibold text-stone-800">Plan not found</h2>
         <p className="text-sm text-stone-500 mt-1">This plan may have been deleted.</p>
-        <Link href="/plans" className="mt-4 inline-block text-sm text-teal-700 hover:underline">
+        <Link href="/plans" className="mt-4 inline-block text-sm text-[#1A1A1A] hover:underline">
           ← Back to all plans
         </Link>
       </div>
@@ -264,12 +264,12 @@ export default function PlanEditPage() {
       {/* Header */}
       <div className="flex items-end justify-between mb-5 gap-3 flex-wrap">
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <Dumbbell className="h-5 w-5 text-teal-600 shrink-0" />
+          <Dumbbell className="h-5 w-5 text-[#1A1A1A] shrink-0" />
           <input
             value={planName}
             onChange={(e) => setPlanName(e.target.value)}
             onBlur={() => showToast("Plan name saved", "success")}
-            className="text-2xl font-semibold bg-transparent border-b-2 border-transparent hover:border-stone-200 focus:border-teal-500 focus:outline-none px-1 py-1 min-w-0 flex-1 max-w-md"
+            className="text-2xl font-semibold bg-transparent border-b-2 border-transparent hover:border-stone-200 focus:border-[#1C1C1C] focus:outline-none px-1 py-1 min-w-0 flex-1 max-w-md"
           />
           <Edit3 className="h-3.5 w-3.5 text-stone-400" />
         </div>
@@ -285,7 +285,7 @@ export default function PlanEditPage() {
           </button>
           <button
             onClick={() => showToast("Assign clients — coming soon")}
-            className="h-9 px-3 text-sm rounded-lg bg-teal-600 hover:bg-teal-700 text-white font-medium inline-flex items-center gap-1.5"
+            className="h-9 px-3 text-sm rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium inline-flex items-center gap-1.5"
           >
             <Send className="h-4 w-4" />
             Send plan to client
@@ -299,7 +299,7 @@ export default function PlanEditPage() {
           onClick={() => setTopTab("workouts")}
           className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-colors inline-flex items-center gap-1.5 ${
             topTab === "workouts"
-              ? "border-teal-600 text-teal-700"
+              ? "border-[#1C1C1C] text-[#1A1A1A]"
               : "border-transparent text-stone-500 hover:text-stone-800"
           }`}
         >
@@ -309,7 +309,7 @@ export default function PlanEditPage() {
           onClick={() => setTopTab("nutrition")}
           className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px transition-colors inline-flex items-center gap-1.5 ${
             topTab === "nutrition"
-              ? "border-teal-600 text-teal-700"
+              ? "border-[#1C1C1C] text-[#1A1A1A]"
               : "border-transparent text-stone-500 hover:text-stone-800"
           }`}
         >
@@ -323,7 +323,7 @@ export default function PlanEditPage() {
         <>
           {/* Cycle navigation */}
           <div className="flex items-center gap-2 mb-3 flex-wrap">
-            <button className="text-sm font-medium px-3 py-1.5 rounded-lg bg-teal-600 text-white">
+            <button className="text-sm font-medium px-3 py-1.5 rounded-lg bg-[#1C1C1C] text-white">
               Cycle 1 (Weeks 1-{weeksPerCycle})
             </button>
             {Array.from({ length: Math.max(0, cycleCount - 1) }).map((_, i) => (
@@ -349,7 +349,7 @@ export default function PlanEditPage() {
                   onClick={() => setActiveWeek(w)}
                   className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors whitespace-nowrap ${
                     activeWeek === w
-                      ? "border-teal-600 text-teal-700"
+                      ? "border-[#1C1C1C] text-[#1A1A1A]"
                       : "border-transparent text-stone-500 hover:text-stone-800"
                   }`}
                 >
@@ -381,7 +381,7 @@ export default function PlanEditPage() {
                     onClick={() => setLibraryCat(cat)}
                     className={`text-[11px] px-2 py-0.5 rounded-full font-medium ${
                       libraryCat === cat
-                        ? "bg-teal-100 text-teal-700"
+                        ? "bg-[#EBEBEA] text-[#1A1A1A]"
                         : "bg-stone-100 text-stone-600 hover:bg-stone-200"
                     }`}
                   >
@@ -442,7 +442,7 @@ export default function PlanEditPage() {
                         Empty
                         <button
                           onClick={() => addExerciseToDay(day, "New exercise")}
-                          className="block mx-auto text-teal-700 hover:underline text-[11px] mt-1"
+                          className="block mx-auto text-[#1A1A1A] hover:underline text-[11px] mt-1"
                         >
                           + Add exercise
                         </button>
@@ -454,7 +454,7 @@ export default function PlanEditPage() {
                         <div className="text-[11px] text-stone-400 mt-0.5">Recovery</div>
                         <button
                           onClick={() => addExerciseToDay(day, "New exercise")}
-                          className="text-[11px] text-teal-700 hover:underline mt-2 inline-block"
+                          className="text-[11px] text-[#1A1A1A] hover:underline mt-2 inline-block"
                         >
                           + Add exercise
                         </button>
@@ -522,7 +522,7 @@ export default function PlanEditPage() {
           <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md p-5 scale-in">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-stone-900 flex items-center gap-2">
-                <StickyNote className="h-4 w-4 text-amber-500" />
+                <StickyNote className="h-4 w-4 text-[#C05C28]" />
                 Form cues
               </h3>
               <button
@@ -537,7 +537,7 @@ export default function PlanEditPage() {
               onChange={(e) => setNoteDraft(e.target.value)}
               rows={5}
               placeholder="e.g., chest up, brace core, drive through heels..."
-              className="w-full p-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm resize-none"
+              className="w-full p-3 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm resize-none"
             />
             <div className="flex justify-end gap-2 mt-3">
               <button
@@ -548,7 +548,7 @@ export default function PlanEditPage() {
               </button>
               <button
                 onClick={saveNote}
-                className="px-3 py-2 text-sm bg-teal-600 hover:bg-teal-700 text-white rounded-lg font-medium"
+                className="px-3 py-2 text-sm bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white rounded-lg font-medium"
               >
                 Save notes
               </button>
@@ -561,7 +561,7 @@ export default function PlanEditPage() {
       {topTab === "workouts" && (
         <button
           onClick={() => setLibraryDrawerOpen(true)}
-          className="lg:hidden fixed right-4 bottom-[124px] z-20 h-14 w-14 rounded-full bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white shadow-lg grid place-items-center"
+          className="lg:hidden fixed right-4 bottom-[124px] z-20 h-14 w-14 rounded-full bg-[#1C1C1C] hover:bg-[#2A2A2A] active:bg-[#0F0F0F] text-white shadow-lg grid place-items-center"
           aria-label="Open exercise library"
         >
           <Dumbbell className="h-6 w-6" />
@@ -581,7 +581,7 @@ export default function PlanEditPage() {
           >
             <div className="flex items-center justify-between px-5 pt-4 pb-2 shrink-0">
               <div className="text-sm font-semibold text-stone-900 inline-flex items-center gap-2">
-                <Dumbbell className="h-4 w-4 text-teal-600" />
+                <Dumbbell className="h-4 w-4 text-[#1A1A1A]" />
                 Exercise library
               </div>
               <button
@@ -609,7 +609,7 @@ export default function PlanEditPage() {
                     onClick={() => setLibraryCat(cat)}
                     className={`text-xs px-3 py-1.5 rounded-full font-medium shrink-0 ${
                       libraryCat === cat
-                        ? "bg-teal-100 text-teal-700"
+                        ? "bg-[#EBEBEA] text-[#1A1A1A]"
                         : "bg-stone-100 text-stone-600"
                     }`}
                   >
@@ -656,7 +656,7 @@ export default function PlanEditPage() {
         </button>
         <button
           onClick={() => showToast("Assign clients — coming soon")}
-          className="flex-[1.6] h-11 rounded-lg bg-teal-600 active:bg-teal-800 text-white text-sm font-semibold inline-flex items-center justify-center gap-1.5"
+          className="flex-[1.6] h-11 rounded-lg bg-[#1C1C1C] active:bg-[#0F0F0F] text-white text-sm font-semibold inline-flex items-center justify-center gap-1.5"
         >
           <Send className="h-4 w-4" />
           Send plan
@@ -678,14 +678,14 @@ function ExerciseCardInGrid({
   const hasUrl = libraryVideoUrl.trim().length > 0;
 
   return (
-    <div className="group rounded-lg border border-stone-200 bg-white hover:border-teal-300 hover:shadow-sm p-2 transition-all">
+    <div className="group rounded-lg border border-stone-200 bg-white hover:border-[#D4D1CB] hover:shadow-sm p-2 transition-all">
       <div className="flex items-start gap-1">
         <GripVertical className="h-3 w-3 text-stone-300 mt-1 shrink-0" />
         <div className="flex-1 min-w-0">
           <div className="text-xs font-semibold text-stone-800 truncate">{ex.name}</div>
           <div className="text-[11px] text-stone-500 mt-0.5">{ex.detail}</div>
           {ex.notes && (
-            <div className="text-[10px] text-amber-700 mt-1 italic line-clamp-2">📝 {ex.notes}</div>
+            <div className="text-[10px] text-[#8A4427] mt-1 italic line-clamp-2">📝 {ex.notes}</div>
           )}
 
           {hasUrl && (
@@ -703,7 +703,7 @@ function ExerciseCardInGrid({
         <div className="opacity-0 group-hover:opacity-100 flex flex-col gap-0.5">
           <button
             onClick={onOpenNote}
-            className={`p-0.5 rounded hover:bg-stone-100 ${ex.notes ? "text-amber-600" : "text-stone-400"}`}
+            className={`p-0.5 rounded hover:bg-stone-100 ${ex.notes ? "text-[#C05C28]" : "text-stone-400"}`}
             title="Form cues"
           >
             <StickyNote className="h-3 w-3" />
@@ -748,7 +748,7 @@ function ExerciseLibraryItem({
         </div>
         <button
           onClick={() => setDayOpen((o) => !o)}
-          className="p-1 rounded text-stone-400 hover:text-teal-600 hover:bg-teal-50 shrink-0"
+          className="p-1 rounded text-stone-400 hover:text-[#1A1A1A] hover:bg-[#F5F4F2] shrink-0"
           title="Add to day"
         >
           <Plus className="h-3.5 w-3.5" />
@@ -778,7 +778,7 @@ function ExerciseLibraryItem({
         ) : (
           <button
             onClick={onEdit}
-            className="text-[10px] font-medium text-stone-500 hover:text-teal-700 inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-teal-50 border border-dashed border-stone-300"
+            className="text-[10px] font-medium text-stone-500 hover:text-[#1A1A1A] inline-flex items-center gap-0.5 px-1 py-0.5 rounded hover:bg-[#F5F4F2] border border-dashed border-stone-300"
             title="Add a YouTube link for this exercise"
           >
             <Plus className="h-3 w-3" />
@@ -797,7 +797,7 @@ function ExerciseLibraryItem({
                 onAdd(day);
                 setDayOpen(false);
               }}
-              className="block w-full text-left text-xs px-2 py-1 rounded hover:bg-teal-50 hover:text-teal-700"
+              className="block w-full text-left text-xs px-2 py-1 rounded hover:bg-[#F5F4F2] hover:text-[#1A1A1A]"
             >
               {dayLabels[day]}
             </button>

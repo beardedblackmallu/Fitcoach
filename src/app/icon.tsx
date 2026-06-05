@@ -12,7 +12,7 @@ export default function Icon() {
         style={{
           width: "100%",
           height: "100%",
-          background: "#0D9488",
+          background: "#1C1C1C",
           color: "white",
           fontSize: 22,
           fontWeight: 800,

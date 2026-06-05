@@ -32,7 +32,7 @@ export default function ForgotPasswordPage() {
   if (done) {
     return (
       <div className="bg-white rounded-2xl border border-stone-200 shadow-sm p-6 text-center">
-        <div className="h-12 w-12 rounded-full bg-teal-50 grid place-items-center mx-auto mb-3">
+        <div className="h-12 w-12 rounded-full bg-[#F5F4F2] grid place-items-center mx-auto mb-3">
           <span className="text-2xl">✉️</span>
         </div>
         <h2 className="text-lg font-semibold text-stone-900 mb-1">Reset link sent</h2>
@@ -40,7 +40,7 @@ export default function ForgotPasswordPage() {
           Check <span className="font-medium text-stone-700">{email}</span> for a password reset link.
           It expires in 1 hour.
         </p>
-        <Link href="/login" className="mt-4 inline-block text-sm text-teal-700 font-medium hover:underline">
+        <Link href="/login" className="mt-4 inline-block text-sm text-[#1A1A1A] font-medium hover:underline">
           Back to sign in
         </Link>
       </div>
@@ -64,7 +64,7 @@ export default function ForgotPasswordPage() {
             placeholder="you@example.com"
             required
             autoComplete="email"
-            className="w-full h-11 px-3 rounded-lg border border-stone-300 focus:border-teal-500 focus:ring-2 focus:ring-teal-100 outline-none text-sm bg-white"
+            className="w-full h-11 px-3 rounded-lg border border-stone-300 focus:border-[#1C1C1C] focus:ring-2 focus:ring-[#E5E3DE] outline-none text-sm bg-white"
           />
         </div>
 
@@ -77,7 +77,7 @@ export default function ForgotPasswordPage() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full h-11 rounded-lg bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white text-sm font-semibold disabled:opacity-60 flex items-center justify-center gap-2"
+          className="w-full h-11 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] active:bg-[#0F0F0F] text-white text-sm font-semibold disabled:opacity-60 flex items-center justify-center gap-2"
         >
           {loading && (
             <span className="h-4 w-4 rounded-full border-2 border-white/50 border-t-white animate-spin" />
@@ -87,7 +87,7 @@ export default function ForgotPasswordPage() {
       </form>
 
       <p className="text-center text-xs text-stone-500 mt-4">
-        <Link href="/login" className="text-teal-700 font-medium hover:underline">
+        <Link href="/login" className="text-[#1A1A1A] font-medium hover:underline">
           ← Back to sign in
         </Link>
       </p>
