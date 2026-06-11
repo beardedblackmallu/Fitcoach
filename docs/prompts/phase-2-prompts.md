@@ -1,7 +1,26 @@
 # Phase 2 — Prompts (Onboarding + Billing)
 
+## Testing convention (read before any checkpoint)
+
+- **Primary test environment: Android emulator or real Android device.** Our
+  market is Android-heavy (India ~75–80%). All checkpoint tests are written for
+  Android.
+- **iOS simulator pass happens once per phase**, at the end — not per
+  checkpoint. Most bugs are logic bugs identical on both; platform-specific
+  bugs are caught in the phase-end iOS pass.
+- **How to launch for testing:**
+  `npm run build:mobile && npx cap sync && npx cap open android`
+  then Run in Android Studio (emulator or connected device).
+- **Native-feature tests** (camera/photo picker, push, deep links, splash, app
+  icon) MUST be verified on the emulator/device — they don't exist in a
+  browser.
+- The web build (`npm run dev`) may be used for quick logic glances during
+  development, but a checkpoint is NOT "done" until its tests pass on Android.
+
+---
+
 Each prompt is ready to paste into Claude Code. Run the tests at the bottom of
-each. Confirm pass → Claude Code marks complete, commits, updates
+each on Android. Confirm pass → Claude Code marks complete, commits, updates
 `BUILD-PLAN.md`.
 
 ---
@@ -68,14 +87,30 @@ Four parts, in order, build-check each.
   iOS `AppIcon.appiconset` (all sizes), Android mipmaps (all densities).
   Native splash bg `#1C1C1C`, duration 1500ms.
 
-**TESTS TO RUN:**
-1. `npm run build` → zero errors
-2. `npm run build:mobile && npx cap sync`
-3. Android emulator: unified icon on home screen
-4. Cold launch: charcoal + orange splash ~1.5s
-5. Welcome screen: staged animation plays in order
+**TESTS TO RUN (Android emulator/device):**
+
+**Test 0 — Screen walkthrough.** On the Android app, confirm each surface renders:
+- Welcome screen: papaya logo tile with white "F" + triple glow rings, "FitCoach"
+  wordmark, tagline, glowing "Get started" + frosted "Sign in" buttons, "Trusted
+  by 500+ coaches across India".
+- Dashboard header: dark gradient, "GOOD AFTERNOON" + first name, bell in frosted
+  circle with orange glow badge, glowing papaya avatar, 3 stat tiles
+  (Clients / Revenue / Compliance).
+- Escalation card: dark `#1C1C1C`, orange left border, glowing status dot,
+  "ACTION NEEDED" + count badge, client rows with glowing Reply buttons.
+- Check-in cards: white, orange overdue timestamps, glowing "Remind" buttons.
+- Bottom nav: active tab papaya + glow, badge with white border.
+
+Then the behavior tests:
+1. `npm run build` → zero errors (type/compile gate before building the app)
+2. `npm run build:mobile && npx cap sync && npx cap open android` → Run in
+   Android Studio
+3. Home screen: the unified papaya "F" icon shows on the Android launcher
+4. Cold launch (force-close, relaunch): charcoal + orange splash ~1.5s
+5. On app open: the welcome screen's staged animation plays in order
 6. Dashboard: dark header, dark escalation card, orange glows visible
-7. `prefers-reduced-motion`: animation skipped, content instant
+7. Turn on Android "Remove animations" (Settings → Accessibility): welcome
+   animation is skipped, content shows instantly
 
 **COMPLETION PROTOCOL:**
 Once user confirms all tests pass:
@@ -122,20 +157,43 @@ Build a resumable 6-step onboarding wizard replacing the `/onboarding` stub.
 **Requirements:**
 - `onboarding_step` column in `trainers` table tracks progress
 - Resumable: drop off at step 3, resume at step 3 on next login
-- Cannot access `(app)` routes until onboarding complete (proxy.ts +
-  AuthGuard check `onboarding_step`)
+- Cannot access `(app)` screens until onboarding complete. On mobile the
+  active gate is **AuthGuard** (client-side); `proxy.ts` only runs on the web
+  build. Both check the onboarding flag.
 - Progress indicator (Step X of 6) at top
 - Back button on every step except 1
 - All data saves to `trainers` table
 
-**TESTS TO RUN:**
-1. Fresh signup → lands on /onboarding step 1
-2. Complete step 1-2, close browser, reopen → resumes step 3
-3. Complete all 6 → lands on dashboard
-4. Trainer row in Supabase has all profile data + `onboarding_step = complete`
-5. Incomplete onboarding → /clients redirects back to wizard
-6. Option B selection → shows calling-loss warning
-7. Photo upload → appears in Supabase Storage + shows in header
+**TESTS TO RUN (Android emulator/device):**
+
+**Test 0 — Wizard walkthrough.** Going forward through all 6 steps, confirm each
+renders correctly:
+1. Profile — name (required, blocks Next if empty), photo upload, bio, specialty
+   chips toggle on/off
+2. WhatsApp — Option A preselected and marked "recommended"; selecting Option B
+   reveals the existing-number field and shows the calling-loss warning
+3. Business — business name (required), GST (optional, can skip), address
+4. Tier — 4 cards: Starter ₹999/10 clients, Growth ₹1999/30, Pro ₹2999/50,
+   Scale ₹4999/100; Growth marked "Popular" and preselected
+5. Payment — shows the selected plan + price + "Continue to payment"; marks
+   subscription pending
+6. Confirmation — success message + "Add your first client" CTA
+Plus: progress indicator advances correctly, "Step X of 6" is accurate at each
+step, Back works on steps 2–6 (not step 1).
+
+Then the behavior tests:
+1. Fresh signup in the app → after email verification, the app opens the
+   onboarding wizard at Step 1 of 6
+2. Complete steps 1–2, force-close the app, reopen → resumes at Step 3
+3. Complete all 6 steps → the app opens the Clients screen (onboarding
+   unlocked)
+4. Supabase dashboard: trainers row has all profile data +
+   `onboarding_step = complete`
+5. While onboarding is incomplete, open the Clients tab → the app sends you
+   back to the onboarding wizard
+6. Step 2 → select "Migrate existing number" → the calling-loss warning appears
+7. Step 1 → upload a photo via the native Android photo picker → appears in
+   Supabase Storage (avatars bucket) + shows as the header avatar in the app
 
 **COMPLETION PROTOCOL:**
 Once user confirms all tests pass:
@@ -176,13 +234,28 @@ Wire real Razorpay subscription billing (TEST MODE ONLY).
 Use Context7 to verify current Razorpay Node/Next.js integration before
 writing any payment code. **Never store card details.**
 
-**TESTS TO RUN:**
-1. Pick Starter → Razorpay test checkout opens
-2. Test card 4111 1111 1111 1111 → payment succeeds, status active in DB
-3. Razorpay failure test card → clear error, retry works
-4. Starter trainer adds 11th client → blocked with upgrade prompt
-5. Simulate expired subscription → redirected to /billing
-6. Webhook received → DB status updates correctly
+**TESTS TO RUN (Android emulator/device):**
+
+**Test 0 — Billing screens walkthrough.** On the Android app, confirm:
+- Razorpay checkout opens with the correct selected plan name + ₹ amount
+- Test mode is clearly indicated (not live)
+- On success: confirmation screen shows the active plan + renewal date
+- `/billing` screen shows current plan, price, renewal date, and upgrade options
+  for higher tiers
+- Tier-limit block: when at the client cap, the upgrade prompt names the current
+  tier and the next tier up
+
+Then the behavior tests:
+1. In the app, pick Starter → Razorpay checkout opens correctly inside the app
+   (in-app WebView / native checkout — not an external browser)
+2. Test card 4111 1111 1111 1111 → payment succeeds; Supabase dashboard shows
+   the trainers row status active
+3. Razorpay failure test card → the app shows a clear error, retry works
+4. As a Starter trainer, add an 11th client → the app blocks it with an upgrade
+   prompt
+5. Simulate an expired subscription → the app shows the Billing screen
+   (`/billing`)
+6. Webhook received → Supabase dashboard shows the subscription status update
 
 **COMPLETION PROTOCOL:**
 Once user confirms all tests pass:
@@ -225,15 +298,32 @@ carried from Phase 1.
 Injuries field is critical safety data — **never truncate.** All queries
 filter by `trainer_id`.
 
-**TESTS TO RUN:**
-1. Add client manually → all fields save → in list
-2. Edit client → persists on refresh
-3. Client with injuries → amber warning on detail page
-4. CSV import 3 clients → all appear
-5. Malformed CSV row → clear error, valid rows still import
-6. AssignPlan modal shows real plans
-7. ClientPicker modal shows real clients
-8. Add client beyond tier limit → blocked
+**TESTS TO RUN (Android emulator/device):**
+
+**Test 0 — Client screens walkthrough.** On the Android app, confirm:
+- Add-client form shows ALL intake fields grouped: Basic (name, phone +91, email,
+  age, gender), Body (height, weight, target), Preferences (goal, workout, diet,
+  whey), Health (allergies, injuries with timeframe placeholder, medical
+  conditions, notes)
+- Required-field validation fires (name, phone)
+- Phone enforces +91 format
+- Client list shows: avatar, name, phone, plan, compliance, status
+- Client detail shows the health profile section; amber "Review before planning"
+  warning appears when injuries/medical present
+- AssignPlan modal lists real plans with correct names/durations
+- ClientPicker modal lists real clients
+- CSV import shows a preview table before confirm
+
+Then the behavior tests:
+1. Add a client via the modal → all fields save → client appears in the list
+2. Edit a client, force-close the app and reopen → changes persisted
+3. Client with injuries → amber safety warning on the client detail screen
+4. CSV import (pick the file via the native Android file picker) of 3 clients
+   → all 3 appear
+5. Malformed CSV row → the app shows a clear error; valid rows still import
+6. AssignPlan modal shows real plans from Supabase
+7. ClientPicker modal shows real clients from Supabase
+8. Add a client beyond the tier limit → the app blocks it
 
 **COMPLETION PROTOCOL:**
 Once user confirms all tests pass:
@@ -270,11 +360,22 @@ Enable Google OAuth on native iOS + Android (deferred from Phase 1).
 Use Context7 to verify current Capacitor deep-linking + Capgo plugin setup
 before writing.
 
-**TESTS TO RUN:**
-1. "Continue with Google" on Android → Google picker opens
-2. Select account → lands on dashboard (not login)
-3. Same on iOS simulator
-4. Deep link handled without external browser
+**TESTS TO RUN (Android emulator/device — then the phase-end iOS pass):**
+
+**Test 0 — OAuth screens walkthrough.** On the Android app, confirm:
+- "Continue with Google" button renders on both the login and signup screens
+- Tapping it opens the native Google account picker (not an in-app web view of
+  Google)
+- After selection, the app returns to the dashboard
+
+Then the behavior tests:
+1. "Continue with Google" in the app on Android → the Google account picker
+   opens
+2. Select an account → the app opens the dashboard (not the login screen)
+3. Deep link `fitcoach://auth/callback` is handled inside the app — no external
+   browser opens
+4. **Phase-end iOS pass:** repeat 1–3 on the iOS simulator. This is the single
+   per-phase iOS verification — run it now since CP4 is the last checkpoint.
 
 **COMPLETION PROTOCOL:**
 Once user confirms all tests pass:

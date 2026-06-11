@@ -32,18 +32,21 @@ burnt orange and the PRD's old "no gradients/animations" aesthetic.
   layout preserved.
 - [x] **Part 3** — Animated pre-login `/welcome` route (CSS keyframes,
   Framer Motion not installed). Staged entrance logo→wordmark→tagline→CTAs,
-  respects `prefers-reduced-motion`. `proxy.ts` + `AuthGuard` now land
-  logged-out users on `/welcome`.
+  respects `prefers-reduced-motion`. Logged-out users land on `/welcome` —
+  enforced by `AuthGuard` in the app (the active gate on mobile) and by
+  `proxy.ts` on the web build.
 - [x] **Part 4** — Unified native icon + splash from one source
   (`scripts/gen-icons.mjs` → `assets/` → `@capacitor/assets`). Identical
   rectangle-"F" on both platforms (permanent fix for the old mismatch).
   Splash bg `#1C1C1C`, `launchShowDuration` 1500, status bar charcoal.
   PWA `public/icon-512.png` + `icon-192.png` generated.
 - [x] Build passes (web + mobile), `cap sync` clean both platforms
-- [x] `/welcome` verified in browser (no console errors)
+- [x] `/welcome` smoke-checked in the web dev build (quick logic glance, no
+  console errors). Authoritative pass is the Android app.
 
 **Routing note:** welcome screen is a top-level `/welcome` route (outside the
-`(auth)` card layout). Public in both `proxy.ts` and `AuthGuard`.
+`(auth)` card layout). Public in both `AuthGuard` (the mobile gate) and
+`proxy.ts` (web only).
 
 **Known cosmetic gap:** the sub-second *native* pre-splash glyph still
 differs slightly (iOS storyboard uses Futura-Bold; Android 12 uses the
@@ -52,6 +55,46 @@ identical. Final logo to come from the designer.
 
 ---
 
-## Checkpoints 1-4 (not yet scoped)
+## Checkpoints 1-4
 
-Placeholder for upcoming milestones. Full spec to be added after CP0 ships.
+Full copy-paste prompts (task, requirements, behavior tests, completion
+protocol) live in [`../../prompts/phase-2-prompts.md`](../../prompts/phase-2-prompts.md).
+Each checkpoint's **content walkthrough (Test 0)** is mirrored below so spec and
+prompt library stay in sync. All tests run on the Android app (see the
+Android-first testing convention in the prompt library).
+
+### CP1 — Trainer onboarding wizard
+
+**Test 0 — Wizard walkthrough.** Through all 6 steps confirm:
+1. Profile — name (required, blocks Next if empty), photo upload, bio, specialty
+   chips toggle
+2. WhatsApp — Option A preselected + "recommended"; Option B reveals the
+   existing-number field + calling-loss warning
+3. Business — business name (required), GST (optional), address
+4. Tier — Starter ₹999/10, Growth ₹1999/30 (Popular, preselected), Pro ₹2999/50,
+   Scale ₹4999/100
+5. Payment — selected plan + price + "Continue to payment"; marks pending
+6. Confirmation — success + "Add your first client"
+Plus: progress + "Step X of 6" accurate; Back on steps 2–6 (not 1).
+
+### CP2 — Subscription tiers + Razorpay
+
+**Test 0 — Billing screens walkthrough.** Confirm: Razorpay checkout shows the
+correct plan + ₹ amount; test mode clearly indicated; success screen shows active
+plan + renewal date; `/billing` shows current plan, price, renewal date, upgrade
+options; tier-limit prompt names current + next tier.
+
+### CP3 — Client management goes real
+
+**Test 0 — Client screens walkthrough.** Confirm: add-client form shows all
+intake fields grouped Basic / Body / Preferences / Health; required validation
+(name, phone) fires; phone enforces +91; client list shows avatar, name, phone,
+plan, compliance, status; detail shows health profile + amber "Review before
+planning" when injuries/medical present; AssignPlan lists real plans;
+ClientPicker lists real clients; CSV import shows a preview table before confirm.
+
+### CP4 — OAuth deep linking (mobile)
+
+**Test 0 — OAuth screens walkthrough.** Confirm: "Continue with Google" renders
+on both login and signup; tapping opens the native Google account picker (not an
+in-app web view); after selection the app returns to the dashboard.

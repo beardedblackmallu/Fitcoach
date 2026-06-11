@@ -8,6 +8,12 @@ trainers in India. Trainers use a Capacitor-wrapped mobile app
 (iOS + Android) built on Next.js. Clients use regular WhatsApp
 only — no client app, ever.
 
+**FitCoach ships as native iOS + Android apps via Capacitor.** The web
+build exists (Vercel) but is **not** the shipped product. The primary
+test target is **Android** (India is ~75–80% Android); a single iOS pass
+happens at the end of each phase. The web dev server is for quick logic
+glances only — a checkpoint is not "done" until its tests pass on Android.
+
 Full spec: docs/FitCoach-PRD.md (v1.1)
 WhatsApp architecture: docs/FitCoach-WhatsApp-Infrastructure.md
 Mobile decisions: docs/FitCoach-Mobile-Strategy.md
@@ -189,11 +195,16 @@ Auto-dismisses ~2.8s. Use for state changes only, not navigation.
 
 ## Testing
 
+**Android-first.** Checkpoints are tested in the Android app (emulator or
+device). The web dev server is for quick logic glances only — a checkpoint
+is not "done" until its tests pass on Android. iOS gets one pass per phase,
+at the end.
+
 ```bash
 npm run build    # Type check + production build — run before pushing
-npm run dev      # Local dev
-npm run android  # Build + open Android Studio
-npm run ios      # Build + open Xcode
+npm run android  # Build static export, sync, open Android Studio (primary)
+npm run ios      # Build, sync, open Xcode (phase-end iOS pass)
+npm run dev      # Web dev server — quick logic glances only, NOT the product
 ```
 
 ## Deployment

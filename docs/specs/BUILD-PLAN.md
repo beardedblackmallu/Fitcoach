@@ -8,6 +8,13 @@ moves to `docs/specs/done/` on completion.
 > GTM phases defined in `docs/FitCoach-PRD.md` (which describe target
 > customer segments over time).
 
+> **Testing convention:** Android-first (emulator/device). iOS gets one pass
+> per phase, at the end. The web build is not the shipped product — it's for
+> quick logic glances only. All Phase 2 checkpoints have a content-walkthrough
+> (Test 0) plus behavior tests, Android-first. See
+> [`../prompts/phase-2-prompts.md`](../prompts/phase-2-prompts.md) →
+> "Testing convention".
+
 ---
 
 ## Phase 1 — Foundation ✅ Complete (2026-06-04)
