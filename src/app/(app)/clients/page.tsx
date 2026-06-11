@@ -121,7 +121,7 @@ export default function ClientsPage() {
                     <>
                       <div className="h-1.5 w-20 rounded-full bg-stone-200 overflow-hidden">
                         <div
-                          className={`h-full ${c.compliance >= 80 ? "bg-emerald-500" : c.compliance >= 60 ? "bg-[#C05C28]" : "bg-red-400"}`}
+                          className={`h-full ${c.compliance >= 80 ? "bg-emerald-500" : c.compliance >= 60 ? "bg-[#FF6400]" : "bg-red-400"}`}
                           style={{ width: `${c.compliance}%` }}
                         />
                       </div>
@@ -184,7 +184,7 @@ export default function ClientsPage() {
                       <div className="flex items-center gap-2">
                         <div className="h-1.5 w-16 rounded-full bg-stone-200 overflow-hidden">
                           <div
-                            className={`h-full ${c.compliance >= 80 ? "bg-emerald-500" : c.compliance >= 60 ? "bg-[#C05C28]" : "bg-red-400"}`}
+                            className={`h-full ${c.compliance >= 80 ? "bg-emerald-500" : c.compliance >= 60 ? "bg-[#FF6400]" : "bg-red-400"}`}
                             style={{ width: `${c.compliance}%` }}
                           />
                         </div>

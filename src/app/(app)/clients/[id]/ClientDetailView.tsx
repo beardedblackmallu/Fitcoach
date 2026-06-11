@@ -83,7 +83,7 @@ export default function ClientDetailPage() {
             </div>
             {client.goal && (
               <p className="text-sm text-stone-600 mt-1.5 flex items-center gap-1.5">
-                <Sparkles className="h-3.5 w-3.5 text-[#C05C28]" />
+                <Sparkles className="h-3.5 w-3.5 text-[#FF6400]" />
                 {client.goal}
               </p>
             )}
@@ -302,14 +302,14 @@ function OverviewTab({ client }: { client: UiClientDetail }) {
         </div>
         <div className="bg-white border border-stone-200 rounded-xl p-4">
           <div className="flex items-center gap-2 text-sm text-stone-600">
-            <Apple className="h-4 w-4 text-[#C05C28]" />
+            <Apple className="h-4 w-4 text-[#FF6400]" />
             Nutrition compliance
           </div>
           {client.nutritionCompliance !== null ? (
             <>
               <div className="text-3xl font-semibold text-stone-900 mt-2 tabular-nums">{client.nutritionCompliance}%</div>
               <div className="h-1.5 mt-3 bg-stone-100 rounded-full overflow-hidden">
-                <div className="h-full bg-[#C05C28]" style={{ width: `${client.nutritionCompliance}%` }} />
+                <div className="h-full bg-[#FF6400]" style={{ width: `${client.nutritionCompliance}%` }} />
               </div>
             </>
           ) : (
@@ -328,7 +328,7 @@ function OverviewTab({ client }: { client: UiClientDetail }) {
         <ul className="space-y-3">
           {[
             { icon: CheckCircle2, color: "text-emerald-600 bg-emerald-50", text: "Logged workout — Squat 4×8 completed", time: "12 min ago" },
-            { icon: ImageIcon, color: "text-[#C05C28] bg-[#F7EEE8]", text: "Sent food photo — lunch logged", time: "2h ago" },
+            { icon: ImageIcon, color: "text-[#FF6400] bg-[#FFF2E8]", text: "Sent food photo — lunch logged", time: "2h ago" },
             { icon: Activity, color: "text-blue-600 bg-blue-50", text: "Morning check-in logged", time: "5h ago" },
             { icon: Mic, color: "text-[#1A1A1A] bg-[#F5F4F2]", text: "Voice note sent — 0:34", time: "yesterday" },
             { icon: Calendar, color: "text-violet-600 bg-violet-50", text: "Plan updated", time: "2 days ago" },
@@ -375,7 +375,7 @@ function HealthProfile({ client }: { client: UiClientDetail }) {
       </div>
 
       {showWarning && (
-        <div className="mb-3 px-2 py-1.5 rounded-md bg-[#F7EEE8] border border-[#DCC3B2] inline-flex items-center gap-1.5 text-[11px] text-[#8A4427] font-medium">
+        <div className="mb-3 px-2 py-1.5 rounded-md bg-[#FFF2E8] border border-[#FFD2B0] inline-flex items-center gap-1.5 text-[11px] text-[#B34700] font-medium">
           <AlertTriangle className="h-3.5 w-3.5" />
           Review before planning
         </div>

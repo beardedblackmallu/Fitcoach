@@ -48,9 +48,9 @@ export function NutritionTab({ plan, setPlan }: Props) {
             label="Total calories"
             unit="kcal"
             placeholder="e.g., 2000"
-            color="bg-[#F7EEE8] border-[#DCC3B2] text-[#8A4427]"
-            valueColor="text-[#8A4427]"
-            icon={<Flame className="h-3.5 w-3.5 text-[#C05C28]" />}
+            color="bg-[#FFF2E8] border-[#FFD2B0] text-[#B34700]"
+            valueColor="text-[#B34700]"
+            icon={<Flame className="h-3.5 w-3.5 text-[#FF6400]" />}
           />
           <MacroCard
             value={plan.protein}
@@ -128,7 +128,7 @@ export function NutritionTab({ plan, setPlan }: Props) {
       {/* Coach notes */}
       <div className="bg-white border border-stone-200 rounded-xl p-4">
         <div className="flex items-center gap-2 mb-2">
-          <StickyNote className="h-4 w-4 text-[#C05C28]" />
+          <StickyNote className="h-4 w-4 text-[#FF6400]" />
           <h3 className="text-sm font-semibold text-stone-900">Coach notes</h3>
         </div>
         <textarea
@@ -350,7 +350,7 @@ function VariantBlock({
         <input
           value={variant.label}
           onChange={(e) => onChange((p) => ({ ...p, label: e.target.value }))}
-          className={`text-xs font-semibold ${isPrimary ? "text-stone-700" : "text-[#8A4427]"} bg-transparent outline-none focus:border-b`}
+          className={`text-xs font-semibold ${isPrimary ? "text-stone-700" : "text-[#B34700]"} bg-transparent outline-none focus:border-b`}
         />
         {!isPrimary && (
           <button
@@ -469,27 +469,27 @@ function HungerSubsSection({
   const isEmpty = items.length === 0;
 
   return (
-    <div className="bg-[#F7EEE8]/50 border border-[#DCC3B2] rounded-xl p-4">
+    <div className="bg-[#FFF2E8]/50 border border-[#FFD2B0] rounded-xl p-4">
       <div className="flex items-center gap-2 mb-2">
-        <Lightbulb className="h-4 w-4 text-[#8A4427]" />
-        <h3 className="text-sm font-semibold text-[#8A4427]">Hunger substitutions</h3>
+        <Lightbulb className="h-4 w-4 text-[#B34700]" />
+        <h3 className="text-sm font-semibold text-[#B34700]">Hunger substitutions</h3>
       </div>
 
       {isEmpty ? (
-        <p className="text-xs text-[#8A4427]/80 mb-2 leading-relaxed">
+        <p className="text-xs text-[#B34700]/80 mb-2 leading-relaxed">
           Add items your client can have when hungry between meals.
         </p>
       ) : (
         <ul className="space-y-1 text-sm text-stone-800 mb-2">
           {items.map((sub, i) => (
             <li key={i} className="group flex items-start gap-2">
-              <span className="text-[#C05C28] mt-0.5 select-none">•</span>
+              <span className="text-[#FF6400] mt-0.5 select-none">•</span>
               <input
                 value={sub}
                 onChange={(e) =>
                   onChange((prev) => prev.map((x, idx) => (idx === i ? e.target.value : x)))
                 }
-                className="flex-1 bg-transparent outline-none focus:border-b focus:border-[#C05C28] text-sm"
+                className="flex-1 bg-transparent outline-none focus:border-b focus:border-[#FF6400] text-sm"
               />
               <button
                 onClick={() => onChange((prev) => prev.filter((_, idx) => idx !== i))}
@@ -505,7 +505,7 @@ function HungerSubsSection({
 
       <button
         onClick={() => onChange((prev) => [...prev, ""])}
-        className="text-xs font-medium text-[#8A4427] hover:text-[#8A4427] inline-flex items-center gap-1"
+        className="text-xs font-medium text-[#B34700] hover:text-[#B34700] inline-flex items-center gap-1"
       >
         <Plus className="h-3.5 w-3.5" />
         Add substitution

@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <!-- Main app theme — no action bar, teal status bar -->
+    <!-- Main app theme — no action bar, charcoal status bar -->
     <style name="AppTheme.NoActionBar" parent="Theme.AppCompat.DayNight.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
@@ -16,10 +16,11 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
 
-    <!-- Launch / splash — teal background, FitCoach foreground icon -->
+    <!-- Launch / splash — charcoal background, papaya circle + white F icon -->
     <style name="AppTheme.NoActionBarLaunch" parent="Theme.SplashScreen">
         <item name="windowSplashScreenBackground">@color/splash_background</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_fitcoach_splash_icon</item>
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher_foreground</item>
+        <item name="windowSplashScreenIconBackgroundColor">@color/colorAccent</item>
         <item name="postSplashScreenTheme">@style/AppTheme.NoActionBar</item>
     </style>
 

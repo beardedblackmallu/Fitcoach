@@ -45,7 +45,7 @@ export function Sidebar() {
       >
         <div className="h-16 flex items-center justify-between gap-2 px-5 border-b border-[#2A2A2A]">
           <Link href="/" className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-lg bg-[#C05C28] grid place-items-center text-white font-bold">
+            <div className="h-8 w-8 rounded-lg bg-[#FF6400] grid place-items-center text-white font-bold">
               F
             </div>
             <span className="font-semibold text-white text-lg tracking-tight">FitCoach</span>
@@ -71,20 +71,20 @@ export function Sidebar() {
                 onClick={() => setSidebarOpen(false)}
                 className={`flex items-center justify-between gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
                   active
-                    ? "bg-[rgba(192,92,40,0.12)] text-white"
+                    ? "bg-[rgba(255,100,0,0.12)] text-white"
                     : "text-[#9A9A9A] hover:bg-[#2A2A2A] hover:text-white"
                 }`}
               >
                 <span className="flex items-center gap-3">
-                  <Icon className={`h-[18px] w-[18px] ${active ? "text-[#C05C28]" : "text-[#6B6B6B]"}`} />
+                  <Icon className={`h-[18px] w-[18px] ${active ? "text-[#FF6400]" : "text-[#6B6B6B]"}`} />
                   {label}
                 </span>
                 {showBadge && (
                   <span
                     className={`text-[10px] font-semibold px-1.5 min-w-[20px] h-5 grid place-items-center rounded-full ${
                       badgeRed
-                        ? "bg-[rgba(192,92,40,0.2)] text-[#C05C28]"
-                        : "bg-[#C05C28] text-white"
+                        ? "bg-[rgba(255,100,0,0.2)] text-[#FF6400]"
+                        : "bg-[#FF6400] text-white"
                     }`}
                   >
                     {displayBadge}

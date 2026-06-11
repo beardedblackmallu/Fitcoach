@@ -113,7 +113,7 @@ export const clients: Client[] = [
     id: "anita",
     name: "Anita Desai",
     initials: "AD",
-    avatarColor: "bg-[#C05C28]",
+    avatarColor: "bg-[#FF6400]",
     phone: "+91 99887 22334",
     plan: "Fat Loss + Toning 12-week",
     startDate: "20 Feb 2026",

@@ -8,11 +8,12 @@
   --card-border: #E5E3DE;
   --card-border-hover: #D4D1CB;
 
-  /* Primary accent — burnt orange (use sparingly) */
-  --primary: #C05C28;
-  --primary-hover: #A84E22;
-  --primary-subtle-bg: rgba(192, 92, 40, 0.10);
-  --primary-subtle-border: rgba(192, 92, 40, 0.25);
+  /* Primary accent — papaya orange (hero colour, glow-forward) */
+  --primary: #FF6400;
+  --primary-hover: #E55A00;
+  --primary-subtle-bg: rgba(255, 100, 0, 0.12);
+  --primary-subtle-border: rgba(255, 100, 0, 0.25);
+  --primary-glow: rgba(255, 100, 0, 0.4);
   --on-primary: #FFFFFF;
 
   /* Charcoal — sidebar + default primary buttons */
@@ -32,11 +33,11 @@
   --success-bg: #E1F5EE;
   --success-text: #0F6E56;
 
-  /* Warning / escalations — burnt orange family */
-  --warning: #C05C28;
-  --warning-bg: #F7EEE8;
-  --warning-border: #DCC3B2;
-  --warning-text: #8A4427;
+  /* Warning / escalations — papaya orange family */
+  --warning: #FF6400;
+  --warning-bg: #FFF2E8;
+  --warning-border: #FFD2B0;
+  --warning-text: #B34700;
 
   /* Error */
   --error: #DC2626;
@@ -77,8 +78,24 @@ html, body {
   position: absolute;
   inset: 0;
   border-radius: 9999px;
-  background: rgba(192, 92, 40, 0.5);
+  background: rgba(255, 100, 0, 0.5);
   animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
+}
+
+/* ── Papaya glow utilities (Phase 2 CP0b) ───────────────────────────
+   Orange is now the hero accent. Use these on the single primary CTA
+   per screen, badges, the trainer avatar, and active nav. */
+.glow-orange      { box-shadow: 0 4px 18px var(--primary-glow); }
+.glow-orange-sm   { box-shadow: 0 2px 10px var(--primary-glow); }
+.glow-orange-dot  { box-shadow: 0 0 8px rgba(255, 100, 0, 0.9); }
+.glow-orange-icon { filter: drop-shadow(0 0 6px rgba(255, 100, 0, 0.6)); }
+
+/* Welcome-screen logo: triple glow ring */
+.glow-orange-rings {
+  box-shadow:
+    0 0 0 10px rgba(255, 100, 0, 0.12),
+    0 0 0 22px rgba(255, 100, 0, 0.06),
+    0 8px 32px rgba(255, 100, 0, 0.4);
 }
 
 @keyframes wave {
@@ -97,6 +114,28 @@ html, body {
 .fade-in { animation: fade-in 0.18s ease-out forwards; }
 @keyframes scale-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
 .scale-in { animation: scale-in 0.18s ease-out forwards; }
+
+/* ── Welcome screen staged entrance (Phase 2 CP0b) ──────────────── */
+@keyframes welcome-pop  { from { opacity: 0; transform: scale(0.8); }       to { opacity: 1; transform: scale(1); } }
+@keyframes welcome-rise { from { opacity: 0; transform: translateY(8px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes welcome-rise-lg { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes welcome-fade { from { opacity: 0; } to { opacity: 1; } }
+
+.welcome-logo    { animation: welcome-pop  0.4s cubic-bezier(0.22, 1, 0.36, 1) 0ms both; }
+.welcome-title   { animation: welcome-rise 0.3s ease-out 400ms both; }
+.welcome-tagline { animation: welcome-fade 0.2s ease-out 700ms both; }
+.welcome-ctas    { animation: welcome-rise-lg 0.3s ease-out 900ms both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .welcome-logo,
+  .welcome-title,
+  .welcome-tagline,
+  .welcome-ctas {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
 
 @keyframes shimmer {
   0% { background-position: -200% 0; }

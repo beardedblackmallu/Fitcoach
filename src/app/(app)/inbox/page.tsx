@@ -72,7 +72,7 @@ export default function InboxPage() {
       <div className="mb-5 flex items-end justify-between gap-3 flex-wrap">
         <div>
           <h1 className="text-2xl font-semibold text-stone-900 flex items-center gap-2">
-            <AlertTriangle className="h-5 w-5 text-[#C05C28]" />
+            <AlertTriangle className="h-5 w-5 text-[#FF6400]" />
             Action needed
           </h1>
           <p className="text-sm text-stone-500 mt-1">
@@ -180,27 +180,27 @@ function EscalationCard({
 
   return (
     <div className="bg-white rounded-xl border border-stone-200 overflow-hidden">
-      <div className="h-1 bg-[#C05C28]" />
+      <div className="h-1 bg-[#FF6400]" />
       <div className="p-5">
         <div className="flex items-start gap-3">
           <Avatar initials={escalation.clientInitials} color={escalation.clientAvatarColor} size="md" />
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <span className="font-semibold text-stone-900">{escalation.clientName}</span>
-              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#F7EEE8] text-[#8A4427] inline-flex items-center gap-1">
+              <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#FFF2E8] text-[#B34700] inline-flex items-center gap-1">
                 🟡 Escalated by bot
               </span>
               <span className="text-xs text-stone-500">{escalation.time}</span>
             </div>
-            <div className="mt-1 text-xs text-[#8A4427] font-medium inline-flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#C05C28]" />
+            <div className="mt-1 text-xs text-[#B34700] font-medium inline-flex items-center gap-1">
+              <span className="glow-orange-dot h-1.5 w-1.5 rounded-full bg-[#FF6400]" />
               {escalation.reasonBadge}
             </div>
           </div>
         </div>
 
-        <div className="mt-4 bg-[#F7EEE8] border-l-4 border-[#C05C28] rounded-r-lg p-4">
-          <div className="text-[11px] text-[#8A4427] uppercase tracking-wide font-medium mb-1.5">
+        <div className="mt-4 bg-[#FFF2E8] border-l-4 border-[#FF6400] rounded-r-lg p-4">
+          <div className="text-[11px] text-[#B34700] uppercase tracking-wide font-medium mb-1.5">
             Client message
           </div>
           <div className="text-sm text-stone-800 leading-relaxed">"{escalation.quotedMessage}"</div>
@@ -222,7 +222,7 @@ function EscalationCard({
         <div className="mt-4 flex flex-wrap gap-2">
           <button
             onClick={onOpenChat}
-            className="text-sm font-medium px-3 min-h-[44px] rounded-lg bg-[#C05C28] hover:bg-[#A84E22] text-white inline-flex items-center gap-1.5 touch-manipulation"
+            className="glow-orange-sm text-sm font-medium px-3 min-h-[44px] rounded-lg bg-[#FF6400] hover:bg-[#E55A00] text-white inline-flex items-center gap-1.5 touch-manipulation"
           >
             <MessageCircle className="h-4 w-4" />
             Open conversation

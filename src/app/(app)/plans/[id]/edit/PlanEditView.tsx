@@ -522,7 +522,7 @@ export default function PlanEditPage() {
           <div className="relative bg-white rounded-xl shadow-xl w-full max-w-md p-5 scale-in">
             <div className="flex items-center justify-between mb-3">
               <h3 className="font-semibold text-stone-900 flex items-center gap-2">
-                <StickyNote className="h-4 w-4 text-[#C05C28]" />
+                <StickyNote className="h-4 w-4 text-[#FF6400]" />
                 Form cues
               </h3>
               <button
@@ -685,7 +685,7 @@ function ExerciseCardInGrid({
           <div className="text-xs font-semibold text-stone-800 truncate">{ex.name}</div>
           <div className="text-[11px] text-stone-500 mt-0.5">{ex.detail}</div>
           {ex.notes && (
-            <div className="text-[10px] text-[#8A4427] mt-1 italic line-clamp-2">📝 {ex.notes}</div>
+            <div className="text-[10px] text-[#B34700] mt-1 italic line-clamp-2">📝 {ex.notes}</div>
           )}
 
           {hasUrl && (
@@ -703,7 +703,7 @@ function ExerciseCardInGrid({
         <div className="opacity-0 group-hover:opacity-100 flex flex-col gap-0.5">
           <button
             onClick={onOpenNote}
-            className={`p-0.5 rounded hover:bg-stone-100 ${ex.notes ? "text-[#C05C28]" : "text-stone-400"}`}
+            className={`p-0.5 rounded hover:bg-stone-100 ${ex.notes ? "text-[#FF6400]" : "text-stone-400"}`}
             title="Form cues"
           >
             <StickyNote className="h-3 w-3" />

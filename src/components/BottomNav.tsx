@@ -155,14 +155,12 @@ export function BottomNav() {
               >
                 <div className="relative">
                   <Icon
-                    className={`h-[22px] w-[22px] ${active ? "text-[#C05C28]" : "text-[#9A9A9A]"}`}
+                    className={`h-[22px] w-[22px] ${active ? "text-[#FF6400] glow-orange-icon" : "text-[#9A9A9A]"}`}
                     strokeWidth={active ? 2.5 : 2}
                   />
                   {badge !== undefined && badge > 0 && (
                     <span
-                      className={`absolute -top-1.5 -right-2 h-[16px] min-w-[16px] px-1 rounded-full grid place-items-center text-[10px] font-bold ring-2 ring-white ${
-                        isEscalation ? "bg-[#C05C28] text-white" : "bg-[#C05C28] text-white"
-                      }`}
+                      className="glow-orange-sm absolute -top-1.5 -right-2 h-[16px] min-w-[16px] px-1 rounded-full grid place-items-center text-[10px] font-bold ring-[1.5px] ring-white bg-[#FF6400] text-white"
                     >
                       {badge}
                     </span>
@@ -170,13 +168,13 @@ export function BottomNav() {
                 </div>
                 <span
                   className={`text-[10px] leading-tight font-medium ${
-                    active ? "text-[#C05C28]" : "text-[#9A9A9A]"
+                    active ? "text-[#FF6400]" : "text-[#9A9A9A]"
                   }`}
                 >
                   {label}
                 </span>
                 {active && (
-                  <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-[#C05C28]" />
+                  <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-[#FF6400]" />
                 )}
               </Link>
             );
@@ -186,18 +184,18 @@ export function BottomNav() {
             className="relative flex flex-col items-center justify-center gap-0.5 active:bg-stone-100 touch-manipulation"
           >
             <MoreHorizontal
-              className={`h-[22px] w-[22px] ${moreActive ? "text-[#C05C28]" : "text-[#9A9A9A]"}`}
+              className={`h-[22px] w-[22px] ${moreActive ? "text-[#FF6400] glow-orange-icon" : "text-[#9A9A9A]"}`}
               strokeWidth={moreActive ? 2.5 : 2}
             />
             <span
               className={`text-[10px] leading-tight font-medium ${
-                moreActive ? "text-[#C05C28]" : "text-[#9A9A9A]"
+                moreActive ? "text-[#FF6400]" : "text-[#9A9A9A]"
               }`}
             >
               More
             </span>
             {moreActive && (
-              <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-[#C05C28]" />
+              <span className="absolute top-0 left-1/2 -translate-x-1/2 h-0.5 w-8 rounded-b-full bg-[#FF6400]" />
             )}
           </button>
         </div>

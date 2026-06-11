@@ -6,16 +6,16 @@ const config: CapacitorConfig = {
   webDir: "out",
   plugins: {
     SplashScreen: {
-      launchShowDuration: 2000,
-      backgroundColor: "#0D9488", // teal-600
+      launchShowDuration: 1500,
+      backgroundColor: "#1C1C1C", // charcoal
       showSpinner: false,
       androidSplashResourceName: "splash",
       splashFullScreen: true,
       splashImmersive: true,
     },
     StatusBar: {
-      style: "LIGHT", // white icons on teal background
-      backgroundColor: "#0D9488",
+      style: "LIGHT", // white icons on charcoal background
+      backgroundColor: "#1C1C1C",
     },
     PushNotifications: {
       presentationOptions: ["badge", "sound", "alert"],

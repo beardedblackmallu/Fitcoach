@@ -88,17 +88,31 @@ docs/
     └── done/
 ```
 
-## Visual design tokens (Phase 2 CP0 reskin — 2026-06-05)
-- **Primary accent:** Burnt orange `#C05C28` — escalations, badges, nav active state, one CTA per screen (replaces teal)
-- **Charcoal:** `#1C1C1C` — sidebar, default primary buttons
-- **Background:** `#F5F4F2` (replaces `#FAFAF9`)
+## Visual design tokens (Phase 2 CP0b — papaya glow, 2026-06-11)
+- **Primary accent:** Papaya orange `#FF6400` (hover `#E55A00`) — the hero
+  colour. Escalations, badges, nav active, key CTAs. Carries a glow
+  (`--primary-glow` rgba(255,100,0,0.4); utilities `.glow-orange`,
+  `.glow-orange-sm`, `.glow-orange-dot`, `.glow-orange-icon`,
+  `.glow-orange-rings`). Supersedes CP0 burnt orange `#C05C28`.
+- **Charcoal:** `#1C1C1C` — sidebar, dark dashboard header + escalation
+  cards, secondary buttons. Dark surfaces use gradient
+  `linear-gradient(160deg, #1C1C1C 55%, #2A1800 100%)`.
+- **Background:** `#F5F4F2`
 - **Cards:** `#FFFFFF` border `#E5E3DE`
 - **Success:** Teal `#1D9E75` — positive states ONLY
+- **Warning/escalation family:** bg `#FFF2E8`, border `#FFD2B0`, text `#B34700`
 - **Text:** Primary `#1A1A1A`, secondary `#6B7280`, muted `#9A9A9A`
 - **Font:** Inter via next/font/google, exposed as `--font-inter`
 - **Border radius:** inputs `rounded-lg`, cards `rounded-xl`, modals `rounded-2xl`, pills `rounded-full`
-- **Spacing:** pages `px-4 sm:px-6 lg:px-8 py-6 max-w-7xl mx-auto`
-- **Principle:** Orange is used sparingly. Default primary buttons are charcoal. If in doubt, use charcoal not orange.
+- **Brand source images:** `scripts/gen-icons.mjs` regenerates `assets/` +
+  PWA icons; run `npx @capacitor/assets generate` to fan out native sizes.
+  The "F" is rectangle-based (font-independent) so iOS + Android match.
+- **Principle:** Orange is the hero but still purposeful — lead with one
+  glowing primary CTA per screen, plus escalation/badge/nav state. Charcoal
+  is the secondary/neutral action. Don't scatter orange on passive text.
+- **Aesthetic:** bold papaya-glow with dark brand surfaces and a staged
+  welcome animation. This deliberately supersedes the earlier flat/minimal
+  "no gradients or animations" guidance. Motion respects `prefers-reduced-motion`.
 
 ## Message bubble styles
 - **Bot:** `bg-stone-100`, left-aligned, `🤖 Bot` label above timestamp

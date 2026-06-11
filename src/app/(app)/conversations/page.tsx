@@ -416,7 +416,7 @@ function MessageBubble({ m }: { m: Message }) {
         )}
         {m.kind === "image" && (
           <div>
-            <div className="h-32 w-44 rounded-lg bg-gradient-to-br from-amber-200 via-orange-300 to-red-300 grid place-items-center text-[#8A4427]/50 text-3xl">
+            <div className="h-32 w-44 rounded-lg bg-gradient-to-br from-amber-200 via-orange-300 to-red-300 grid place-items-center text-[#B34700]/50 text-3xl">
               🍛
             </div>
             {m.text && <div className="text-sm mt-1.5">{m.text}</div>}
@@ -435,9 +435,9 @@ function DocumentBubble({ m, isTrainer }: { m: Message; isTrainer: boolean }) {
   const isWorkout = m.docKind === "workout";
   const isNutrition = m.docKind === "nutrition";
   const Icon = isNutrition ? Apple : isWorkout ? Dumbbell : FileText;
-  const accentBg = isTrainer ? "bg-white/15" : isNutrition ? "bg-[#F7EEE8]" : isWorkout ? "bg-[#F5F4F2]" : "bg-stone-100";
-  const accentBorder = isTrainer ? "border-white/30" : isNutrition ? "border-[#DCC3B2]" : isWorkout ? "border-[#E5E3DE]" : "border-stone-200";
-  const accentText = isTrainer ? "text-white" : isNutrition ? "text-[#8A4427]" : isWorkout ? "text-[#1A1A1A]" : "text-stone-600";
+  const accentBg = isTrainer ? "bg-white/15" : isNutrition ? "bg-[#FFF2E8]" : isWorkout ? "bg-[#F5F4F2]" : "bg-stone-100";
+  const accentBorder = isTrainer ? "border-white/30" : isNutrition ? "border-[#FFD2B0]" : isWorkout ? "border-[#E5E3DE]" : "border-stone-200";
+  const accentText = isTrainer ? "text-white" : isNutrition ? "text-[#B34700]" : isWorkout ? "text-[#1A1A1A]" : "text-stone-600";
   const subText = isTrainer ? "text-white/70" : "text-stone-500";
   const pageBadge = isNutrition ? "Nutrition · PDF" : isWorkout ? "Workout · PDF" : "PDF";
 

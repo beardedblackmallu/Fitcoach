@@ -94,7 +94,7 @@ export function Header() {
           >
             <Bell className="h-5 w-5 text-stone-600" />
             {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] px-1 grid place-items-center rounded-full bg-[#C05C28] text-white text-[10px] font-bold ring-2 ring-white">
+              <span className="glow-orange-sm absolute -top-0.5 -right-0.5 h-[18px] min-w-[18px] px-1 grid place-items-center rounded-full bg-[#FF6400] text-white text-[10px] font-bold ring-2 ring-white">
                 {unreadCount}
               </span>
             )}
@@ -171,7 +171,7 @@ export function Header() {
             onClick={() => setProfileOpen((o) => !o)}
             className="flex items-center gap-2 hover:bg-stone-100 rounded-md px-1 py-1"
           >
-            <Avatar initials={trainerInitials} color="bg-[#C05C28]" size="sm" />
+            <span className="glow-orange-sm rounded-full inline-flex"><Avatar initials={trainerInitials} color="bg-[#FF6400]" size="sm" /></span>
             <div className="leading-tight">
               <div className="text-sm font-medium text-stone-900">{trainerName}</div>
               <div className="text-[11px] text-stone-500">Coach</div>

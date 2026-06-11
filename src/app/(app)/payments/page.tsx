@@ -7,7 +7,7 @@ import { usePayments } from "@/lib/hooks/usePayments";
 
 const STATUS_STYLES: Record<string, string> = {
   paid: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
-  pending: "bg-[#F7EEE8] text-[#8A4427] ring-1 ring-[#DCC3B2]",
+  pending: "bg-[#FFF2E8] text-[#B34700] ring-1 ring-[#FFD2B0]",
   failed: "bg-red-50 text-red-700 ring-1 ring-red-200",
   refunded: "bg-stone-100 text-stone-600 ring-1 ring-stone-200",
 };
@@ -66,7 +66,7 @@ export default function PaymentsPage() {
         </div>
         <div className="bg-white border border-stone-200 rounded-xl p-4">
           <div className="flex items-center gap-2 text-sm text-stone-600">
-            <ArrowUpRight className="h-4 w-4 text-[#C05C28]" />
+            <ArrowUpRight className="h-4 w-4 text-[#FF6400]" />
             Pending
           </div>
           {loading ? (

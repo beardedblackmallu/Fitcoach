@@ -371,16 +371,19 @@ Everything in section 8. Launch with 3–5 design partners using the product fre
 ## 15. Brand & visual design
 
 ### 15.1 Color system
-*(Updated Phase 2 CP0 — reskinned from teal to charcoal + burnt orange.)*
-- **Primary accent:** Burnt orange #C05C28 (escalations, badges, nav active
-  state, one key CTA per screen — replaces teal #0D9488)
-- **Charcoal:** #1C1C1C (sidebar background + default primary buttons)
-- **Accent:** Burnt orange #C05C28 (escalations, alerts, "needs attention"
-  states — replaces amber #F59E0B)
-- **Surface:** #F5F4F2 (page background — replaces #FAFAF9)
-- **Card:** #FFFFFF
-- **Border:** #E5E3DE
-- **Success:** Teal #1D9E75 (retained for positive states ONLY)
+*(Updated Phase 2 CP0b — papaya orange #FF6400 with glow. Supersedes the
+CP0 burnt-orange #C05C28, which superseded teal #0D9488.)*
+- **Primary accent:** Papaya orange #FF6400, hover #E55A00 (the hero colour —
+  escalations, badges, nav active state, key CTAs). Paired with a glow
+  (`--primary-glow` rgba(255,100,0,0.4)) on buttons, badges, the trainer
+  avatar, active nav, and escalation status dots.
+- **Charcoal:** #1C1C1C (sidebar, dark dashboard header + escalation cards,
+  secondary primary buttons). Dark surfaces use a subtle gradient
+  `linear-gradient(160deg, #1C1C1C 55%, #2A1800 100%)`.
+- **Surface:** #F5F4F2 (light page background)
+- **Card:** #FFFFFF, border #E5E3DE
+- **Success:** Teal #1D9E75 (positive states ONLY)
+- **Warning / escalation family:** bg #FFF2E8, border #FFD2B0, text #B34700
 - **Text primary:** #1A1A1A
 - **Text secondary:** #6B7280
 
@@ -388,9 +391,27 @@ Everything in section 8. Launch with 3–5 design partners using the product fre
 Inter as the system font. 14–16px body, 18–24px section headers, 28–32px page titles.
 
 ### 15.3 Aesthetic
-Linear / Notion style modern SaaS. Generous whitespace, subtle shadows, no clutter, no gratuitous gradients or animations. Visual hierarchy through size and weight, not color.
+*(Rewritten Phase 2 CP0b — direction shifted from flat/minimal to bold
+papaya-glow. This deliberately supersedes the earlier "no gradients or
+animations" guidance.)*
 
-Orange is used sparingly — one primary CTA per screen maximum, escalation indicators, nav active state, badges. Default primary buttons are charcoal #1C1C1C. If in doubt, use charcoal not orange.
+Bold, energetic, premium. Dark charcoal surfaces (with a subtle
+`160deg #1C1C1C → #2A1800` gradient) carry the brand moments — the welcome
+screen, the dashboard header, escalation cards. Papaya orange #FF6400 is the
+hero accent and is allowed to glow: primary CTAs, badges, the trainer avatar,
+active nav, and escalation status dots all carry an orange glow
+(`box-shadow`/`drop-shadow` from `--primary-glow`). Light content surfaces
+(cards, lists) stay clean and white for legibility.
+
+Motion is welcome where it adds polish: a staged entrance animation on the
+pre-login welcome screen (logo → wordmark → tagline → CTAs), and pulse/glow
+on attention-seeking elements. **All animation must respect
+`prefers-reduced-motion`** — render final state instantly when it is set.
+
+Orange is the hero, but still purposeful: lead with one glowing primary CTA
+per screen, plus escalation indicators, badges, and nav state. Charcoal
+remains the secondary/neutral action. Don't scatter orange on passive text or
+decorative chrome — it should always mean "act here" or "attention."
 
 ### 15.4 Voice & tone
 Confident, practical, warm. Respects the trainer's expertise. Never preachy. Avoids "AI mystique" or pretending to be smarter than the user.

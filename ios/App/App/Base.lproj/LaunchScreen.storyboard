@@ -14,8 +14,8 @@
                     <view key="view" contentMode="scaleToFill" id="Ze5-6b-2t3">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <!-- Teal background (#0D9488) -->
-                        <color key="backgroundColor" red="0.051" green="0.580" blue="0.533" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <!-- Charcoal background (#1C1C1C) -->
+                        <color key="backgroundColor" red="0.109" green="0.109" blue="0.109" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <subviews>
                             <!-- FitCoach "F" lettermark — white, centred -->
                             <!-- Futura-Bold at 160pt — geometric, matches Android vector F weight -->

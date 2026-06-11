@@ -36,6 +36,7 @@ export async function proxy(request: NextRequest) {
 
   // Public paths that never need auth
   const isPublic =
+    pathname.startsWith("/welcome") ||
     pathname.startsWith("/login") ||
     pathname.startsWith("/signup") ||
     pathname.startsWith("/forgot-password") ||
@@ -47,15 +48,20 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/apple-icon") ||
     pathname === "/manifest.webmanifest";
 
-  // Unauthenticated user trying to access a protected route → login
+  // Unauthenticated user trying to access a protected route → welcome screen
   if (!isPublic && !user) {
-    const loginUrl = request.nextUrl.clone();
-    loginUrl.pathname = "/login";
-    return NextResponse.redirect(loginUrl);
+    const welcomeUrl = request.nextUrl.clone();
+    welcomeUrl.pathname = "/welcome";
+    return NextResponse.redirect(welcomeUrl);
   }
 
-  // Authenticated user hitting auth pages → dashboard
-  if (user && (pathname.startsWith("/login") || pathname.startsWith("/signup"))) {
+  // Authenticated user hitting the welcome/auth pages → dashboard
+  if (
+    user &&
+    (pathname.startsWith("/welcome") ||
+      pathname.startsWith("/login") ||
+      pathname.startsWith("/signup"))
+  ) {
     const dashboardUrl = request.nextUrl.clone();
     dashboardUrl.pathname = "/";
     return NextResponse.redirect(dashboardUrl);

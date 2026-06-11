@@ -18,6 +18,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const PUBLIC_PATHS = [
+  "/welcome",
   "/login",
   "/signup",
   "/forgot-password",
@@ -42,8 +43,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
       const onPublicRoute = isPublic(pathname);
 
       if (!session && !onPublicRoute) {
-        // No session + protected route → send to login
-        router.replace("/login");
+        // No session + protected route → send to the welcome screen
+        router.replace("/welcome");
         // Keep ready=false so protected content never renders during redirect
         return;
       }
