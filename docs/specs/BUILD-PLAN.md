@@ -29,17 +29,22 @@ wrap with Capacitor so the app runs natively on iOS and Android.
 
 ---
 
-## Phase 2 — Plan builder polish + mobile OAuth 🔄 In progress
+## Phase 2 — Onboarding + Billing 🔄 In progress
 
 **Spec:** [`in-progress/phase-2-onboarding-billing.md`](in-progress/phase-2-onboarding-billing.md)
+**Prompts:** [`../prompts/phase-2-prompts.md`](../prompts/phase-2-prompts.md) —
+copy-paste prompt library for CP1–CP4 (tests + completion protocol baked in)
 
 - ✅ CP0: Color reskin — charcoal + burnt orange (2026-06-05)
-- [ ] CP1: Plan builder per-week variation (different exercises in W2 vs W1)
-- [ ] CP2: Nutrition tab persistence (5 nested tables: nutrition_plans →
-  meals → variants → foods → hunger_substitutions)
-- [ ] CP3: AssignPlanModal + ClientPickerModal read from real DB plans
-- [ ] CP4: Mobile OAuth deep linking (evaluate Capgo's social-login plugin
-  before hand-rolling)
+- ✅ CP0b: Brighter orange #FF6400 + glow, dark dashboard, animated welcome
+  screen, unified native icon/splash (2026-06-11)
+- [ ] CP1: Trainer onboarding wizard — resumable 6-step (profile, WhatsApp
+  number choice, business details, tier select, payment stub, confirm)
+- [ ] CP2: Subscription tiers + Razorpay billing (test mode) + /billing page
+  + per-tier client limits
+- [ ] CP3: Client management on real Supabase data — closes Phase 1 mock gaps
+  (AssignPlan/ClientPicker/NewPlanModal), full intake form, CSV import
+- [ ] CP4: Mobile OAuth deep linking (evaluate Capgo social-login plugin first)
 
 ---
 
