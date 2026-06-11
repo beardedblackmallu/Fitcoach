@@ -6,6 +6,93 @@ each. Confirm pass → Claude Code marks complete, commits, updates
 
 ---
 
+## CP0a — Color reskin to charcoal + orange  [COMPLETE]
+
+Reskinned from teal-primary to charcoal `#1C1C1C` + burnt orange `#C05C28`.
+Updated `globals.css` tokens + PRD section 15. Superseded by CP0b (brighter
+orange).
+
+---
+
+## CP0b — Brighter orange + splash + icon + dashboard layout  [COMPLETE]
+
+**CONTEXT TO READ FIRST:**
+1. CLAUDE.md
+2. docs/specs/in-progress/phase-2-onboarding-billing.md
+3. docs/FitCoach-PRD.md section 15
+
+**TASK:**
+Four parts, in order, build-check each.
+
+**PART 1 — Brighter orange tokens (globals.css):**
+- Primary: `#C05C28 → #FF6400` (McLaren papaya)
+- Primary hover: `#A84E22 → #E55A00`
+- Primary subtle bg: → `rgba(255,100,0,0.12)`
+- Primary subtle border: → `rgba(255,100,0,0.25)`
+- NEW Primary glow: `rgba(255,100,0,0.4)`
+- Apply glow (box-shadow / drop-shadow) to: orange buttons, notification
+  badges, header avatar, active bottom-nav icon, escalation status dot.
+- Update PRD section 15 with `#FF6400` values (avoid stale doc).
+
+**PART 2 — Dashboard mobile layout:**
+- HEADER: `gradient(160deg, #1C1C1C 55%, #2A1800 100%)`; "GOOD AFTERNOON"
+  `#555` uppercase + name white 20px bold; bell in frosted circle with orange
+  glow badge; avatar `#FF6400` glow; 3 stat tiles in `rgba(255,255,255,0.07)`.
+- ESCALATION CARD: `#1C1C1C`, left border 3px `#FF6400`, status dot glow
+  `box-shadow 0 0 8px rgba(255,100,0,0.9)`, Reply buttons `#FF6400` glow.
+- CHECK-IN CARDS: white, overdue timestamp `#FF6400`, Remind button `#FF6400`
+  glow.
+- PAGE BG `#F5F4F2`. Section labels 10px uppercase `#888`.
+- BOTTOM NAV: active `#FF6400` + glow, badge 1.5px white border.
+
+**PART 3 — Animated welcome screen (pre-login), bg `#1C1C1C`:**
+- Check Framer Motion; if absent use CSS keyframes (don't add dep without
+  flagging).
+- Stage 1 (0–400ms): logo 84x84 rounded square `#FF6400`, white "F" 38px,
+  triple glow rings (`0 0 0 10px rgba(255,100,0,0.12)`,
+  `0 0 0 22px rgba(255,100,0,0.06)`, `0 8px 32px rgba(255,100,0,0.4)`),
+  fade + scale 0.8→1.
+- Stage 2 (400–700ms): "FitCoach" white 26px weight 800, fade + translateY
+  8→0.
+- Stage 3 (700–900ms): tagline "WhatsApp-native coaching for independent
+  trainers" `#666` 12px, fade.
+- Stage 4 (900–1200ms): CTAs fade + translateY 12→0 — "Get started" `#FF6400`
+  glow → /signup; "Sign in" frosted → /login; "Trusted by 500+ coaches across
+  India" `#444` 11px.
+- Respect `prefers-reduced-motion` (instant, no animation).
+
+**PART 4 — Unified native icon (iOS + Android):**
+- Placeholder until designer delivers: `#FF6400` bg, white bold condensed "F",
+  rounded square. Use Context7 to verify Capacitor icon approach; check
+  `@capacitor/assets` CLI. Generate `public/icon-512.png` + `icon-192.png`,
+  iOS `AppIcon.appiconset` (all sizes), Android mipmaps (all densities).
+  Native splash bg `#1C1C1C`, duration 1500ms.
+
+**TESTS TO RUN:**
+1. `npm run build` → zero errors
+2. `npm run build:mobile && npx cap sync`
+3. Android emulator: unified icon on home screen
+4. Cold launch: charcoal + orange splash ~1.5s
+5. Welcome screen: staged animation plays in order
+6. Dashboard: dark header, dark escalation card, orange glows visible
+7. `prefers-reduced-motion`: animation skipped, content instant
+
+**COMPLETION PROTOCOL:**
+Once user confirms all tests pass:
+- Mark CP0 complete in phase-2-onboarding-billing.md
+- Update docs/specs/BUILD-PLAN.md — Phase 2 CP0a + CP0b complete + date
+- Commit "Phase 2 CP0b — brighter orange #FF6400, splash animation, unified
+  icon, dashboard layout"
+
+**VERIFY BEFORE EXECUTING:**
+1. Confirm CLAUDE.md read
+2. Use Context7 for Capacitor icon/splash + Framer Motion check
+3. Confirm `#FF6400` everywhere, glow on orange, one icon both platforms
+4. PART 1→2→3→4 in order, build-check each
+5. Flag orange overuse before committing
+
+---
+
 ## CP1 — Trainer onboarding wizard
 
 **CONTEXT TO READ FIRST:**
