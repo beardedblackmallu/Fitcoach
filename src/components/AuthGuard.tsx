@@ -41,17 +41,33 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
     const supabase = createClient();
     supabase.auth.getSession().then(({ data: { session } }) => {
       const onPublicRoute = isPublic(pathname);
+      const onOnboarding = pathname.startsWith("/onboarding");
+      // Cheap onboarding flag stamped into the JWT on completion (source of
+      // truth is trainers.onboarding_step — see /onboarding wizard).
+      const onboarded = session?.user?.user_metadata?.onboarding_complete === true;
 
       if (!session && !onPublicRoute) {
-        // No session + protected route → send to the welcome screen
+        // No session + protected route (incl. /onboarding) → welcome screen
         router.replace("/welcome");
         // Keep ready=false so protected content never renders during redirect
         return;
       }
 
       if (session && onPublicRoute && pathname !== "/auth/callback") {
-        // Already logged in + hit a public auth page → send to dashboard
+        // Logged in + on a public auth page → app if onboarded, else wizard
+        router.replace(onboarded ? "/" : "/onboarding");
+        return;
+      }
+
+      if (session && onOnboarding && onboarded) {
+        // Finished onboarding but back on the wizard → dashboard
         router.replace("/");
+        return;
+      }
+
+      if (session && !onboarded && !onOnboarding && !onPublicRoute) {
+        // Logged in but onboarding incomplete → force the wizard
+        router.replace("/onboarding");
         return;
       }
 

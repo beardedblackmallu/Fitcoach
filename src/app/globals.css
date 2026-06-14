@@ -90,6 +90,14 @@ html, body {
 .glow-orange-dot  { box-shadow: 0 0 8px rgba(255, 100, 0, 0.9); }
 .glow-orange-icon { filter: drop-shadow(0 0 6px rgba(255, 100, 0, 0.6)); }
 
+/* Promote to its own GPU compositing layer. Fixes Android WebView stale-paint
+   "ghosting" where dark surfaces + glow shadows leave trails while scrolling. */
+.gpu-layer {
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
 /* Welcome-screen logo: triple glow ring */
 .glow-orange-rings {
   box-shadow:

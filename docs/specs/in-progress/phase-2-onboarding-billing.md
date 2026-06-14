@@ -1,7 +1,7 @@
 # Phase 2 — Trainer Onboarding + Billing
 
 **Status:** In progress
-**Active checkpoint:** CP0 — Color reskin
+**Active checkpoint:** CP2 — Subscription tiers + Razorpay
 
 ## Checkpoint 0 — Color reskin ✅ Complete
 
@@ -63,7 +63,15 @@ Each checkpoint's **content walkthrough (Test 0)** is mirrored below so spec and
 prompt library stay in sync. All tests run on the Android app (see the
 Android-first testing convention in the prompt library).
 
-### CP1 — Trainer onboarding wizard
+### CP1 — Trainer onboarding wizard ✅ Complete (2026-06-14)
+
+Resumable 6-step wizard at top-level `/onboarding`. Cursor in
+`trainers.onboarding_step`; completion stamps `user_metadata.onboarding_complete`
+so `AuthGuard` (mobile) + `proxy.ts` (web) gate the app cheaply. Migration
+`002_trainer_onboarding.sql` adds the onboarding/profile/business/subscription
+columns + the public `avatars` Storage bucket (owner-scoped RLS). Photo upload
+uses `@capacitor/camera` (native picker), not a web file input. All 7 behavior
+tests + the Test 0 walkthrough passed on Android.
 
 **Test 0 — Wizard walkthrough.** Through all 6 steps confirm:
 1. Profile — name (required, blocks Next if empty), photo upload, bio, specialty

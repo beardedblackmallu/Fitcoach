@@ -19,20 +19,27 @@ export function Header() {
   const [readIds, setReadIds] = useState<string[]>([]);
   const [trainerName, setTrainerName] = useState("Coach");
   const [trainerInitials, setTrainerInitials] = useState("C");
+  const [trainerAvatar, setTrainerAvatar] = useState<string | null>(null);
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        const name: string =
-          (user.user_metadata?.name as string) ||
-          user.email?.split("@")[0] ||
-          "Coach";
-        setTrainerName(name);
-        setTrainerInitials(
-          name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
-        );
-      }
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data: trainer } = await supabase
+        .from("trainers")
+        .select("name, avatar_url")
+        .eq("id", user.id)
+        .single();
+      const name: string =
+        trainer?.name ||
+        (user.user_metadata?.name as string) ||
+        user.email?.split("@")[0] ||
+        "Coach";
+      setTrainerName(name);
+      setTrainerInitials(
+        name.split(" ").map((n: string) => n[0]).join("").slice(0, 2).toUpperCase()
+      );
+      if (trainer?.avatar_url) setTrainerAvatar(trainer.avatar_url);
     });
   }, []);
 
@@ -171,7 +178,14 @@ export function Header() {
             onClick={() => setProfileOpen((o) => !o)}
             className="flex items-center gap-2 hover:bg-stone-100 rounded-md px-1 py-1"
           >
-            <span className="glow-orange-sm rounded-full inline-flex"><Avatar initials={trainerInitials} color="bg-[#FF6400]" size="sm" /></span>
+            {trainerAvatar ? (
+              <span className="glow-orange-sm rounded-full inline-flex h-9 w-9 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={trainerAvatar} alt={trainerName} className="h-9 w-9 object-cover" />
+              </span>
+            ) : (
+              <span className="glow-orange-sm rounded-full inline-flex"><Avatar initials={trainerInitials} color="bg-[#FF6400]" size="sm" /></span>
+            )}
             <div className="leading-tight">
               <div className="text-sm font-medium text-stone-900">{trainerName}</div>
               <div className="text-[11px] text-stone-500">Coach</div>

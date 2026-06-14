@@ -48,20 +48,45 @@ export async function proxy(request: NextRequest) {
     pathname.startsWith("/apple-icon") ||
     pathname === "/manifest.webmanifest";
 
-  // Unauthenticated user trying to access a protected route → welcome screen
-  if (!isPublic && !user) {
+  const isOnboarding = pathname.startsWith("/onboarding");
+  // Cheap onboarding flag carried in the JWT (set on wizard completion).
+  // Source of truth is trainers.onboarding_step; this avoids a DB call here.
+  const onboarded = session?.user?.user_metadata?.onboarding_complete === true;
+
+  // Unauthenticated user trying to access a protected route → welcome screen.
+  // /onboarding is NOT public — it still requires a session.
+  if (!isPublic && !user && !isOnboarding) {
+    const welcomeUrl = request.nextUrl.clone();
+    welcomeUrl.pathname = "/welcome";
+    return NextResponse.redirect(welcomeUrl);
+  }
+  if (isOnboarding && !user) {
     const welcomeUrl = request.nextUrl.clone();
     welcomeUrl.pathname = "/welcome";
     return NextResponse.redirect(welcomeUrl);
   }
 
-  // Authenticated user hitting the welcome/auth pages → dashboard
+  // Authenticated user hitting the welcome/auth pages → app or wizard
   if (
     user &&
     (pathname.startsWith("/welcome") ||
       pathname.startsWith("/login") ||
       pathname.startsWith("/signup"))
   ) {
+    const dest = request.nextUrl.clone();
+    dest.pathname = onboarded ? "/" : "/onboarding";
+    return NextResponse.redirect(dest);
+  }
+
+  // Logged in but onboarding incomplete → force the wizard (gate app routes)
+  if (user && !onboarded && !isOnboarding && !isPublic) {
+    const onboardingUrl = request.nextUrl.clone();
+    onboardingUrl.pathname = "/onboarding";
+    return NextResponse.redirect(onboardingUrl);
+  }
+
+  // Finished onboarding but back on the wizard → dashboard
+  if (user && onboarded && isOnboarding) {
     const dashboardUrl = request.nextUrl.clone();
     dashboardUrl.pathname = "/";
     return NextResponse.redirect(dashboardUrl);

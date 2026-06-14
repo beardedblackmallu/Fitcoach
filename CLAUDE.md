@@ -19,17 +19,20 @@ WhatsApp architecture: docs/FitCoach-WhatsApp-Infrastructure.md
 Mobile decisions: docs/FitCoach-Mobile-Strategy.md
 
 ## Current build phase
-**Phase 2 — Plan builder polish + mobile OAuth**
+**Phase 2 — Onboarding + Billing**
 Active spec: docs/specs/in-progress/phase-2-onboarding-billing.md
+Prompt library: docs/prompts/phase-2-prompts.md
 Build plan index: docs/specs/BUILD-PLAN.md
 
 Completed:
-- [x] CP0 — Color reskin (teal → charcoal + burnt orange, 2026-06-05)
+- [x] CP0a — Color reskin (teal → charcoal + burnt orange, 2026-06-05)
+- [x] CP0b — Brighter orange #FF6400 + glow, dark dashboard, animated welcome,
+  unified native icon/splash (2026-06-11)
+- [x] CP1 — Trainer onboarding wizard (resumable 6-step, 2026-06-14)
 
 In progress:
-- [ ] CP1 — Plan builder per-week variation
-- [ ] CP2 — Nutrition tab persistence
-- [ ] CP3 — AssignPlanModal real DB integration
+- [ ] CP2 — Subscription tiers + Razorpay billing (test mode) ← **active**
+- [ ] CP3 — Client management on real Supabase data
 - [ ] CP4 — Mobile OAuth deep linking
 
 **Previous:** Phase 1 — Foundation (✅ Complete 2026-06-04)

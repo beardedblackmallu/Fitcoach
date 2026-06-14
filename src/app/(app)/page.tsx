@@ -124,7 +124,7 @@ export default function DashboardPage() {
     <div className="max-w-7xl mx-auto">
       {/* ── Mobile dark header ─────────────────────────────── */}
       <div
-        className="md:hidden text-white px-4 pt-5 pb-5 rounded-b-3xl"
+        className="gpu-layer md:hidden text-white px-4 pt-5 pb-5 rounded-b-3xl"
         style={{ background: "linear-gradient(160deg, #1C1C1C 55%, #2A1800 100%)" }}
       >
         <div className="flex items-start justify-between">
@@ -234,7 +234,7 @@ export default function DashboardPage() {
         {/* ── Action needed (dark escalation) ──────────────── */}
         {activeEscalations.length > 0 && (
           <section
-            className="mt-1 md:mt-0 mb-7 rounded-2xl p-4 sm:p-5 border-l-[3px] border-[#FF6400]"
+            className="gpu-layer mt-1 md:mt-0 mb-7 rounded-2xl p-4 sm:p-5 border-l-[3px] border-[#FF6400]"
             style={{ background: "#1C1C1C" }}
           >
             <div className="flex items-center justify-between mb-3.5">

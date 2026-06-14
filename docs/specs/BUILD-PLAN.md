@@ -45,8 +45,8 @@ copy-paste prompt library for CP1–CP4 (tests + completion protocol baked in)
 - ✅ CP0: Color reskin — charcoal + burnt orange (2026-06-05)
 - ✅ CP0b: Brighter orange #FF6400 + glow, dark dashboard, animated welcome
   screen, unified native icon/splash (2026-06-11)
-- [ ] CP1: Trainer onboarding wizard — resumable 6-step (profile, WhatsApp
-  number choice, business details, tier select, payment stub, confirm)
+- ✅ CP1: Trainer onboarding wizard — resumable 6-step (profile, WhatsApp
+  number choice, business details, tier select, payment stub, confirm) (2026-06-14)
 - [ ] CP2: Subscription tiers + Razorpay billing (test mode) + /billing page
   + per-tier client limits
 - [ ] CP3: Client management on real Supabase data — closes Phase 1 mock gaps
