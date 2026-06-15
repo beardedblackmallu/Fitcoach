@@ -121,7 +121,12 @@ on both login and signup; tapping opens the native Google account picker (not an
 in-app web view); after selection the app returns to the dashboard.
 
 **Android:** Tests 0–3 passing. Native Google account picker via Credential Manager. `signInWithIdToken` → Supabase ✓.
-**iOS:** "Continue with Google" renders and account picker opens. Known nonce mismatch issue between GIDSignIn 9.0 and Supabase — iOS Google sign-in deferred. iOS users can sign in with email/password. To be revisited when Capgo updates nonce handling or GoogleSignIn SDK documents the correct JS↔native nonce contract.
+
+**iOS Google Sign-In: ❌ NOT WORKING — deferred**
+The button renders and the Google account picker opens, but sign-in fails with `Nonces mismatch`. Root cause: GIDSignIn 9.0 (via `@capgo/capacitor-social-login@8.3.22`) and Supabase's `signInWithIdToken` disagree on the nonce contract — it's unclear whether GIDSignIn hashes the nonce before embedding it in the token, passes it raw, or generates its own. Multiple combinations tried (raw→raw, raw→hashed, hashed→raw) all failed.
+iOS users must use email/password to sign in until this is resolved.
+
+**TODO (future fix):** Investigate GIDSignIn 9.x nonce behavior — check if the plugin returns the nonce in the login result in a newer version, or switch to the `serverAuthCode` flow which avoids the nonce problem entirely. Track as a tech debt item before App Store submission.
 
 **Package:** `@capgo/capacitor-social-login@8.3.22`. Deep link scheme `fitcoach://` registered on both platforms (AndroidManifest intent filter + iOS CFBundleURLTypes).
 **Package rename:** `com.fitcoach.app` → `com.fitcoach.trainer` (Google Cloud Console rejects `.app` suffix).
