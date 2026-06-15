@@ -120,7 +120,7 @@ export default function PlansListPage() {
             <PlanCard
               key={p.id}
               plan={p}
-              onEdit={() => router.push(`/plans/${p.id}/edit`)}
+              onEdit={() => router.push(`/plans/edit?id=${p.id}`)}
               onDuplicate={() => showToast(`"${p.name}" duplicated`, "success")}
               onArchive={() => showToast(`"${p.name}" archived`)}
               onDelete={() => showToast(`"${p.name}" deleted`)}
@@ -159,7 +159,7 @@ function PlanCard({
   return (
     <div className="bg-white border border-stone-200 rounded-xl p-5 hover:shadow-sm hover:border-stone-300 transition-all flex flex-col">
       <div className="flex items-start justify-between gap-2 mb-3">
-        <Link href={`/plans/${plan.id}/edit`} className="flex-1 min-w-0">
+        <Link href={`/plans/edit?id=${plan.id}`} className="flex-1 min-w-0">
           <div className="h-9 w-9 rounded-lg bg-[#F5F4F2] grid place-items-center text-[#1A1A1A] mb-3">
             <Dumbbell className="h-4 w-4" />
           </div>

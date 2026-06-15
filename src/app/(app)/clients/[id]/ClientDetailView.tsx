@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import {
   Camera, Edit3, MessageCircle, Mic, PauseCircle, Phone,
   Activity, Apple, TrendingUp, Dumbbell, CheckCircle2,
@@ -17,13 +17,12 @@ import { useClientDetail, type UiClientDetail } from "@/lib/hooks/useClientDetai
 
 const tabs = ["Overview", "Workouts", "Nutrition", "Progress", "Chat"] as const;
 
-export default function ClientDetailPage() {
-  const params = useParams<{ id: string }>();
+export default function ClientDetailPage({ id }: { id: string }) {
   const router = useRouter();
-  const { openVoiceModal, openCallModal, showToast } = useApp();
+  const { openVoiceModal, openCallModal, openEditClient, showToast } = useApp();
   const [tab, setTab] = useState<(typeof tabs)[number]>("Overview");
 
-  const { client, loading, error, notFound } = useClientDetail(params.id);
+  const { client, loading, error, notFound } = useClientDetail(id);
 
   if (loading) {
     return (
@@ -95,6 +94,12 @@ export default function ClientDetailPage() {
 
         {/* Action bar */}
         <div className="mt-5 flex flex-wrap gap-2">
+          <button
+            onClick={() => openEditClient(id)}
+            className="inline-flex items-center gap-1.5 text-sm h-9 px-3 rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 font-medium"
+          >
+            <Edit3 className="h-4 w-4" /> Edit client
+          </button>
           <button
             onClick={() => openVoiceModal(client.name)}
             className="inline-flex items-center gap-1.5 text-sm h-9 px-3 rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium"

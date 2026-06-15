@@ -25,7 +25,7 @@ const statusStyles: Record<ClientStatus, string> = {
 
 export default function ClientsPage() {
   const router = useRouter();
-  const { showToast, openAddClient } = useApp();
+  const { openAddClient, openCsvImport } = useApp();
   const { clients, loading, error, refetch } = useClients();
   const [query, setQuery] = useState("");
   const filtered = clients.filter((c) =>
@@ -55,7 +55,7 @@ export default function ClientsPage() {
         </div>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => showToast("Bulk import — CSV uploader coming next")}
+            onClick={openCsvImport}
             className="h-9 px-3 text-sm rounded-lg border border-stone-300 hover:bg-stone-50 text-stone-700 font-medium inline-flex items-center gap-1.5"
           >
             <Upload className="h-4 w-4" />
@@ -104,7 +104,7 @@ export default function ClientsPage() {
           {filtered.map((c) => (
             <button
               key={c.id}
-              onClick={() => router.push(`/clients/${c.id}`)}
+              onClick={() => router.push(`/clients/detail?id=${c.id}`)}
               className="w-full text-left px-4 py-3 flex items-center gap-3 active:bg-stone-100 transition-colors touch-manipulation"
             >
               <Avatar initials={c.initials} color={c.avatarColor} size="md" />
@@ -115,6 +115,7 @@ export default function ClientsPage() {
                     {c.status}
                   </span>
                 </div>
+                <div className="text-xs text-[#6B7280] truncate mt-0.5">{c.phone}</div>
                 <div className="text-xs text-stone-600 truncate mt-0.5">{c.planName}</div>
                 <div className="flex items-center gap-2 mt-1.5">
                   {c.compliance !== null ? (
@@ -165,7 +166,7 @@ export default function ClientsPage() {
               {filtered.map((c) => (
                 <tr
                   key={c.id}
-                  onClick={() => router.push(`/clients/${c.id}`)}
+                  onClick={() => router.push(`/clients/detail?id=${c.id}`)}
                   className="hover:bg-stone-50 cursor-pointer transition-colors"
                 >
                   <td className="px-4 py-3">
@@ -232,62 +233,96 @@ function RowMenu({ client, onRefetch }: { client: UiClient; onRefetch: () => voi
   const { openAssignPlanPicker, showToast } = useApp();
 
   useEffect(() => {
+    if (open) return;
     function onDoc(e: MouseEvent) {
       if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     }
     document.addEventListener("mousedown", onDoc);
     return () => document.removeEventListener("mousedown", onDoc);
-  }, []);
+  }, [open]);
+
+  const actions = [
+    {
+      label: "Assign plan",
+      Icon: Send,
+      onClick: () => { setOpen(false); openAssignPlanPicker(client.id); },
+    },
+    {
+      label: "View profile",
+      Icon: Edit3,
+      onClick: () => { setOpen(false); router.push(`/clients/detail?id=${client.id}`); },
+    },
+    {
+      label: "Pause client",
+      Icon: PauseCircle,
+      onClick: () => { setOpen(false); showToast(`${client.name} paused — bot won't send check-ins`, "success"); },
+    },
+  ];
 
   return (
-    <div className="relative" ref={ref}>
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setOpen((o) => !o);
-        }}
-        className="p-1.5 rounded-md hover:bg-stone-200 text-stone-500"
-        aria-label="Row actions"
-      >
-        <MoreHorizontal className="h-4 w-4" />
-      </button>
+    <>
+      <div className="relative" ref={ref}>
+        <button
+          onClick={(e) => { e.stopPropagation(); setOpen((o) => !o); }}
+          className="p-1.5 rounded-md hover:bg-stone-200 text-stone-500"
+          aria-label="Row actions"
+        >
+          <MoreHorizontal className="h-4 w-4" />
+        </button>
+
+        {/* Desktop dropdown */}
+        {open && (
+          <div
+            className="hidden md:block absolute right-0 top-full mt-1 z-50 w-44 bg-white border border-stone-200 rounded-lg shadow-lg py-1 scale-in origin-top-right"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {actions.map(({ label, Icon, onClick }) => (
+              <button
+                key={label}
+                onClick={onClick}
+                className="w-full text-left text-sm px-3 py-1.5 hover:bg-stone-50 flex items-center gap-2"
+              >
+                <Icon className="h-3.5 w-3.5 text-stone-500" />
+                {label}
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Mobile bottom sheet */}
       {open && (
         <div
-          className="absolute right-0 top-full mt-1 z-20 w-44 bg-white border border-stone-200 rounded-lg shadow-lg py-1 scale-in origin-top-right"
-          onClick={(e) => e.stopPropagation()}
+          className="md:hidden fixed inset-0 z-50 fade-in"
+          onClick={(e) => { e.stopPropagation(); setOpen(false); }}
         >
-          <button
-            onClick={() => {
-              setOpen(false);
-              openAssignPlanPicker(client.id);
-            }}
-            className="w-full text-left text-sm px-3 py-1.5 hover:bg-stone-50 flex items-center gap-2"
+          <div className="absolute inset-0 bg-black/40" />
+          <div
+            className="absolute bottom-0 inset-x-0 bg-white rounded-t-2xl shadow-2xl pb-[env(safe-area-inset-bottom)]"
+            style={{ animation: "slide-up 0.22s ease-out forwards" }}
+            onClick={(e) => e.stopPropagation()}
           >
-            <Send className="h-3.5 w-3.5 text-[#1A1A1A]" />
-            Assign plan
-          </button>
-          <button
-            onClick={() => {
-              setOpen(false);
-              router.push(`/clients/${client.id}`);
-            }}
-            className="w-full text-left text-sm px-3 py-1.5 hover:bg-stone-50 flex items-center gap-2"
-          >
-            <Edit3 className="h-3.5 w-3.5 text-stone-500" />
-            View profile
-          </button>
-          <button
-            onClick={() => {
-              setOpen(false);
-              showToast(`${client.name} paused — bot won't send check-ins`, "success");
-            }}
-            className="w-full text-left text-sm px-3 py-1.5 hover:bg-stone-50 flex items-center gap-2"
-          >
-            <PauseCircle className="h-3.5 w-3.5 text-stone-500" />
-            Pause client
-          </button>
+            <div className="px-5 pt-4 pb-2 border-b border-stone-100">
+              <div className="text-sm font-semibold text-stone-900">{client.name}</div>
+              <div className="text-xs text-stone-500 mt-0.5">{client.phone}</div>
+            </div>
+            <div className="px-2 py-3">
+              {actions.map(({ label, Icon, onClick }) => (
+                <button
+                  key={label}
+                  onClick={onClick}
+                  className="w-full flex items-center gap-3 px-3 py-3 rounded-lg hover:bg-stone-50 active:bg-stone-100 touch-manipulation"
+                >
+                  <div className="h-10 w-10 rounded-lg bg-stone-100 grid place-items-center shrink-0">
+                    <Icon className="h-5 w-5 text-stone-700" />
+                  </div>
+                  <span className="text-sm font-medium text-stone-900">{label}</span>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
-    </div>
+    </>
   );
 }

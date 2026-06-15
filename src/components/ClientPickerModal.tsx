@@ -16,8 +16,10 @@ import {
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
-import { useApp } from "@/lib/AppContext";
-import { Client, clients, defaultNutritionPlan } from "@/lib/data";
+import { useApp, type PickerPlan } from "@/lib/AppContext";
+import { defaultNutritionPlan } from "@/lib/data";
+import { createClient } from "@/lib/supabase/client";
+import { useClients, type UiClient } from "@/lib/hooks/useClients";
 import { Avatar } from "./Avatar";
 
 function formatNextMonday() {
@@ -32,7 +34,8 @@ type Step = "select" | "preview" | "sending" | "success";
 
 export function SendPlanModal() {
   const router = useRouter();
-  const { clientPicker, closeClientPicker, assignClientsToPlan, showToast } = useApp();
+  const { clientPicker, closeClientPicker, showToast } = useApp();
+  const { clients } = useClients();
   const [step, setStep] = useState<Step>("select");
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState<string[]>([]);
@@ -53,18 +56,18 @@ export function SendPlanModal() {
 
   const list = useMemo(
     () => clients.filter((c) => c.name.toLowerCase().includes(search.toLowerCase())),
-    [search]
+    [search, clients]
   );
 
-  const selectedClients: Client[] = useMemo(
-    () => selected.map((id) => clients.find((c) => c.id === id)).filter(Boolean) as Client[],
-    [selected]
+  const selectedClients: UiClient[] = useMemo(
+    () => selected.map((id) => clients.find((c) => c.id === id)).filter(Boolean) as UiClient[],
+    [selected, clients]
   );
 
   if (!plan) return null;
 
   const toggle = (id: string) => {
-    if (plan.clientIds.includes(id)) return;
+    if (plan.existingClientIds.includes(id)) return;
     setSelected((prev) => (prev.includes(id) ? prev.filter((x) => x !== id) : [...prev, id]));
   };
 
@@ -77,12 +80,19 @@ export function SendPlanModal() {
     setStep("preview");
   };
 
-  const sendNow = () => {
+  const sendNow = async () => {
     setStep("sending");
-    setTimeout(() => {
-      assignClientsToPlan(plan.id, selected);
-      setStep("success");
-    }, 2200);
+    const supabase = createClient();
+    for (const clientId of selected) {
+      await supabase.from("plan_assignments").insert({
+        plan_id: plan.id,
+        client_id: clientId,
+        start_date: startDate,
+        status: "active",
+      });
+    }
+    window.dispatchEvent(new CustomEvent("clients-changed"));
+    setStep("success");
   };
 
   const dateStr = new Date(startDate).toLocaleDateString("en-IN", {
@@ -162,8 +172,8 @@ export function SendPlanModal() {
 function SelectStep({
   plan, list, search, setSearch, selected, toggle, startDate, setStartDate, onPreview, onCancel,
 }: {
-  plan: import("@/lib/data").Plan;
-  list: Client[];
+  plan: PickerPlan;
+  list: UiClient[];
   search: string;
   setSearch: (v: string) => void;
   selected: string[];
@@ -202,7 +212,7 @@ function SelectStep({
           <div className="px-4 py-8 text-center text-sm text-stone-500">No matches</div>
         ) : (
           list.map((c) => {
-            const alreadyAssigned = plan.clientIds.includes(c.id);
+            const alreadyAssigned = plan.existingClientIds.includes(c.id);
             const isSelected = selected.includes(c.id);
             return (
               <button
@@ -230,7 +240,7 @@ function SelectStep({
                 <div className="flex-1 min-w-0">
                   <div className="font-medium text-sm text-stone-900 truncate">{c.name}</div>
                   <div className="text-xs text-stone-500 truncate">
-                    {alreadyAssigned ? "Already on this plan" : `Currently: ${c.plan}`}
+                    {alreadyAssigned ? "Already on this plan" : `Currently: ${c.planName}`}
                   </div>
                 </div>
               </button>
@@ -288,8 +298,8 @@ function PreviewStep({
   onBack,
   onSend,
 }: {
-  plan: import("@/lib/data").Plan;
-  selectedClients: Client[];
+  plan: PickerPlan;
+  selectedClients: UiClient[];
   startDate: string;
   welcomeMsg: string;
   setWelcomeMsg: (v: string) => void;
@@ -481,7 +491,7 @@ function SuccessStep({
   onOpenChat,
   onDone,
 }: {
-  selectedClients: Client[];
+  selectedClients: UiClient[];
   onOpenChat: () => void;
   onDone: () => void;
 }) {

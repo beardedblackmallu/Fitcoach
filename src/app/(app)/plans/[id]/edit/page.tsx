@@ -14,6 +14,6 @@ export function generateStaticParams() {
   return [{ id: "_" }];
 }
 
-export default function Page() {
-  return <PlanEditView />;
+export default function Page({ params }: { params: { id: string } }) {
+  return <PlanEditView id={params.id} />;
 }

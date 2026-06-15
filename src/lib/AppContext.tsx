@@ -8,7 +8,14 @@ type Toast = { id: number; text: string; tone?: "default" | "success" };
 type VoiceTarget = { clientName: string } | null;
 type CallTarget = { clientId: string; clientName: string; phone: string } | null;
 type ComposerPrefill = { clientId: string; text: string } | null;
-type ClientPicker = { plan: Plan } | null;
+// Minimal plan shape the ClientPickerModal needs — no dependency on mock data.
+export interface PickerPlan {
+  id: string;
+  name: string;
+  durationWeeks: number;
+  existingClientIds: string[]; // already-assigned clients (greyed out in picker)
+}
+type ClientPicker = { plan: PickerPlan } | null;
 type AssignPlanPicker = { clientId: string } | null;
 type NewPlanPrefill = { customForClientId?: string } | null;
 type ExerciseVideoTarget = { name: string; url: string } | null;
@@ -65,7 +72,7 @@ interface AppCtx {
 
   // Client picker modal (assign clients TO a plan)
   clientPicker: ClientPicker;
-  openClientPicker: (plan: Plan) => void;
+  openClientPicker: (plan: PickerPlan) => void;
   closeClientPicker: () => void;
 
   // Assign plan modal (assign a plan TO a client)
@@ -73,10 +80,17 @@ interface AppCtx {
   openAssignPlanPicker: (clientId: string) => void;
   closeAssignPlanPicker: () => void;
 
-  // Add client modal
+  // Add / edit client modal
   addClientOpen: boolean;
+  editClientId: string | null; // non-null = edit mode; null = add mode
   openAddClient: () => void;
+  openEditClient: (id: string) => void;
   closeAddClient: () => void;
+
+  // CSV import modal
+  csvImportOpen: boolean;
+  openCsvImport: () => void;
+  closeCsvImport: () => void;
 
   // Exercise video modal
   exerciseVideoTarget: ExerciseVideoTarget;
@@ -107,6 +121,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [clientPicker, setClientPicker] = useState<ClientPicker>(null);
   const [assignPlanPicker, setAssignPlanPicker] = useState<AssignPlanPicker>(null);
   const [addClientOpen, setAddClientOpen] = useState(false);
+  const [editClientId, setEditClientId] = useState<string | null>(null);
+  const [csvImportOpen, setCsvImportOpen] = useState(false);
   const [exerciseVideoTarget, setExerciseVideoTarget] = useState<ExerciseVideoTarget>(null);
   const [libraryVideos, setLibraryVideosState] = useState<Record<string, string>>({});
 
@@ -186,14 +202,17 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     setNewPlanPrefill(null);
   }, []);
 
-  const openClientPicker = useCallback((plan: Plan) => setClientPicker({ plan }), []);
+  const openClientPicker = useCallback((plan: PickerPlan) => setClientPicker({ plan }), []);
   const closeClientPicker = useCallback(() => setClientPicker(null), []);
 
   const openAssignPlanPicker = useCallback((clientId: string) => setAssignPlanPicker({ clientId }), []);
   const closeAssignPlanPicker = useCallback(() => setAssignPlanPicker(null), []);
 
-  const openAddClient = useCallback(() => setAddClientOpen(true), []);
-  const closeAddClient = useCallback(() => setAddClientOpen(false), []);
+  const openAddClient = useCallback(() => { setEditClientId(null); setAddClientOpen(true); }, []);
+  const openEditClient = useCallback((id: string) => { setEditClientId(id); setAddClientOpen(true); }, []);
+  const closeAddClient = useCallback(() => { setAddClientOpen(false); setEditClientId(null); }, []);
+  const openCsvImport = useCallback(() => setCsvImportOpen(true), []);
+  const closeCsvImport = useCallback(() => setCsvImportOpen(false), []);
 
   const openExerciseVideo = useCallback((name: string, url: string) => setExerciseVideoTarget({ name, url }), []);
   const closeExerciseVideo = useCallback(() => setExerciseVideoTarget(null), []);
@@ -225,7 +244,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         newPlanOpen, newPlanPrefill, openNewPlanModal, closeNewPlanModal,
         clientPicker, openClientPicker, closeClientPicker,
         assignPlanPicker, openAssignPlanPicker, closeAssignPlanPicker,
-        addClientOpen, openAddClient, closeAddClient,
+        addClientOpen, editClientId, openAddClient, openEditClient, closeAddClient,
+        csvImportOpen, openCsvImport, closeCsvImport,
         exerciseVideoTarget, openExerciseVideo, closeExerciseVideo,
         libraryVideos, setLibraryVideo, removeLibraryVideo,
       }}

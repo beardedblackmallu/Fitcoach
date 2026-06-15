@@ -7,6 +7,7 @@ import { NewPlanModal } from "@/components/NewPlanModal";
 import { ClientPickerModal } from "@/components/ClientPickerModal";
 import { AssignPlanModal } from "@/components/AssignPlanModal";
 import { AddClientModal } from "@/components/AddClientModal";
+import { CsvImportModal } from "@/components/CsvImportModal";
 import { ExerciseVideoModal } from "@/components/ExerciseVideoModal";
 import { BottomNav } from "@/components/BottomNav";
 
@@ -30,6 +31,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       <ClientPickerModal />
       <AssignPlanModal />
       <AddClientModal />
+      <CsvImportModal />
       <ExerciseVideoModal />
     </div>
   );

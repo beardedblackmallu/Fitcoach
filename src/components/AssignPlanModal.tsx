@@ -3,7 +3,31 @@
 import { Check, Dumbbell, Plus, Search, Sparkles, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useApp } from "@/lib/AppContext";
-import { getClient } from "@/lib/data";
+import { usePlans, type UiPlan } from "@/lib/hooks/usePlans";
+import { useClients } from "@/lib/hooks/useClients";
+import { createClient } from "@/lib/supabase/client";
+
+function PlanRow({ plan, selected, onSelect }: { plan: UiPlan; selected: boolean; onSelect: (id: string) => void }) {
+  return (
+    <button
+      onClick={() => onSelect(plan.id)}
+      className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg ${selected ? "bg-[#F5F4F2]" : "hover:bg-stone-50"}`}
+    >
+      <div className={`h-5 w-5 rounded-full border-2 grid place-items-center shrink-0 ${selected ? "bg-[#1C1C1C] border-[#1C1C1C] text-white" : "border-stone-300"}`}>
+        {selected && <Check className="h-3 w-3" strokeWidth={3} />}
+      </div>
+      <div className="h-9 w-9 rounded-lg bg-[#F5F4F2] grid place-items-center text-[#1A1A1A] shrink-0">
+        <Dumbbell className="h-4 w-4" />
+      </div>
+      <div className="flex-1 min-w-0">
+        <div className="text-sm font-medium text-stone-900 truncate">{plan.name}</div>
+        <div className="text-xs text-stone-500">
+          {plan.durationWeeks} weeks · {plan.clientCount} client{plan.clientCount !== 1 ? "s" : ""}
+        </div>
+      </div>
+    </button>
+  );
+}
 
 function formatNextMonday() {
   const d = new Date();
@@ -17,11 +41,11 @@ export function AssignPlanModal() {
   const {
     assignPlanPicker,
     closeAssignPlanPicker,
-    plans,
-    assignClientsToPlan,
     openNewPlanModal,
     showToast,
   } = useApp();
+  const { plans } = usePlans();
+  const { clients } = useClients();
   const [search, setSearch] = useState("");
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
   const [startDate, setStartDate] = useState(formatNextMonday());
@@ -34,23 +58,34 @@ export function AssignPlanModal() {
     }
   }, [assignPlanPicker]);
 
-  const client = assignPlanPicker ? getClient(assignPlanPicker.clientId) : undefined;
-  const filtered = useMemo(
-    () =>
-      plans.filter(
-        (p) =>
-          p.type === "template" &&
-          p.name.toLowerCase().includes(search.toLowerCase())
-      ),
+  const client = assignPlanPicker
+    ? clients.find((c) => c.id === assignPlanPicker.clientId)
+    : undefined;
+  const templates = useMemo(
+    () => plans.filter((p) => p.type === "template" && p.name.toLowerCase().includes(search.toLowerCase())),
+    [plans, search]
+  );
+  const customPlans = useMemo(
+    () => plans.filter((p) => p.type === "custom" && p.name.toLowerCase().includes(search.toLowerCase())),
     [plans, search]
   );
 
   if (!client) return null;
 
-  const submit = () => {
-    if (!selectedPlanId) return;
+  const submit = async () => {
+    if (!selectedPlanId || !client) return;
     const plan = plans.find((p) => p.id === selectedPlanId);
-    assignClientsToPlan(selectedPlanId, [client.id]);
+    const supabase = createClient();
+    const { error } = await supabase.from("plan_assignments").insert({
+      plan_id: selectedPlanId,
+      client_id: client.id,
+      start_date: startDate,
+      status: "active",
+    });
+    if (error) {
+      showToast(`Failed to assign plan: ${error.message}`);
+      return;
+    }
     const dateStr = new Date(startDate).toLocaleDateString("en-IN", {
       day: "numeric", month: "short", year: "numeric",
     });
@@ -115,44 +150,23 @@ export function AssignPlanModal() {
             </div>
           </button>
 
+          {customPlans.length > 0 && (
+            <>
+              <div className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold px-3 py-2">
+                Custom plans
+              </div>
+              {customPlans.map((p) => <PlanRow key={p.id} plan={p} selected={selectedPlanId === p.id} onSelect={setSelectedPlanId} />)}
+            </>
+          )}
+
           <div className="text-[10px] uppercase tracking-wider text-stone-400 font-semibold px-3 py-2">
             Templates
           </div>
 
-          {filtered.length === 0 ? (
+          {templates.length === 0 ? (
             <div className="px-4 py-6 text-center text-sm text-stone-500">No matching templates</div>
           ) : (
-            filtered.map((p) => {
-              const isSelected = selectedPlanId === p.id;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => setSelectedPlanId(p.id)}
-                  className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg ${
-                    isSelected ? "bg-[#F5F4F2]" : "hover:bg-stone-50"
-                  }`}
-                >
-                  <div
-                    className={`h-5 w-5 rounded-full border-2 grid place-items-center shrink-0 ${
-                      isSelected
-                        ? "bg-[#1C1C1C] border-[#1C1C1C] text-white"
-                        : "border-stone-300"
-                    }`}
-                  >
-                    {isSelected && <Check className="h-3 w-3" strokeWidth={3} />}
-                  </div>
-                  <div className="h-9 w-9 rounded-lg bg-[#F5F4F2] grid place-items-center text-[#1A1A1A] shrink-0">
-                    <Dumbbell className="h-4 w-4" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm font-medium text-stone-900 truncate">{p.name}</div>
-                    <div className="text-xs text-stone-500">
-                      {p.durationWeeks} weeks · {p.clientIds.length} client{p.clientIds.length !== 1 ? "s" : ""}
-                    </div>
-                  </div>
-                </button>
-              );
-            })
+            templates.map((p) => <PlanRow key={p.id} plan={p} selected={selectedPlanId === p.id} onSelect={setSelectedPlanId} />)
           )}
         </div>
 

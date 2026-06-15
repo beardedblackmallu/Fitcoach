@@ -16,6 +16,6 @@ export function generateStaticParams() {
   return [{ id: "_" }];
 }
 
-export default function Page() {
-  return <ClientDetailView />;
+export default function Page({ params }: { params: { id: string } }) {
+  return <ClientDetailView id={params.id} />;
 }

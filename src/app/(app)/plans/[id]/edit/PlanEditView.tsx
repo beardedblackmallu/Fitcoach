@@ -17,7 +17,7 @@ import {
   Video,
   X,
 } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import {
@@ -45,8 +45,7 @@ const emptyWeek: Record<DayKey, ExerciseEntry[]> = {
 
 type TopTab = "workouts" | "nutrition";
 
-export default function PlanEditPage() {
-  const params = useParams<{ id: string }>();
+export default function PlanEditPage({ id }: { id: string }) {
   const router = useRouter();
   const {
     showToast,
@@ -56,6 +55,21 @@ export default function PlanEditPage() {
     setLibraryVideo,
     removeLibraryVideo,
   } = useApp();
+
+  const handleSendPlan = async () => {
+    const supabase = createClient();
+    const { data } = await supabase
+      .from("plan_assignments")
+      .select("client_id")
+      .eq("plan_id", id)
+      .eq("status", "active");
+    openClientPicker({
+      id,
+      name: planName,
+      durationWeeks: planCycles * planWeeksPerCycle,
+      existingClientIds: data?.map((r) => r.client_id) ?? [],
+    });
+  };
 
   // Plan metadata from DB
   const [planName, setPlanName] = useState("Untitled plan");
@@ -90,7 +104,7 @@ export default function PlanEditPage() {
     supabase
       .from("plans")
       .select("id, name, duration_weeks, cycle_length_weeks")
-      .eq("id", params.id)
+      .eq("id", id)
       .single()
       .then(({ data, error }) => {
         if (cancelled) return;
@@ -105,7 +119,7 @@ export default function PlanEditPage() {
         supabase
           .from("plan_exercises")
           .select("day_key, exercise_name, sets_reps, notes, order_index, is_rest_day")
-          .eq("plan_id", params.id)
+          .eq("plan_id", id)
           .eq("cycle_number", 1)
           .eq("week_number", 1)
           .order("order_index")
@@ -131,7 +145,7 @@ export default function PlanEditPage() {
       });
 
     return () => { cancelled = true; };
-  }, [params.id]);
+  }, [id]);
 
   const savePlan = async () => {
     setSaving(true);
@@ -141,19 +155,19 @@ export default function PlanEditPage() {
     await supabase
       .from("plans")
       .update({ name: planName, last_edited_at: new Date().toISOString() })
-      .eq("id", params.id);
+      .eq("id", id);
 
     // Replace all exercises for cycle 1 / week 1
     await supabase
       .from("plan_exercises")
       .delete()
-      .eq("plan_id", params.id)
+      .eq("plan_id", id)
       .eq("cycle_number", 1)
       .eq("week_number", 1);
 
     const rows = days.flatMap((day, dayIdx) =>
       week[day].map((ex, i) => ({
-        plan_id: params.id,
+        plan_id: id,
         cycle_number: 1,
         week_number: 1,
         day_key: day.toLowerCase(),
@@ -284,7 +298,7 @@ export default function PlanEditPage() {
             {saving ? "Saving…" : "Save plan"}
           </button>
           <button
-            onClick={() => showToast("Assign clients — coming soon")}
+            onClick={handleSendPlan}
             className="h-9 px-3 text-sm rounded-lg bg-[#1C1C1C] hover:bg-[#2A2A2A] text-white font-medium inline-flex items-center gap-1.5"
           >
             <Send className="h-4 w-4" />
@@ -655,7 +669,7 @@ export default function PlanEditPage() {
           {saving ? "Saving…" : "Save plan"}
         </button>
         <button
-          onClick={() => showToast("Assign clients — coming soon")}
+          onClick={handleSendPlan}
           className="flex-[1.6] h-11 rounded-lg bg-[#1C1C1C] active:bg-[#0F0F0F] text-white text-sm font-semibold inline-flex items-center justify-center gap-1.5"
         >
           <Send className="h-4 w-4" />

@@ -121,5 +121,11 @@ export function useClients(): UseClientsResult {
     fetch();
   }, [fetch]);
 
+  useEffect(() => {
+    const handler = () => { fetch(); };
+    window.addEventListener("clients-changed", handler);
+    return () => window.removeEventListener("clients-changed", handler);
+  }, [fetch]);
+
   return { clients, loading, error, refetch: fetch };
 }
