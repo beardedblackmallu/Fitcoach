@@ -1,10 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
-    namespace "com.fitcoach.app"
+    namespace "com.fitcoach.trainer"
     compileSdk rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.fitcoach.app"
+        applicationId "com.fitcoach.trainer"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

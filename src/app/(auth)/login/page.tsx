@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { signInWithGoogle } from "@/lib/google-auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -34,20 +35,16 @@ export default function LoginPage() {
   const handleGoogle = async () => {
     setError("");
     setGoogleLoading(true);
-
-    const supabase = createClient();
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-
+    const { error } = await signInWithGoogle();
     if (error) {
-      setError(error.message);
+      setError(error);
       setGoogleLoading(false);
+      return;
     }
-    // On success, Supabase redirects the browser — no need to navigate manually
+    // On native: session is set by signInWithIdToken — navigate to dashboard.
+    // On web: signInWithOAuth triggers a browser redirect; code never reaches here.
+    router.push("/");
+    router.refresh();
   };
 
   const inputCls =

@@ -3,14 +3,16 @@
 // CapacitorInit — runs once on app mount, handles all native initialisation.
 // Gracefully no-ops on web (Capacitor plugins are stubs in a browser context).
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 export function CapacitorInit() {
   const router = useRouter();
+  const socialLoginInitialized = useRef(false);
 
   useEffect(() => {
     let backButtonCleanup: (() => void) | undefined;
+    let deepLinkCleanup: (() => void) | undefined;
 
     const init = async () => {
       try {
@@ -51,11 +53,55 @@ export function CapacitorInit() {
       }
     };
 
+    const initSocialLogin = async () => {
+      if (socialLoginInitialized.current) return;
+      const webClientId = process.env.NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID;
+      if (!webClientId) return;
+      try {
+        const { Capacitor } = await import("@capacitor/core");
+        if (!Capacitor.isNativePlatform()) return;
+        const { SocialLogin } = await import("@capgo/capacitor-social-login");
+        const iosClientId = process.env.NEXT_PUBLIC_GOOGLE_IOS_CLIENT_ID;
+        await SocialLogin.initialize({
+          google: {
+            webClientId,
+            ...(Capacitor.getPlatform() === "ios" && iosClientId ? { iOSClientId: iosClientId } : {}),
+          },
+        });
+        socialLoginInitialized.current = true;
+      } catch {
+        // Not in Capacitor or plugin unavailable
+      }
+    };
+
+    const registerDeepLinks = async () => {
+      try {
+        const { App } = await import("@capacitor/app");
+        // Handle deep links that open the app (e.g. fitcoach://auth/callback?code=xxx)
+        const listener = await App.addListener("appUrlOpen", ({ url }) => {
+          try {
+            const parsed = new URL(url);
+            // Strip the custom scheme host, keep path + query
+            const path = parsed.pathname + parsed.search;
+            if (path && path !== "/") router.push(path);
+          } catch {
+            // Ignore malformed URLs
+          }
+        });
+        deepLinkCleanup = () => listener.remove();
+      } catch {
+        // Not in Capacitor
+      }
+    };
+
     init();
     registerBackButton();
+    initSocialLogin();
+    registerDeepLinks();
 
     return () => {
       backButtonCleanup?.();
+      deepLinkCleanup?.();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

@@ -1,7 +1,7 @@
 # Phase 2 — Trainer Onboarding + Billing
 
-**Status:** In progress
-**Active checkpoint:** CP2 — Subscription tiers + Razorpay
+**Status:** ✅ Complete (2026-06-15)
+**Active checkpoint:** —
 
 ## Checkpoint 0 — Color reskin ✅ Complete
 
@@ -114,8 +114,15 @@ plan, compliance, status; detail shows health profile + amber "Review before
 planning" when injuries/medical present; AssignPlan lists real plans;
 ClientPicker lists real clients; CSV import shows a preview table before confirm.
 
-### CP4 — OAuth deep linking (mobile)
+### CP4 — OAuth deep linking (mobile) ✅ Complete (2026-06-15)
 
 **Test 0 — OAuth screens walkthrough.** Confirm: "Continue with Google" renders
 on both login and signup; tapping opens the native Google account picker (not an
 in-app web view); after selection the app returns to the dashboard.
+
+**Android:** Tests 0–3 passing. Native Google account picker via Credential Manager. `signInWithIdToken` → Supabase ✓.
+**iOS:** "Continue with Google" renders and account picker opens. Known nonce mismatch issue between GIDSignIn 9.0 and Supabase — iOS Google sign-in deferred. iOS users can sign in with email/password. To be revisited when Capgo updates nonce handling or GoogleSignIn SDK documents the correct JS↔native nonce contract.
+
+**Package:** `@capgo/capacitor-social-login@8.3.22`. Deep link scheme `fitcoach://` registered on both platforms (AndroidManifest intent filter + iOS CFBundleURLTypes).
+**Package rename:** `com.fitcoach.app` → `com.fitcoach.trainer` (Google Cloud Console rejects `.app` suffix).
+**Env vars added:** `NEXT_PUBLIC_GOOGLE_WEB_CLIENT_ID`, `NEXT_PUBLIC_GOOGLE_IOS_CLIENT_ID`.

@@ -36,22 +36,21 @@ wrap with Capacitor so the app runs natively on iOS and Android.
 
 ---
 
-## Phase 2 — Onboarding + Billing 🔄 In progress
+## Phase 2 — Onboarding + Billing ✅ Complete (2026-06-15)
 
-**Spec:** [`in-progress/phase-2-onboarding-billing.md`](in-progress/phase-2-onboarding-billing.md)
-**Prompts:** [`../prompts/phase-2-prompts.md`](../prompts/phase-2-prompts.md) —
-copy-paste prompt library for CP1–CP4 (tests + completion protocol baked in)
+**Spec:** [`done/phase-2-onboarding-billing.md`](done/phase-2-onboarding-billing.md)
+**Prompts:** [`../prompts/phase-2-prompts.md`](../prompts/phase-2-prompts.md)
 
 - ✅ CP0: Color reskin — charcoal + burnt orange (2026-06-05)
 - ✅ CP0b: Brighter orange #FF6400 + glow, dark dashboard, animated welcome
   screen, unified native icon/splash (2026-06-11)
-- ✅ CP1: Trainer onboarding wizard — resumable 6-step (profile, WhatsApp
-  number choice, business details, tier select, payment stub, confirm) (2026-06-14)
-- [ ] CP2: Subscription tiers + Razorpay billing (test mode) + /billing page
-  + per-tier client limits
-- [ ] CP3: Client management on real Supabase data — closes Phase 1 mock gaps
-  (AssignPlan/ClientPicker/NewPlanModal), full intake form, CSV import
-- [ ] CP4: Mobile OAuth deep linking (evaluate Capgo social-login plugin first)
+- ✅ CP1: Trainer onboarding wizard — resumable 6-step (2026-06-14)
+- ✅ CP2: Subscription tiers + Razorpay billing (test mode) + /billing page
+  + per-tier client limits (2026-06-15)
+- ✅ CP3: Client management on real Supabase data — edit client, send plan
+  with real inserts (2026-06-15)
+- ✅ CP4: Mobile OAuth deep linking — Android Google Sign-In working;
+  iOS nonce issue deferred (2026-06-15)
 
 ---
 

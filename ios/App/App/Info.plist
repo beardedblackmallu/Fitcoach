@@ -49,5 +49,24 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.fitcoach.trainer</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fitcoach</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.fitcoach.trainer.google</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.78875222186-cf87no13v26snlhtelm0cnh584n2pqkv</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

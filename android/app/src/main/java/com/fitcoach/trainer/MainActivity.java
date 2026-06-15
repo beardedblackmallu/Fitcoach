@@ -1,4 +1,4 @@
-package com.fitcoach.app;
+package com.fitcoach.trainer;
 
 import com.getcapacitor.BridgeActivity;
 
