@@ -54,6 +54,14 @@ wrap with Capacitor so the app runs natively on iOS and Android.
 
 ---
 
+## Known tech debt (pre-App Store)
+
+- **iOS Google Sign-In broken** — `Nonces mismatch` between GIDSignIn 9.0 and Supabase `signInWithIdToken`. Android works. Fix options: (a) upgrade `@capgo/capacitor-social-login` if nonce is exposed in result in a newer version, (b) switch to `serverAuthCode` flow. Must be resolved before App Store submission. See CP4 notes in `done/phase-2-onboarding-billing.md`.
+- **Razorpay webhook** — must be registered in Razorpay Dashboard → Settings → Webhooks with URL `https://gcendipptiwpipadqzan.supabase.co/functions/v1/razorpay-webhook`, secret `c57d288f2dbc64503a76e2e210419613`, event `payment.captured`.
+- **Android OAuth client** — create in Google Cloud Console with package `com.fitcoach.trainer` + SHA-1 `61:37:C6:C7:C2:BA:C9:EB:F1:96:CD:B1:97:0D:52:FE:16:F7:2C:98` (needed for production builds signed with release keystore).
+
+---
+
 ## Phase 3 — AiSensy WhatsApp integration (not started)
 
 This is the bot. Everything that says "shows empty until Phase 3"
