@@ -40,16 +40,26 @@ export default function DashboardPage() {
 
   useEffect(() => {
     const supabase = createClient();
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        const name: string =
-          (user.user_metadata?.name as string) ||
-          user.email?.split("@")[0] ||
-          "Coach";
-        setTrainerName(name);
+    supabase.auth.getUser().then(async ({ data: { user } }) => {
+      if (!user) return;
+      const { data: t } = await supabase
+        .from("trainers")
+        .select("name, subscription_status")
+        .eq("id", user.id)
+        .single();
+      // Expired subscription → send to billing.
+      if (t?.subscription_status === "expired") {
+        router.replace("/billing");
+        return;
       }
+      const name: string =
+        t?.name ||
+        (user.user_metadata?.name as string) ||
+        user.email?.split("@")[0] ||
+        "Coach";
+      setTrainerName(name);
     });
-  }, []);
+  }, [router]);
 
   const firstName = trainerName.split(" ")[0];
   const trainerInitials = trainerName

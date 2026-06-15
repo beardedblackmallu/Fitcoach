@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AlertCircle, Sparkles, X } from "lucide-react";
 import { useApp } from "@/lib/AppContext";
-import { getClient } from "@/lib/data";
+import { useClients } from "@/lib/hooks/useClients";
 import { createClient } from "@/lib/supabase/client";
 
 const presetDurations = [4, 8, 12, 16] as const;
@@ -31,8 +31,9 @@ export function NewPlanModal() {
   const [description, setDescription] = useState("");
   const [saveAsTemplate, setSaveAsTemplate] = useState(true);
 
+  const { clients } = useClients();
   const customClient = newPlanPrefill?.customForClientId
-    ? getClient(newPlanPrefill.customForClientId)
+    ? clients.find((c) => c.id === newPlanPrefill.customForClientId)
     : undefined;
 
   useEffect(() => {

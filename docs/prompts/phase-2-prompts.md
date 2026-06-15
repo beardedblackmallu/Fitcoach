@@ -211,12 +211,29 @@ Once user confirms all tests pass:
 
 ## CP2 — Subscription tiers + Razorpay
 
+> ⚠️ **BILLING APPROACH — building on Razorpay ORDERS, not Subscriptions (2026-06-14).**
+> Razorpay's **Subscriptions / Recurring** product is **not activated** on the
+> account — `/v1/plans` returns 401 and the dashboard's "Create Plan" fails with
+> "Something went wrong", even though **KYC is complete**. Enabling Recurring
+> requires a manual back-office flip by Razorpay Support (no self-serve toggle).
+> Razorpay **Orders/Payments** work fully in test mode (same UPI/cards/INR).
+>
+> **So CP2 ships on the Orders API** (one-time Order per cycle; manual renewal).
+> Migration `003_billing_orders.sql` reflects this: `razorpay_order_id` /
+> `razorpay_payment_id` / `current_period_end`, with `razorpay_subscription_id`
+> kept nullable for the upgrade. `payment_provider` column is forward-looking
+> for international (Stripe) later.
+>
+> **The native-Subscriptions build below is the deferred target** — do it as
+> specced once Razorpay enables Recurring (then `/v1/plans` returns 200). The
+> swap is isolated to the `create-order` Edge Function → `create-subscription`.
+
 **CONTEXT TO READ FIRST:**
 1. CLAUDE.md
 2. docs/specs/in-progress/phase-2-onboarding-billing.md — CP2
 3. docs/FitCoach-PRD.md section 12 (pricing)
 
-**TASK:**
+**TASK (deferred target — native Subscriptions; see the Orders note above for what we're building now):**
 Wire real Razorpay subscription billing (TEST MODE ONLY).
 
 - Configure Razorpay test account; add keys to `.env.local`

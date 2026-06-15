@@ -9,6 +9,7 @@ import {
   Inbox,
   Dumbbell,
   Wallet,
+  CreditCard,
   Settings,
   X,
 } from "lucide-react";
@@ -21,6 +22,7 @@ const items = [
   { href: "/inbox", label: "Inbox", Icon: Inbox, badge: 2, badgeRed: true },
   { href: "/plans", label: "Plans", Icon: Dumbbell },
   { href: "/payments", label: "Payments", Icon: Wallet },
+  { href: "/billing", label: "Billing", Icon: CreditCard },
   { href: "/settings", label: "Settings", Icon: Settings },
 ];
 

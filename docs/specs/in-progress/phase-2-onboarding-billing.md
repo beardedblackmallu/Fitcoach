@@ -87,6 +87,19 @@ Plus: progress + "Step X of 6" accurate; Back on steps 2–6 (not 1).
 
 ### CP2 — Subscription tiers + Razorpay
 
+**Billing approach decision (2026-06-14): building on Razorpay ORDERS, not
+Subscriptions.** Razorpay's Subscriptions/Recurring product is not activated on
+the account (`/v1/plans` → 401; dashboard "Create Plan" fails), even with KYC
+complete — enabling it needs Razorpay Support, no self-serve toggle. Orders/
+Payments work fully in test mode (same UPI/cards/INR). So CP2 ships as a
+one-time Order per cycle (manual renewal); migration `003_billing_orders.sql`
+adds `razorpay_order_id`/`razorpay_payment_id`/`current_period_end` +
+`payment_provider` (forward-looking for Stripe/international). Native
+auto-recurring Subscriptions is the **deferred upgrade** — build it per the
+prompt library once Razorpay enables Recurring; the swap is isolated to the
+`create-order` → `create-subscription` Edge Function call. Migration 003
+applied to Supabase ✓.
+
 **Test 0 — Billing screens walkthrough.** Confirm: Razorpay checkout shows the
 correct plan + ₹ amount; test mode clearly indicated; success screen shows active
 plan + renewal date; `/billing` shows current plan, price, renewal date, upgrade

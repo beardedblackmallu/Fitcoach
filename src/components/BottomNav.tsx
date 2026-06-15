@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import {
   Bell,
+  CreditCard,
   Dumbbell,
   Inbox,
   LayoutDashboard,
@@ -29,6 +30,7 @@ const primary = [
 const moreLinks = [
   { href: "/plans", label: "Plans", Icon: Dumbbell, desc: "Workout & nutrition templates" },
   { href: "/payments", label: "Payments", Icon: Wallet, desc: "Track and send payment links" },
+  { href: "/billing", label: "Billing", Icon: CreditCard, desc: "Subscription & plan" },
   { href: "/settings", label: "Settings", Icon: Settings, desc: "Profile, WhatsApp number, bot" },
 ];
 

@@ -19,6 +19,7 @@ import {
 } from "lucide-react";
 import { Camera, CameraResultType, CameraSource } from "@capacitor/camera";
 import { createClient } from "@/lib/supabase/client";
+import { TIERS, tierByKey, startCheckout } from "@/lib/billing";
 
 // Step keys in order — index maps to "Step N of 6".
 const STEPS = ["profile", "whatsapp", "business", "tier", "payment", "confirm"] as const;
@@ -28,13 +29,6 @@ const SPECIALTIES = [
   "Weight loss", "Muscle gain", "Strength", "Powerlifting", "Bodybuilding",
   "General fitness", "Sports performance", "Pre/post-natal", "Rehab", "Nutrition",
 ];
-
-const TIERS = [
-  { key: "starter", name: "Starter", price: 999, clients: 10 },
-  { key: "growth", name: "Growth", price: 1999, clients: 30, popular: true },
-  { key: "pro", name: "Pro", price: 2999, clients: 50 },
-  { key: "scale", name: "Scale", price: 4999, clients: 100 },
-] as const;
 
 interface Form {
   name: string;
@@ -205,6 +199,26 @@ export default function OnboardingPage() {
     } catch (e) {
       setError("Could not finish onboarding. Try again.");
       console.error(e);
+      setSaving(false);
+    }
+  };
+
+  // Step 5 — open Razorpay checkout, then advance to confirm. The webhook
+  // activates the subscription server-side; we only need payment to complete.
+  const payAndContinue = async () => {
+    if (!form.subscription_tier) return;
+    setSaving(true);
+    setError(null);
+    try {
+      await startCheckout(form.subscription_tier, { name: form.name });
+      const next = STEPS[stepIndex + 1]; // → confirm
+      await patch({ subscription_status: "pending", onboarding_step: next });
+      setStep(next);
+      window.scrollTo({ top: 0 });
+    } catch (e) {
+      const msg = String((e as { message?: string })?.message ?? e);
+      if (!/cancel|dismiss/i.test(msg)) setError(`Payment didn't complete: ${msg}`);
+    } finally {
       setSaving(false);
     }
   };
@@ -464,7 +478,7 @@ export default function OnboardingPage() {
                           : "border-stone-300 hover:border-stone-400"
                       }`}
                     >
-                      {"popular" in t && t.popular && (
+                      {t.popular && (
                         <span className="absolute -top-2 right-3 text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-[#FF6400] text-white glow-orange-sm">
                           Popular
                         </span>
@@ -506,10 +520,10 @@ export default function OnboardingPage() {
               <div className="mt-5 rounded-xl border border-stone-200 bg-stone-50 p-4">
                 <div className="flex items-center justify-between">
                   <span className="text-sm text-stone-600">
-                    {TIERS.find((t) => t.key === form.subscription_tier)?.name} plan
+                    {tierByKey(form.subscription_tier)?.name} plan
                   </span>
                   <span className="font-semibold text-stone-900">
-                    ₹{TIERS.find((t) => t.key === form.subscription_tier)?.price.toLocaleString("en-IN")}/mo
+                    ₹{tierByKey(form.subscription_tier)?.price.toLocaleString("en-IN")}/mo
                   </span>
                 </div>
                 <div className="mt-2 text-[11px] text-stone-400">
@@ -517,11 +531,7 @@ export default function OnboardingPage() {
                 </div>
               </div>
 
-              <PrimaryButton
-                loading={saving}
-                disabled={saving}
-                onClick={() => advance({ subscription_status: "pending" })}
-              >
+              <PrimaryButton loading={saving} disabled={saving} onClick={payAndContinue}>
                 Continue to payment
               </PrimaryButton>
             </div>
