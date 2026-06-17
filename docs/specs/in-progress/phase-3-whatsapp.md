@@ -21,7 +21,7 @@
 
 ## Checkpoints
 
-- [ ] **CP1 — WhatsApp provider abstraction + mock adapter** ← buildable now
+- [x] **CP1 — WhatsApp provider abstraction + mock adapter** (2026-06-17)
 - [ ] **CP2 — Live BSP adapter (AiSensy)** [LIVE-ONLY — deferred]
 - [ ] **CP3 — Inbound webhook → Conversations** [LIVE-ONLY — deferred]
 - [ ] **CP4 — Outbound from app (composer → WhatsApp)** [LIVE-ONLY — deferred]
@@ -30,7 +30,20 @@
 
 ## CP1 — WhatsApp provider abstraction + mock adapter
 
-**Status:** Buildable now (no external dependencies)
+**Status:** ✅ Complete (2026-06-17)
+
+Delivered: `src/lib/whatsapp/provider.ts` (interface + normalized types),
+`adapters/mock.ts`, `adapters/aisensy.ts` (stub, throws until CP2),
+`index.ts` (factory, default `mock`). `WHATSAPP_PROVIDER=mock` in `.env.local`.
+Tests: build green; mock selected by default; `sendText` logs from/to/text;
+inbound normalization works; grep confirms no file outside `src/lib/whatsapp/`
+imports an adapter directly.
+
+**Env-scope note:** `WHATSAPP_PROVIDER` is a bare var (server-side only). In the
+static-exported Capacitor client it is undefined → factory falls back to `mock`,
+the intended CP1 behavior. Live sending (CP2) runs server-side (Edge Functions /
+webhook) where the bare var resolves. Add `NEXT_PUBLIC_WHATSAPP_PROVIDER` only if
+client-side switching is ever needed.
 
 Scope: provider interface + normalized types + mock adapter + AiSensy stub
 + factory. No live API calls. App selects adapter via `WHATSAPP_PROVIDER`

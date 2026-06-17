@@ -70,7 +70,7 @@ wrap with Capacitor so the app runs natively on iOS and Android.
 > ⚠️ CP1 buildable now. CP2–CP4 blocked until business entity + GST +
 > AiSensy approval + Meta sender number. Estimated lead time: 4–6 weeks.
 
-- [ ] CP1: WhatsApp provider abstraction + mock adapter ← **buildable now**
+- [x] CP1: WhatsApp provider abstraction + mock adapter (2026-06-17)
 - [ ] CP2: Live AiSensy adapter [LIVE-ONLY — needs approved sender number]
 - [ ] CP3: Inbound webhook → Conversations [LIVE-ONLY]
 - [ ] CP4: Outbound composer → WhatsApp [LIVE-ONLY]
