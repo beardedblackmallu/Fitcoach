@@ -62,26 +62,49 @@ wrap with Capacitor so the app runs natively on iOS and Android.
 
 ---
 
-## Phase 3 — AiSensy WhatsApp integration (not started)
+## Phase 3 — WhatsApp Integration 🔄 PENDING external approvals
 
-This is the bot. Everything that says "shows empty until Phase 3"
-in the Phase 1 docs unblocks here.
+**Spec:** [`in-progress/phase-3-whatsapp.md`](in-progress/phase-3-whatsapp.md)
+**Prompts:** [`../prompts/phase-3-prompts.md`](../prompts/phase-3-prompts.md)
 
-- AiSensy webhook → writes inbound messages to `messages` +
-  `conversations` tables
-- Outbound API → trainer reply → AiSensy → WhatsApp delivery
-- Realtime subscription on `messages` for live updates
-- Conversations page migrated off mock data
-- Bot classification (Claude Haiku) → creates escalations on
-  medical / off-topic detection
-- Suggested replies (Claude Haiku) → stored in
-  `escalation_suggested_replies`
-- Inbox feed and dashboard escalation feed go live
-- Today's check-ins feed wired to real bot data
+> ⚠️ CP1 buildable now. CP2–CP4 blocked until business entity + GST +
+> AiSensy approval + Meta sender number. Estimated lead time: 4–6 weeks.
+
+- [ ] CP1: WhatsApp provider abstraction + mock adapter ← **buildable now**
+- [ ] CP2: Live AiSensy adapter [LIVE-ONLY — needs approved sender number]
+- [ ] CP3: Inbound webhook → Conversations [LIVE-ONLY]
+- [ ] CP4: Outbound composer → WhatsApp [LIVE-ONLY]
 
 ---
 
-## Phase 4 — Compliance + analytics (not started)
+## Phase 4A — AI Logic ✳️ Buildable now (needs Anthropic API key)
+
+**Spec:** [`in-progress/phase-4a-ai-logic.md`](in-progress/phase-4a-ai-logic.md)
+**Prompts:** [`../prompts/phase-4a-prompts.md`](../prompts/phase-4a-prompts.md)
+
+> Runs independently of Phase 3. Needs only `ANTHROPIC_API_KEY` in
+> `.env.local` (product runtime key from console.anthropic.com —
+> separate from Claude Code subscription).
+> Phase 4B (wiring AI to live WhatsApp) deferred until Phase 3 live.
+
+- [ ] CP1: Anthropic client + AI abstraction (`src/lib/ai/`)
+- [ ] CP2: Escalation classifier (Claude Haiku, `/dev/classifier` test screen)
+- [ ] CP3: Food photo → nutrition via vision (Claude Haiku, `/dev/food` test screen)
+
+---
+
+## Phase 4B — AI wired to WhatsApp (not started, blocked on Phase 3)
+
+- Daily check-in bot scheduler
+- Escalation classifier wired to live inbound messages
+- Food vision wired to meal photo messages
+- Suggested replies stored in `escalation_suggested_replies`
+- Inbox feed and dashboard escalation feed go live
+- Conversations page migrated off mock data
+
+---
+
+## Phase 5 — Compliance + analytics (not started)
 
 - `workout_logs` and `food_logs` aggregation
 - Dashboard "Avg compliance" card goes live (currently mock)
@@ -90,15 +113,15 @@ in the Phase 1 docs unblocks here.
 
 ---
 
-## Phase 5 — Plan delivery (not started)
+## Phase 6 — Plan delivery (not started)
 
 - Plan PDF generation
 - AiSensy document delivery to client WhatsApp
-- "Send plan to client" button goes live (currently a stub)
+- "Send plan to client" button goes live end-to-end
 
 ---
 
-## Phase 6 — Razorpay payments (not started)
+## Phase 7 — Razorpay payments (not started)
 
 - Razorpay subscription setup per trainer
 - "Send payment link" button goes live (currently a stub)
@@ -107,8 +130,8 @@ in the Phase 1 docs unblocks here.
 
 ---
 
-## Phase 7+ — TBD
+## Phase 8+ — TBD
 
-Scope locked when Phase 6 lands. Likely candidates: trainer team
+Scope locked when Phase 7 lands. Likely candidates: trainer team
 support (Phase 2 market segment), AI plan generation (Claude Sonnet),
 push notifications via APNs/FCM, voice note transcription.
